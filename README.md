@@ -1,6 +1,5 @@
 
 
-Project Name Dashboard 
 This dashboard suite is designed to be the one-stop hub for managing sales, marketing, customer relationships, and onboarding—anchored by a smart AI chatbot to provide actionable insights based on your business's unique data.
 
 
