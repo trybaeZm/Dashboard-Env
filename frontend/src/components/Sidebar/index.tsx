@@ -32,7 +32,7 @@ const menuGroups = [
       {
         icon: <ChatBubbleOvalLeftEllipsisIcon className="size-6" />,
         label: "TryChat",
-        route: "#",
+        route: "/trychat",
       },
 
       {

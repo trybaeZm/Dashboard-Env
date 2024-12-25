@@ -60,7 +60,7 @@ const ChatCard = () => {
         Chats
       </h4>
 
-      <div>
+      {/* <div>
         {chatData.map((chat, key) => (
           <Link
             href="/"
@@ -108,7 +108,7 @@ const ChatCard = () => {
             </div>
           </Link>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

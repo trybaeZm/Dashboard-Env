@@ -14,9 +14,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+export default function RootLayout({children,}: Readonly<{
   children: React.ReactNode;
 }>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -33,7 +31,7 @@ export default function RootLayout({
       <html lang="en">
         <body suppressHydrationWarning={true}>
           <ReactQueryProvider>
-            <div className="dark:bg-boxdark-2 dark:text-bodydark">
+            <div className="dark:bg-boxdark-2 bg-gray-100 dark:text-bodydark">
               {loading ? <Loader /> : children}
             </div>
           </ReactQueryProvider>
