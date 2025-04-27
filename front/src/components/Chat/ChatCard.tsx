@@ -136,30 +136,37 @@ const ChatCard = () => {
   
     setShowUpload(false);
   };
-  
   const loadSession = async (sessionId: string) => {
     if (!sessionId) {
       setMessages([{ role: "bot", content: "⚠️ Missing session ID!" }]);
       return;
     }
-
-    const res = await fetch(`/api/chat-session?user_id=${userId}&session_id=${sessionId}`);
-    const data = await res.json();
-
-    if (!data?.session || data.session.length === 0) {
-      setMessages([{ role: "bot", content: "⚠️ No messages found for this session." }]);
-      return;
+  
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/chat-session?user_id=${userId}&session_id=${sessionId}`);
+      const data = await res.json();
+  
+      if (!data?.session || data.session.length === 0) {
+        setMessages([{ role: "bot", content: "⚠️ No messages found for this session." }]);
+        return;
+      }
+  
+      const sessionMsgs = data.session.flatMap((chat: any) => [
+        { role: "user", content: chat.question },
+        { role: "bot", content: chat.answer }
+      ]);
+  
+      setMessages(sessionMsgs);
+      setSessionId(sessionId); // ✅ Update current session
+      localStorage.setItem("session_id", sessionId);
+    } catch (err) {
+      console.error("❌ Error loading session:", err);
+      setMessages([{ role: "bot", content: "⚠️ Error loading session. Please try again." }]);
     }
-
-    const sessionMsgs = data.session.flatMap((chat: any) => [
-      { role: "user", content: chat.question },
-      { role: "bot", content: chat.answer }
-    ]);
-    setMessages(sessionMsgs);
-    setSessionId(sessionId); // switch context
-    localStorage.setItem("session_id", sessionId);
   };
-
+  
+  
+  
   
   return (
     <div className="flex fixed top-20 left-0 right-0 bottom-0 bg-white dark:bg-boxdark">
