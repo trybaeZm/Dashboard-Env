@@ -1,0 +1,48 @@
+'use client'
+import React, { useState } from 'react'
+import { Input } from '../ui/input'
+import { FilterIcon, FuelIcon, Link } from 'lucide-react'
+import { FunnelIcon } from '@heroicons/react/24/outline'
+import { Table } from './components/Table'
+import { usePathname } from 'next/navigation'
+export const Orders = () => {
+    const [open, setOpen] = useState(false)
+    const router = usePathname()
+    const [filterValue, setFilterValue] = useState('')
+
+
+    const NvLink = ({ href, children }: { href: string, children: any }) => {
+        const isActive = router === href
+        return (
+            <Link href={href} className={`${isActive ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>{children}</Link>
+        )
+    }
+
+    return (
+        <div>
+            <div className='pt-20 flex flex-col gap-3'>
+                <div className='flex items-center gap-10'>
+                    <button onClick={() => setFilterValue('')} className={`${filterValue === '' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>All</button>
+                    <button onClick={() => setFilterValue('Pending')} className={`${filterValue === 'Pending' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>Pending</button>
+                    <button onClick={() => setFilterValue('Complete')} className={`${filterValue === 'Complete' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>Settled</button>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                    <Input placeholder='Search' className='max-w-md w-full outline-none border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200' />
+                    <button className='flex items-center gap-2 text-gray-800 dark:text-gray-200'>
+                        <FilterIcon className='size-5' />
+                        Filer
+                    </button>
+                    <button className='flex items-center gap-2 text-gray-800 dark:text-gray-200'>
+                        <FunnelIcon className='size-5' />
+                        Sort
+                    </button>
+                </div>
+                <div className='mt-5'>
+                    <Table filter={filterValue} open={setOpen}/>
+                </div>
+            </div>
+
+        </div>
+    )
+}
