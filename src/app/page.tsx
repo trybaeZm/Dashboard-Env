@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Trybae Admin Dashboard",
 };
 
-export default function Home(req: NextRequest) {
+ function Home() {
   return (
     <>
       <DefaultLayout>
@@ -20,3 +20,5 @@ export default function Home(req: NextRequest) {
     </>
   );
 }
+
+export default Home

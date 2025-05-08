@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MainPage } from './MainPage'
 import page from '../customers/page'
 import { firstTimeVisitToken } from '@/lib/createCookie'
@@ -7,6 +7,10 @@ import { firstTimeVisitToken } from '@/lib/createCookie'
 
 const Page = () => {
     const [pageNumber, setPageNumber] = useState(1)
+    
+    useEffect(()=> {
+        
+    },[])
 
     return (
         <div className='p-4 min-h-[100vh] flex flex-col items-center bg-white dark:bg-boxdark'>
@@ -18,6 +22,10 @@ const Page = () => {
                         <button className='py-2 px-4 border border-black dark:border-white rounded-md text-black dark:text-white'>
                             logo
                         </button>
+
+                        {
+
+                        }
                         <button onClick={()=>firstTimeVisitToken()} className='py-2 px-4 border border-black dark:border-white rounded-md text-black dark:text-white'>
                             {
                                 pageNumber > 1 ?
