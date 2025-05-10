@@ -1,5 +1,5 @@
 "use client";
-import "@/css/style.css";
+import '../css/style.css'
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
