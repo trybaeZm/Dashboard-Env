@@ -7,6 +7,8 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
 (async () => {
+    console.log('supabes key: ', supabaseKey)
+    console.log('supabes URL: ', supabaseUrl)
     try {
         const { data, error } = await supabase.auth.getUser();
         if (error) {

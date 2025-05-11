@@ -2,73 +2,88 @@ import { supabase } from "@/services/SupabaseConfig";
 import { generateToken } from "@/services/token";
 import bcrypt from 'bcrypt';
 
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*', // allow any origin
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    // Removed credentials
+};
+
 
 export async function OPTIONS() {
     return new Response(null, {
         status: 204,
-        headers: {
-            'Access-Control-Allow-Origin': 'http://localhost:5173',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            'Access-Control-Allow-Credentials': 'true',
-        },
+        headers: corsHeaders,
     });
 }
 
-
-
-
 export async function POST(request: Request) {
     const { name, email, password } = await request.json();
+    console.log(name, email, password)
 
     try {
-        const { data, error } = await supabase
+        const { data: existingUser, error } = await supabase
             .from('users')
             .select('*')
             .eq('email', email)
-            .single();
+            .single()
 
-        if (data) {
+        if (existingUser) {
             return new Response(
-                JSON.stringify({ message: 'user Already exists' }),
+                JSON.stringify({ message: 'User already exists' }),
                 {
                     status: 409,
                     headers: {
+                        ...corsHeaders,
                         'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': 'http://localhost:5173',
-                        'Access-Control-Allow-Credentials': 'true',
                     },
                 }
             );
-        } else {
-
-            const { data, error } = await supabase
-                .from('users')
-                .insert([
-                    {
-                        name, email, password
-                    }
-                ])
-
-            console.log('Inserted:', data);
         }
 
-        if (error) {
-            console.error('Insert error:', error.message);
-            return;
+        console.log(existingUser)
+
+        // Optional: Hash the password before storing
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const { data: insertData, error: insertError } = await supabase
+            .from('users')
+            .insert([
+                {
+                    name,
+                    email,
+                    password_hash: hashedPassword,
+                    role: "business_owner"
+                }
+            ]);
+
+        if (insertError) {
+            console.error('Insert error:', insertError.message);
+            return new Response(JSON.stringify({ message: 'Error inserting user' }), {
+                status: 500,
+                headers: {
+                    ...corsHeaders,
+                    'Content-Type': 'application/json',
+                },
+            });
         }
 
-    }
-    catch (err) {
-        console.error("Unexpected error fetching customer:", err);
-        return new Response(JSON.stringify({ message: 'Unexpected error adding customer:' }), {
-            status: 500,
+        return new Response(JSON.stringify({ message: 'User created successfully' }), {
+            status: 201,
             headers: {
+                ...corsHeaders,
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://localhost:5173',
-                'Access-Control-Allow-Credentials': 'true',
             },
         });
 
+    } catch (err) {
+        console.error("Unexpected error:", err);
+        return new Response(JSON.stringify({ message: 'Unexpected error' }), {
+            status: 500,
+            headers: {
+                ...corsHeaders,
+                'Content-Type': 'application/json',
+            },
+        });
     }
 }
