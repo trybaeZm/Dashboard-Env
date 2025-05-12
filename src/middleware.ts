@@ -12,7 +12,6 @@ export function middleware(req: NextRequest) {
 
   if (localToken) {
     console.log(verifyToken(localToken))
-    
   }
 
   if (token) {

@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
 export const createCookie = async (token: string) => {
-    console.log('token created: ', token)
+    // console.log('token created: ', token)
     // Set token cookie without expiry
     Cookies.set('userToken', token, {
         secure: true,
@@ -44,3 +44,23 @@ export const removeToken = () => {
     Cookies.remove('userToken');
     // and user  data
 }
+
+
+export const storeData = (data: any) => {
+  try {
+    localStorage.setItem('userData', JSON.stringify(data));
+    console.log("User data stored successfully");
+  } catch (error) {
+    console.error("Failed to store data:", error);
+  }
+}
+
+export const getData = (): any => {
+  try {
+    const data = localStorage.getItem('userData');
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error("Failed to retrieve data:", error);
+    return null;
+  }
+};

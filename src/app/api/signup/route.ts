@@ -21,11 +21,13 @@ export async function POST(request: Request) {
     const { name, email, password } = await request.json();
     console.log(name, email, password)
 
+    
     try {
+        let lowerCaseEmail1 = email.toLowerCase()
         const { data: existingUser, error } = await supabase
             .from('users')
             .select('*')
-            .eq('email', email)
+            .eq('email', lowerCaseEmail1)
             .single()
 
         if (existingUser) {
@@ -41,17 +43,16 @@ export async function POST(request: Request) {
             );
         }
 
-        console.log(existingUser)
-
         // Optional: Hash the password before storing
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        let lowerCaseEmail = email.toLowerCase()
         const { data: insertData, error: insertError } = await supabase
             .from('users')
             .insert([
                 {
                     name,
-                    email,
+                    email: lowerCaseEmail,
                     password_hash: hashedPassword,
                     role: "business_owner"
                 }
@@ -68,7 +69,9 @@ export async function POST(request: Request) {
             });
         }
 
-        return new Response(JSON.stringify({ message: 'User created successfully' }), {
+        const Token = generateToken({insertData}, '24h')
+
+        return new Response(JSON.stringify({ message: 'User created successfully', Token:Token  }), {
             status: 201,
             headers: {
                 ...corsHeaders,
