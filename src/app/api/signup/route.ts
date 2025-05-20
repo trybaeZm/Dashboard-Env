@@ -2,51 +2,62 @@ import { supabase } from "@/services/SupabaseConfig";
 import { generateToken } from "@/services/token";
 import bcrypt from 'bcrypt';
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*', // allow any origin
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    // Removed credentials
-};
+// ✅ Allowed frontend origins
+const allowedOrigins = ['http://localhost:5173', 'https://inxource.com'];
 
+// ✅ Dynamic CORS handler
+function getCorsHeaders(request: Request): Record<string, string> {
+    const origin = request.headers.get('origin') || '';
+    const isAllowed = allowedOrigins.includes(origin);
 
-export async function OPTIONS() {
+    const headers: Record<string, string> = {
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Credentials': 'true',
+        'Content-Type': 'application/json',
+    };
+
+    if (isAllowed) {
+        headers['Access-Control-Allow-Origin'] = origin;
+    }
+
+    return headers;
+}
+
+export async function OPTIONS(request: Request) {
     return new Response(null, {
         status: 204,
-        headers: corsHeaders,
+        headers: getCorsHeaders(request),
     });
 }
 
 export async function POST(request: Request) {
-    const { name, email, password } = await request.json();
-    console.log(name, email, password)
+    const headers = getCorsHeaders(request);
 
-    
+    const { name, email, password } = await request.json();
+    console.log(name, email, password);
+
     try {
-        let lowerCaseEmail1 = email.toLowerCase()
-        const { data: existingUser, error } = await supabase
+        const lowerCaseEmail = email.toLowerCase();
+
+        // Check if user already exists
+        const { data: existingUser } = await supabase
             .from('users')
             .select('*')
-            .eq('email', lowerCaseEmail1)
-            .single()
+            .eq('email', lowerCaseEmail)
+            .single();
 
         if (existingUser) {
-            return new Response(
-                JSON.stringify({ message: 'User already exists' }),
-                {
-                    status: 409,
-                    headers: {
-                        ...corsHeaders,
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            return new Response(JSON.stringify({ message: 'User already exists' }), {
+                status: 409,
+                headers,
+            });
         }
 
-        // Optional: Hash the password before storing
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let lowerCaseEmail = email.toLowerCase()
+        // Insert new user
         const { data: insertData, error: insertError } = await supabase
             .from('users')
             .insert([
@@ -54,39 +65,32 @@ export async function POST(request: Request) {
                     name,
                     email: lowerCaseEmail,
                     password_hash: hashedPassword,
-                    role: "business_owner"
+                    role: "business_owner",
                 }
-            ]);
+            ])
+            .select()
+            .single(); // so we get the inserted user back
 
         if (insertError) {
             console.error('Insert error:', insertError.message);
             return new Response(JSON.stringify({ message: 'Error inserting user' }), {
                 status: 500,
-                headers: {
-                    ...corsHeaders,
-                    'Content-Type': 'application/json',
-                },
+                headers,
             });
         }
 
-        const Token = generateToken({insertData}, '24h')
+        const Token = generateToken(insertData, '24h');
 
-        return new Response(JSON.stringify({ message: 'User created successfully', Token:Token  }), {
+        return new Response(JSON.stringify({ message: 'User created successfully', Token }), {
             status: 201,
-            headers: {
-                ...corsHeaders,
-                'Content-Type': 'application/json',
-            },
+            headers,
         });
 
     } catch (err) {
         console.error("Unexpected error:", err);
         return new Response(JSON.stringify({ message: 'Unexpected error' }), {
             status: 500,
-            headers: {
-                ...corsHeaders,
-                'Content-Type': 'application/json',
-            },
+            headers,
         });
     }
 }

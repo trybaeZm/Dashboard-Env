@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import { useSearchParams } from "next/navigation";
 import { createCookie, getCookie, getData, storeData } from "@/lib/createCookie";
 import { getUserDataWithToken, TokenData, verifyToken } from "@/services/token";
+import Signup from "../signupPage/Signup";
 
 export default function DefaultLayout({
   children,
@@ -77,9 +78,14 @@ export default function DefaultLayout({
           {/* <!-- ===== Main Content Start ===== --> */}
           <main className="dark:bg-gray-800">
             <div className="mx-auto p-3 min-h-screen dark:bg-gray-800">
-              <Suspense fallback={<div>Loading...</div>}>
-                {children}
-              </Suspense>
+              {
+                userData ? 
+                <Suspense fallback={<div>Loading...</div>}>
+                  {children}
+                </Suspense>
+                :
+                <Signup/>
+              }
             </div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}

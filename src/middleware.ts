@@ -6,6 +6,8 @@ export function middleware(req: NextRequest) {
   const firstTime = req.cookies.get('didVisit')?.value
   const token = req.nextUrl.searchParams.get('token')
   const localToken = getCookie()
+
+  
   const res = NextResponse.redirect(new URL('/welcome', req.url))
 
   console.log('getting local token:', localToken)
@@ -13,7 +15,7 @@ export function middleware(req: NextRequest) {
   if (localToken) {
     console.log(verifyToken(localToken))
   }
-
+ 
   if (token) {
     const res = NextResponse.next() // create the response object first
     // Set the token cookie
@@ -23,6 +25,10 @@ export function middleware(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
       path: '/',
     })
+  }
+
+  if(!token){
+    NextResponse.redirect(new URL('/', req.url))
   }
 
   if (!firstTime && req.nextUrl.pathname !== '/welcome') {

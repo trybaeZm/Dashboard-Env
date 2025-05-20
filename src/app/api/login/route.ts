@@ -2,24 +2,41 @@ import { supabase } from "@/services/SupabaseConfig";
 import { generateToken } from "@/services/token";
 import bcrypt from 'bcrypt';
 
+// ✅ Allowed frontend origins
+const allowedOrigins = ['http://localhost:5173', 'https://inxource.com'];
 
+// ✅ Function to get dynamic CORS headers
+function getCorsHeaders(request: Request): Record<string, string> {
+    const origin = request.headers.get('origin') || '';
+    const isAllowed = allowedOrigins.includes(origin);
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin': 'http://localhost:5173', // ✅ Set your frontend origin
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Credentials': 'true', // ✅ This is needed for cookies/auth headers
-};
-export async function OPTIONS() {
+    const headers: Record<string, string> = {
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Credentials': 'true',
+        'Content-Type': 'application/json',
+    };
+
+    if (isAllowed) {
+        headers['Access-Control-Allow-Origin'] = origin;
+    }
+
+    return headers;
+}
+
+export async function OPTIONS(request: Request) {
     return new Response(null, {
         status: 204,
-        headers: corsHeaders,
+        headers: getCorsHeaders(request),
     });
 }
+
 export async function POST(request: Request) {
     const { email, password } = await request.json();
+
     try {
-        let lowerCaseEmail = email.toLowerCase()
+        const lowerCaseEmail = email.toLowerCase();
+
         const { data, error } = await supabase
             .from('users')
             .select('*')
@@ -27,34 +44,32 @@ export async function POST(request: Request) {
             .single();
 
         if (!data) {
-            console.log('user does not exist')
+            console.log('User does not exist');
+            return new Response(JSON.stringify({ message: 'Invalid credentials' }), {
+                status: 401,
+                headers: getCorsHeaders(request),
+            });
         }
 
-        // Example: comparing during login
         const isMatch = await bcrypt.compare(password, data.password_hash);
 
         if (isMatch) {
-            const Token = generateToken(data, '24h')
+            const Token = generateToken(data, '24h');
             return new Response(
-                JSON.stringify({ message: 'Login successful', Token: Token, userdata: data }),
+                JSON.stringify({ message: 'Login successful', Token, userdata: data }),
                 {
                     status: 200,
-                    headers: {
-                        ...corsHeaders,
-                        'Content-Type': 'application/json',
-                    },
+                    headers: getCorsHeaders(request),
                 }
             );
         }
+
+    } catch (err) {
+        console.error("Unexpected error during login:", err);
     }
-    catch (err) {
-        console.error("Unexpected error fetching customer:", err);
-    }
+
     return new Response(JSON.stringify({ message: 'Invalid credentials' }), {
         status: 401,
-        headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-        },
+        headers: getCorsHeaders(request),
     });
 }
