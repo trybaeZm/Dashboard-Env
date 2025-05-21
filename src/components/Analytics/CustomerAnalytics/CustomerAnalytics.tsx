@@ -1,21 +1,50 @@
 "use client";
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { CrownIcon, ShuffleIcon } from "lucide-react";
 import AreaChart from "./components/AreaChart";
 import BarChart from "./components/BarChart";
-import PieChart from "./components/PieChart";
 import { useRouter } from "next/navigation";
 import GenderPieChart from './components/GenderChart';
 import LatestChart from './components/DemoLatest';
+import { getCustomersForBusiness } from '@/services/apiCustomers';
+import { Customers } from '@/types/Customers';
+import { getData } from '@/lib/createCookie';
+import { ApiDatatype } from '@/services/token';
+import TopCustomers from './AnalyticsComponents/TopCustomers';
+import TopArea from './AnalyticsComponents/TopArea';
 
 export const CustomerAnalytics = () => {
   const navigation = useRouter()
+  const [customerData, setCustomerData] = useState<Customers[] | null>(null)
+  const [loading, setLoading] = useState(false)
+  const userData: ApiDatatype = getData()
+
+  const getCustomers = () => {
+    setLoading(true)
+    getCustomersForBusiness(userData.user_id)
+      .then((data: any) => {
+        // console.log(data)
+        if (data) {
+          setCustomerData(data)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+  useEffect(() => {
+    getCustomers()
+  }, [])
+
   return (
     <div className="flex flex-col dark:text-white  gap-5 py-20 justify-center">
 
       <div className='flex justify-end'>
-        
-      <button onClick={() => navigation.push('customer-analytics/customer_gender_ratio')} className="py-1 px-2 rounded-[100px] bg-[#1A0670] dark:bg-blue-600 text-white">view data</button>
+
+        <button onClick={() => navigation.push('customer-analytics/customer_gender_ratio')} className="py-1 px-2 rounded-[100px] bg-[#1A0670] dark:bg-blue-600 text-white">view data</button>
       </div>
 
       <div className="border flex flex-col gap-3 grow p-4 items-center rounded-md dark:border-strokedark">
@@ -24,54 +53,25 @@ export const CustomerAnalytics = () => {
         </div>
         <div className="flex gap-4 w-full flex-wrap">
 
-          <div className="border grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
-            <div className="">
-              <div className="flex items-center flex-col gap-3">
-                <div className="flex gap-3 items-center">
-                  <CrownIcon className="size-4" />
-                  <div>James Sakala</div>
-                  <div>45%</div>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <div>Samson Mumba</div>
-                  <div>24%</div>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <div>Jesica Mwelwa</div>
-                  <div>18%</div>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <div>Kelvin Mambo</div>
-                  <div>18%</div>
-                </div>
+          {
+            loading ?
+              <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
+              :
+              <div className="border grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
+                <TopCustomers cutomerData={customerData} />
               </div>
-            </div>
-            <div>
-              <div className="text-[#1A0670] dark:text-white">Top Customers</div>
-              <div className="flex text-[#1A0670] dark:text-white justify-between items-end">
-                <div className="flex items-end gap-2">
-                  <div className="font-bold text-2xl">25.7K</div>
-                  <div className="text-sm font-light">last 7 days</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          }
 
           {/* chart */}
-          <div className="border grow border-[#C9C9C9] dark:border-strokedark p-4 rounded-md">
-            <div>
-              <PieChart />
-            </div>
-            <div>
-              <div className="text-[#1A0670] dark:text-white">High-Value vs. Low-Value Customers</div>
-              <div className="flex text-[#1A0670] dark:text-white justify-between items-end">
-                <div className="flex items-end gap-2">
-                  <div className="font-bold text-2xl">25.7K</div>
-                  <div className="text-sm font-light">last 7 days</div>
-                </div>
+          {
+            loading ?
+              <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
+              :
+              <div className="border grow border-[#C9C9C9] dark:border-strokedark p-4 rounded-md">
+                <TopArea/>
               </div>
-            </div>
-          </div>
+
+          }
         </div>
       </div>
 
@@ -159,7 +159,7 @@ export const CustomerAnalytics = () => {
           </button>
         </div>
         <div>
-        Not enough transactions to recognize significant patterns. Perform more transactions to enable in-depth data analysis.
+          Not enough transactions to recognize significant patterns. Perform more transactions to enable in-depth data analysis.
         </div>
       </div>
     </div>

@@ -26,20 +26,23 @@ import { ApiDatatype } from '@/services/token'
 import { Customers } from '@/types/Customers'
 
 const CustomerGenderRatio = () => {
-    
+
     const [open, setOpen] = useState(false)
     const [gender, setGender] = useState<string>('female')
     const [loading, setLoading] = useState(false)
-    const [customerData, setCustomerData] = useState <Customers[] | null>(null)
+    const [customerData, setCustomerData] = useState<Customers[] | null>(null)
     const navigation = useRouter()
-   const userData : ApiDatatype = getData() 
-    
+    const userData: ApiDatatype = getData()
+
 
     const getCustomers = () => {
         setLoading(true)
-        getCustomersForBusiness(1)
-            .then((data) => {
-                console.log(data)
+        getCustomersForBusiness(userData.user_id)
+            .then((data: any) => {
+                // console.log(data)
+                if (data) {
+                    setCustomerData(data)
+                }
             })
             .catch((err) => {
                 console.log(err)
@@ -73,7 +76,7 @@ const CustomerGenderRatio = () => {
                     <button onClick={() => setGender('female')}>Female  {gender == 'female' ? <div className='h-[5px] bg-black dark:bg-white'></div> : <></>}</button>
                     <button onClick={() => setGender('male')}>Male {gender == 'male' ? <div className='h-[5px] bg-black dark:bg-white'></div> : <></>}</button>
                 </div>
-               
+
                 <div className='w-full flex items-center pe-5 justify-end'>
                     <DropdownMenu>
                         <DropdownMenuTrigger className='flex text-lg items-center bg-white dark:bg-boxdark'>
@@ -177,36 +180,41 @@ const CustomerGenderRatio = () => {
                     </AlertDialog>
                 </div>
             </div>
-             {
-                    loading  ? 
+            {
+                loading ?
                     <>
                         Loading...
                     </>
                     :
                     <>
-                        <div className='flex w-full'>
-                            <div className='flex flex-col gap-5 grow'>
-                                <div className='flex flex-wrap justify-between '>
-                                    <div className='grow text-center'>
-                                        <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>ZMW 12,000</div>
-                                        <div className='font-light'>Revenue from Female</div>
-                                    </div>
-                                    <div className='grow text-center'>
-                                        <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>137</div>
-                                        <div className='font-light'>Number of Sales</div>
-                                    </div>
-                                    <div className='grow text-center'>
-                                        <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>12%</div>
-                                        <div className='font-light'>Female Customer Ratio</div>
+                        {
+                            customerData ?
+                                <div className='flex w-full'>
+                                    <div className='flex flex-col gap-5 grow'>
+                                        <div className='flex flex-wrap justify-between '>
+                                            <div className='grow text-center'>
+                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>ZMW 12,000</div>
+                                                <div className='font-light'>Revenue from Female</div>
+                                            </div>
+                                            <div className='grow text-center'>
+                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>137</div>
+                                                <div className='font-light'>Number of Sales</div>
+                                            </div>
+                                            <div className='grow text-center'>
+                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>12%</div>
+                                                <div className='font-light'>Female Customer Ratio</div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <Table open={setOpen} data={customerData?.filter(e => e.gender == gender) ?? null} />
+                                        </div>
                                     </div>
                                 </div>
-                                <div>
-                                    {/* <Table open={setOpen} data={customerData} /> */}
-                                </div>
-                            </div>
-                        </div>
+                                :
+                                'No record for this user'
+                        }
                     </>
-                }
+            }
         </div>
     )
 }

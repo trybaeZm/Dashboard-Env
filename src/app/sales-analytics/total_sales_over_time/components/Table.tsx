@@ -3,7 +3,7 @@ import '@/css/Table.css'
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import { Customers } from '@/types/Customers';
 
-export const Table = ({open, data}: {open:any, data: Customers[]}) => {
+export const Table = ({ open, data }: { open: any, data: Customers[] | null }) => {
 
     // let data = [
     //     {
@@ -77,33 +77,32 @@ export const Table = ({open, data}: {open:any, data: Customers[]}) => {
     //         Total: '$900',
     //     },
     // ];
-    
+
     return (
         <div className='dark:bg-gray-800'>
             <table className='dark:text-gray-200'>
-                <thead className='bg-[#F8F9FA] shadow-md dark:bg-gray-700 dark:text-gray-200'>
+                <thead className='bg-[#F8F9FA] shadow-md dark:bg-gray-700 text-sm dark:text-gray-200'>
                     <tr>
-                        <th className=''>CUSTOMER NAME</th>
-                        <th className='md:block hidden'>PRODUCT/SERVICES</th>
-                        <th  className='md:block hidden'>TRANSACTION ID</th>
-                        <th>ISSUED DATE</th>
-                        <th className='md:block hidden'>TOTAL</th>
+                        <th>NAME</th>
+                        <th className='md:block hidden'>EMAIL</th>
+                        <th className='md:block hidden'>PHONE</th>
+                        <th>GENDER</th>
+                        <th className='md:block hidden'>LOCATION</th>
+                        <th>JOINED DATE</th>
                     </tr>
                 </thead>
                 <tbody className='dark:text-gray-300'>
-                    {/* {data.map(e => {
-                        return (
-                            <>
-                                <tr onClick={()=> open(true)} className='cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600'>
-                                    <td >{e.name}</td>
-                                    <td className='md:block hidden'>{e.email}</td>
-                                    <td className='md:block hidden'>{e.customer_type}</td>
-                                    <td>{e.Issued_Date}</td>
-                                    <td className='md:block hidden'>{e.}</td>
-                                </tr>
-                            </>
-                        )
-                    })} */}
+                    {data?.map((e, index) => (
+                        <tr key={e.id || index} onClick={() => open(true)} className='cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600'>
+                            <td>{e.name}</td>
+                            <td className='md:block hidden'>{e.email}</td>
+                            <td className='md:block hidden'>{e.phone}</td>
+                            <td>{e.gender}</td>
+                            <td className='md:block hidden'>{e.location}</td>
+                            <td>{new Date(e.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    ))}
+
                 </tbody>
             </table>
         </div>

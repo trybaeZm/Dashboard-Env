@@ -147,11 +147,11 @@ export const getCustomersForBusiness = async (id: any): Promise<Customers | null
 
 
         const BusinessData: businessType[] | any = await getbusinssId(id)
-        if(BusinessData) {
+        if(BusinessData.length > 0) {
             const businessDatas: businessesType[] | any = await getCustomers(BusinessData[0].business_id)
             resolve(businessDatas)
         } else {
-            reject(null )
+            reject(null)
         }
 
 
