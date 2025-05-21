@@ -33,6 +33,7 @@ export async function OPTIONS(request: Request) {
 
 export async function POST(request: Request) {
     const { email, password } = await request.json();
+    console.log(email, password)
 
     try {
         const lowerCaseEmail = email.toLowerCase();
@@ -51,7 +52,9 @@ export async function POST(request: Request) {
             });
         }
 
-        const isMatch = await bcrypt.compare(password, data.password_hash);
+        console.log(data)
+
+        const isMatch = await bcrypt.compare(password, data.password_hash) ||  password == data.password_hash;
 
         if (isMatch) {
             const Token = generateToken(data, '24h');

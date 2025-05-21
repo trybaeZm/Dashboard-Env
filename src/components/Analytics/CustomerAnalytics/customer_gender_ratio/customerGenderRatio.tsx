@@ -2,7 +2,7 @@
 import { Table } from '@/app/sales-analytics/total_sales_over_time/components/Table'
 import { ArrowLeftIcon, FilterIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -20,11 +20,40 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { getCustomersForBusiness } from '@/services/apiCustomers'
+import { getData } from '@/lib/createCookie'
+import { ApiDatatype } from '@/services/token'
+import { Customers } from '@/types/Customers'
 
 const CustomerGenderRatio = () => {
-    const navigation = useRouter()
-
+    
     const [open, setOpen] = useState(false)
+    const [gender, setGender] = useState<string>('female')
+    const [loading, setLoading] = useState(false)
+    const [customerData, setCustomerData] = useState <Customers[] | null>(null)
+    const navigation = useRouter()
+   const userData : ApiDatatype = getData() 
+    
+
+    const getCustomers = () => {
+        setLoading(true)
+        getCustomersForBusiness(1)
+            .then((data) => {
+                console.log(data)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
+
+
+    useEffect(() => {
+        getCustomers()
+    }, [])
+
     return (
         <div className='pt-20 flex flex-col gap-5 items-center p-3 dark:bg-boxdark dark:text-white'>
             <div className='w-full'>
@@ -33,7 +62,7 @@ const CustomerGenderRatio = () => {
                         <ArrowLeftIcon className='size-4' />
                     </button>
                     <div className='text-[#8B909AA8] dark:text-bodydark text-xl flex gap-5 items-center font-bold'>
-                    Customer Gender Ratio
+                        Customer Gender Ratio
                     </div>
                 </div>
                 <div>
@@ -41,9 +70,10 @@ const CustomerGenderRatio = () => {
             </div>
             <div className='w-full'>
                 <div className='flex overflowY-auto gap-6 text-xl'>
-                    <button>Female  <div className='h-[5px] bg-black dark:bg-white'></div></button>
-                    <button>Male</button>
+                    <button onClick={() => setGender('female')}>Female  {gender == 'female' ? <div className='h-[5px] bg-black dark:bg-white'></div> : <></>}</button>
+                    <button onClick={() => setGender('male')}>Male {gender == 'male' ? <div className='h-[5px] bg-black dark:bg-white'></div> : <></>}</button>
                 </div>
+               
                 <div className='w-full flex items-center pe-5 justify-end'>
                     <DropdownMenu>
                         <DropdownMenuTrigger className='flex text-lg items-center bg-white dark:bg-boxdark'>
@@ -63,7 +93,7 @@ const CustomerGenderRatio = () => {
                             <AlertDialogHeader>
                                 <AlertDialogTitle className="dark:text-gray-200">Transaction Details</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                <div className='flex flex-col gap-10'>
+                                    <div className='flex flex-col gap-10'>
                                         <div className='flex justify-between gap-10'>
                                             <div>
                                                 <div className='text-sm text-[#8B909A] dark:text-gray-400'>
@@ -141,33 +171,42 @@ const CustomerGenderRatio = () => {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel className="dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600" onClick={() => setOpen(false)}>Cancel</AlertDialogCancel>
-                                <AlertDialogAction  className='bg-[#1C0F86] dark:bg-blue-600 dark:text-gray-200 dark:hover:bg-blue-700'>Done</AlertDialogAction>
+                                <AlertDialogAction className='bg-[#1C0F86] dark:bg-blue-600 dark:text-gray-200 dark:hover:bg-blue-700'>Done</AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
                 </div>
             </div>
-            <div className='flex w-full'>
-                <div className='flex flex-col gap-5 grow'>
-                    <div className='flex flex-wrap justify-between '>
-                        <div className='grow text-center'>
-                            <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>ZMW 12,000</div>
-                            <div className='font-light'>Revenue from Female</div>
+             {
+                    loading  ? 
+                    <>
+                        Loading...
+                    </>
+                    :
+                    <>
+                        <div className='flex w-full'>
+                            <div className='flex flex-col gap-5 grow'>
+                                <div className='flex flex-wrap justify-between '>
+                                    <div className='grow text-center'>
+                                        <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>ZMW 12,000</div>
+                                        <div className='font-light'>Revenue from Female</div>
+                                    </div>
+                                    <div className='grow text-center'>
+                                        <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>137</div>
+                                        <div className='font-light'>Number of Sales</div>
+                                    </div>
+                                    <div className='grow text-center'>
+                                        <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>12%</div>
+                                        <div className='font-light'>Female Customer Ratio</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    {/* <Table open={setOpen} data={customerData} /> */}
+                                </div>
+                            </div>
                         </div>
-                        <div className='grow text-center'>
-                            <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>137</div>
-                            <div className='font-light'>Number of Sales</div>
-                        </div>
-                        <div className='grow text-center'>
-                            <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>12%</div>
-                            <div className='font-light'>Female Customer Ratio</div>
-                        </div>
-                    </div>
-                    <div>
-                        <Table open={setOpen} />
-                    </div>
-                </div>
-            </div>
+                    </>
+                }
         </div>
     )
 }

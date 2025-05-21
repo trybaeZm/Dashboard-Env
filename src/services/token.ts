@@ -1,18 +1,18 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 
-export type TokenData = {
-  token: {
-    id: string;
-    user_id: number;
-    name: string;
-    email: string;
-    password_hash: string;
-    role: string;
-    created_at: string; // ISO date string
-    iat: number; // issued at (UNIX timestamp)
-    exp: number; // expiration (UNIX timestamp)
-  };
-};
+
+
+export type ApiDatatype = {
+  id: string;
+  user_id: number;
+  name: string;
+  email: string;
+  password_hash: string;
+  role: string;
+  created_at: string; // ISO date string
+  iat: number; // issued at (UNIX timestamp)
+  exp: number; // expiration (UNIX timestamp)
+}
 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_default_secret';

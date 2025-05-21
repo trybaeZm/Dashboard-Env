@@ -25,6 +25,8 @@ export function middleware(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
       path: '/',
     })
+
+    NextResponse.redirect(new URL('/', req.url))
   }
 
   if(!token){

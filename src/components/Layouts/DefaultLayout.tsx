@@ -53,6 +53,8 @@ export default function DefaultLayout({
         setUserDataLoader(false); // Handle missing token case
       }
     };
+
+    
     if(token){
       fetchUserData();
     } else {
