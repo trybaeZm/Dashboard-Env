@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { useSearchParams } from "next/navigation";
 import { createCookie, getCookie, getData, storeData } from "@/lib/createCookie";
-import { getUserDataWithToken, TokenData, verifyToken } from "@/services/token";
+import { getUserDataWithToken, ApiDatatype, verifyToken } from "@/services/token";
 import Signup from "../signupPage/Signup";
 
 export default function DefaultLayout({
@@ -13,7 +13,7 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userData, setUserData] = useState<TokenData | null | undefined | any>(null)
+  const [userData, setUserData] = useState<ApiDatatype | null | undefined | any>(null)
   const [userDataLoader, setUserDataLoader] = useState(false)
 
   const searchParams = useSearchParams();

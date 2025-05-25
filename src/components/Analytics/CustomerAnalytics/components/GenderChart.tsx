@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
+import { genderType } from '@/types/Customers';
 
-const GenderPieChart = () => {
-    const series = [44, 55];  // Values for the pie slices
+const GenderPieChart = ({gender}: {gender: genderType}) => {
+    const series = [gender.male, gender.female];  // Values for the pie slices
     const options: ApexOptions = {
       chart: {
         type: 'donut' as const,  // The type of chart we want (pie chart in this case)

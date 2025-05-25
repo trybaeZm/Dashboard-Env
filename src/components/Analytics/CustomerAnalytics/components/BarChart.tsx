@@ -1,13 +1,14 @@
+import { LocationType } from '@/types/Customers';
 import { ApexOptions } from 'apexcharts';
 import React from 'react'
 import ReactApexChart from 'react-apexcharts';
 
-const BarChart = () => {
+const BarChart = ({location}:{location:LocationType[]}) => {
 
     const series2 = [
         {
             name: 'Population',
-            data: [44, 55, 13, 30, 89],
+            data: location.map(e=> e.number ),
         },
     ];
 
@@ -31,7 +32,7 @@ const BarChart = () => {
             },
         },
         xaxis: {
-            categories: ['LSK', 'CB', 'SOUTH', 'CENTRAL', 'NW'],
+            categories: location.map(e=> e.location ),
             labels: {
                 style: {
                     colors: '#616262',

@@ -1,11 +1,12 @@
 import React from 'react'
 import PieChart from "../components/PieChart";
+import { LocationType } from '@/types/Customers';
 
-const TopArea = () => {
+const TopArea = ({location}:{location:LocationType[] | null}) => {
     return (
         <>
             <div>
-                <PieChart />
+                <PieChart location={location}/>
             </div>
             <div>
                 <div className="text-[#1A0670] dark:text-white">High-Value vs. Low-Value Customers</div>

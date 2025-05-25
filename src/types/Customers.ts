@@ -9,3 +9,14 @@ export type Customers = {
   name: string;
   phone: string;
 };
+
+export type CustomerPrice = {
+  id: string;
+  name: string;
+  amount: number;
+};
+
+export type LocationType = {
+  location :string;
+  number: number
+}

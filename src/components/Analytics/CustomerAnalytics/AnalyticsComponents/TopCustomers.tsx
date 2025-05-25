@@ -1,8 +1,8 @@
-import { Customers } from '@/types/Customers'
+import { CustomerPrice } from '@/types/Customers'
 import { CrownIcon } from 'lucide-react'
 import React, { use, useEffect } from 'react'
 
-const TopCustomers = ({ cutomerData }: { cutomerData: Customers[] | null }) => {
+const TopCustomers = ({ cutomerDatas }: { cutomerDatas: CustomerPrice[] | null | any }) => {
     useEffect(() => {
 
     }, [])
@@ -10,23 +10,15 @@ const TopCustomers = ({ cutomerData }: { cutomerData: Customers[] | null }) => {
         <>
             <div className="">
                 <div className="flex items-center flex-col gap-3">
-                    <div className="flex gap-3 items-center">
-                        <CrownIcon className="size-4" />
-                        <div>James Sakala</div>
-                        <div>45%</div>
-                    </div>
-                    <div className="flex gap-3 items-center">
-                        <div>Samson Mumba</div>
-                        <div>24%</div>
-                    </div>
-                    <div className="flex gap-3 items-center">
-                        <div>Jesica Mwelwa</div>
-                        <div>18%</div>
-                    </div>
-                    <div className="flex gap-3 items-center">
-                        <div>Kelvin Mambo</div>
-                        <div>18%</div>
-                    </div>
+                    {cutomerDatas?.sort((a:any, b:any) => b.amount - a.amount) // Sort by highest amount
+                        .slice(0, 4) // Take only top 4
+                        .map((e: CustomerPrice, r: number) => (
+                            <div key={r} className="flex gap-3 items-center">
+                                <CrownIcon className="size-4" />
+                                <div>{e.name}</div>
+                                <div>K{e.amount}.00</div> {/* Replace 45% with the actual amount */}
+                            </div>
+                        ))}
                 </div>
             </div>
             <div>
