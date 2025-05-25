@@ -13,7 +13,7 @@ import {
   EyeDropperIcon,
   Squares2X2Icon,
   UsersIcon,
-  ClipboardDocumentIcon
+  ClipboardDocumentIcon,
 } from "@heroicons/react/24/outline";
 
 // icons imports
@@ -73,6 +73,11 @@ const menuGroups = [
         children: [
           { label: "Whats app sales agent", route: "/whatsAppSalesAgent" },
         ],
+      },
+      {
+        icon: <UsersIcon className="size-5" />,
+        label: "Wallet",
+        route: "/wallet",
       },
     ],
   },
