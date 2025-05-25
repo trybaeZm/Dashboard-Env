@@ -109,3 +109,22 @@ export async function softDeleteBusiness(id: string): Promise<boolean> {
         return false;
     }
 }
+
+export async function uploadBusinessLogo(file: File, businessId: string): Promise<string | null> {
+  const filePath = `${businessId}/${Date.now()}_${file.name}`;
+
+  const { data, error } = await supabase.storage
+    .from('business-logos')
+    .upload(filePath, file);
+
+  if (error) {
+    console.error('Upload error:', error.message);
+    return null;
+  }
+
+  const { data: urlData } = supabase.storage
+    .from('business-logos')
+    .getPublicUrl(filePath);
+
+  return urlData.publicUrl || null;
+}
