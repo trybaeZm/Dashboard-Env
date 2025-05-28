@@ -2,8 +2,8 @@ import React from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts';
 
-const LatestChart = () => {
-    const series = [44, 55];  // Values for the pie slices
+const LatestChart = ({data}:{data:any}) => {
+    const series = [data.new, data.repeat];  // Values for the pie slices
     const options: ApexOptions = {
       chart: {
         type: 'donut' as const,  // The type of chart we want (pie chart in this case)

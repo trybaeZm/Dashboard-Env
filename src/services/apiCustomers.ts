@@ -1,8 +1,6 @@
 import { businessesType, businessType } from '@/types/businesses';
 import { supabase } from './SupabaseConfig';
-import { CustomerPrice, Customers } from '@/types/Customers';
-import Swal from 'sweetalert2';
-import { Customers } from '@/components/Dashboard/components/Customers';
+import { Customers } from '@/types/Customers';
 
 export async function getCustomers() {
     try {
@@ -183,8 +181,13 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
     let commonAreas = getRepeatingElements(customers.map((e: Customers) => e.location))
     let AreatoCustomers = []
     // number of male and female
-    let male =  customers?.map((e: Customers)=> e.gender == 'male').length| 0
-    let female =  customers?.map((e: Customers)=> e.gender == 'male').length|0
+    let male = customers?.map((e: Customers) => e.gender == 'male').length | 0
+    let female = customers?.map((e: Customers) => e.gender == 'male').length | 0
+
+
+    // this is for the users
+    let newCstomer = 0
+    let repeatCustomer = 0
 
 
     return new Promise(async (resolve, reject) => {
@@ -207,15 +210,37 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
             // console.log("Customer retrieved successfully:", data);
             // returns array if data has a value
             for (let i = 0; i < customers.length; i++) {
-                let userid = customers[i].id
+                const userid = customers[i].id
 
-                let filtererdata = data?.filter(e => e.customer_id == userid)
+                // this filters the sales based on user id
+                const filtererdata = data?.filter(e => e.customer_id == userid)
+                const totalAmount = filtererdata?.reduce((acc, curr) => acc + curr.amount, 0)
 
-                let totalAmount = filtererdata?.reduce((acc, curr) => acc + curr.amount, 0)
+                // Get the current date
+                const now = new Date();
 
+                const date = new Date(customers[i].created_at);
+                // Create a Date object representing 6 months ago
+                const sixMonthsAgo = new Date();
+
+                // 
+                sixMonthsAgo.setMonth(now.getMonth() - 6);
+
+                // Compare
+                if (date >= sixMonthsAgo && date <= now) {
+                    // console.log("✅ The timestamp is within the last 6 months.");
+                    newCstomer++;
+                } else if ((filtererdata?.length ?? 0) > 1) {
+                    // console.log("❌ The timestamp is NOT within the last 6 months.");
+                    repeatCustomer++;
+                }
+                
+                
                 customerPriceArray.push({ name: customers[i].name, id: customers[i].id, amount: totalAmount })
                 // console.log('getting sales for user: ', userid)               
             }
+
+
 
 
 
@@ -234,8 +259,6 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
 
 
 
-
-
         }
         catch (err) {
             console.error("Unexpected error getting business:", err);
@@ -243,7 +266,7 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
         }
 
         // console.log(customerPriceArray)   
-        resolve({ customer: customerPriceArray, location: AreatoCustomers , gender : {male: male,female: female  }})
+        resolve({ customer: customerPriceArray, location: AreatoCustomers, gender: { male: male, female: female }, customerNumber: { new: newCstomer, repeat: repeatCustomer } })
     })
 
 }

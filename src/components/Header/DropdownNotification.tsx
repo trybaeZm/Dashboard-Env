@@ -3,7 +3,7 @@ import Link from "next/link";
 import ClickOutside from "@/components/ClickOutside";
 import { BellAlertIcon } from "@heroicons/react/24/outline";
 
-const DropdownNotification = () => {
+const   DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifying, setNotifying] = useState(true);
 
@@ -21,12 +21,13 @@ const DropdownNotification = () => {
           <span
             className={`absolute -top-0.5 right-0 z-1 h-2 w-2 rounded-full bg-meta-1 ${
               notifying === false ? "hidden" : "inline"
+
             }`}
           >
             <span className="absolute -z-1 inline-flex h-full w-full animate-ping rounded-full bg-meta-1 opacity-75"></span>
           </span>
 
-          <BellAlertIcon className="size-7.5" />
+          <BellAlertIcon width={20}/>
         </Link>
 
         {dropdownOpen && (

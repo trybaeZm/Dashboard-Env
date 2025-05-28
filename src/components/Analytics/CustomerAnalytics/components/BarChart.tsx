@@ -8,7 +8,7 @@ const BarChart = ({location}:{location:LocationType[]}) => {
     const series2 = [
         {
             name: 'Population',
-            data: location.map(e=> e.number ),
+            data: location && location?.map(e=> e.number ),
         },
     ];
 
@@ -32,7 +32,7 @@ const BarChart = ({location}:{location:LocationType[]}) => {
             },
         },
         xaxis: {
-            categories: location.map(e=> e.location ),
+            categories: location?.map(e=> e.location ),
             labels: {
                 style: {
                     colors: '#616262',

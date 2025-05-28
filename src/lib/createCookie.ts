@@ -1,49 +1,50 @@
 import Cookies from 'js-cookie'
 
 export const createCookie = async (token: string) => {
-    // console.log('token created: ', token)
-    // Set token cookie without expiry
-    Cookies.set('userToken', token, {
-        secure: true,
-        sameSite: 'Strict',
-        expires: 7 // days
-    });
+  // console.log('token created: ', token)
+  // Set token cookie without expiry
+  Cookies.set('userToken', token, {
+    secure: true,
+    sameSite: 'Strict',
+    expires: 7 // days
+  });
 };
 
 export const firstTimeVisitToken = () => {
-    console.log('set the firsttime token')
+  console.log('set the firsttime token')
 
-    Cookies.set('didVisit', 'user did visit', {
-        secure: true,
-        sameSite: 'Strict'
-    });
+  Cookies.set('didVisit', 'user did visit', {
+    secure: true,
+    sameSite: 'Strict'
+  });
 }
 
 export const getFirstTimeVisitToken = () => {
-    let firstTimeToken = Cookies.get('didVisit')
+  let firstTimeToken = Cookies.get('didVisit')
 
-    if (firstTimeToken) {
-        return firstTimeToken
-    }
-    return null;
+  if (firstTimeToken) {
+    return firstTimeToken
+  }
+  return null;
 }
 // For getting token from the cookies
 export const getCookie = () => {
-    let Token = Cookies.get('userToken');
+  let Token = Cookies.get('userToken');
 
-    // console.log("token here: ", Token);
-    // If Token exists in the cookies, check with server if it's valid or expired
-    if (Token) {
-        return Token;
-    }
-    return null; // Token does not exist in cookies
+  // console.log("token here: ", Token);
+  // If Token exists in the cookies, check with server if it's valid or expired
+  if (Token) {
+    return Token;
+  }
+  return null; // Token does not exist in cookies
 };
 
 export const removeToken = () => {
-    // Remove the token 
-    Cookies.remove('userToken');
-    // and user  data
+  // Remove the token 
+  Cookies.remove('userToken');
+  // and user  data
 }
+
 
 
 export const storeData = (data: any) => {
@@ -54,6 +55,25 @@ export const storeData = (data: any) => {
     console.error("Failed to store data:", error);
   }
 }
+
+export const removeData = (): Promise<boolean | null> => {
+  return new Promise((resolve, reject) => {
+    try {
+      localStorage.removeItem('userData');
+      console.log("User data removed successfully");
+      resolve(true)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Failed to remove data:", error.message);
+        resolve(true)
+      } else {
+        console.error("An unknown error occurred while removing data.");
+        resolve(null)
+      }
+    }
+  })
+
+};
 
 export const getData = (): any => {
   try {

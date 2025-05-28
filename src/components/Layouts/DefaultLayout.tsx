@@ -17,8 +17,8 @@ export default function DefaultLayout({
   const [userDataLoader, setUserDataLoader] = useState(false)
 
   const searchParams = useSearchParams();
-  let token: string | null = searchParams.get('token'); 
-  if(searchParams){
+  let token: string | null = searchParams.get('token');
+  if (searchParams) {
     token = searchParams.get('token'); // e.g., "signup"
   }
 
@@ -54,8 +54,8 @@ export default function DefaultLayout({
       }
     };
 
-    
-    if(token){
+
+    if (token) {
       fetchUserData();
     } else {
       setUserData(getData())
@@ -74,19 +74,19 @@ export default function DefaultLayout({
         {/* <!-- ===== Content Area Start ===== --> */}
         <div className="dark:bg-gray-800">
           {/* <!-- ===== Header Start ===== --> */}
-          <Header userDataLoader={userDataLoader} userData={userData} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <Header setUserData={setUserData} userDataLoader={userDataLoader} userData={userData} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main className="dark:bg-gray-800">
             <div className="mx-auto p-3 min-h-screen dark:bg-gray-800">
               {
-                userData ? 
-                <Suspense fallback={<div>Loading...</div>}>
-                  {children}
-                </Suspense>
-                :
-                <Signup/>
+                userData ?
+                  <Suspense fallback={<div>Loading...</div>}>
+                    {children}
+                  </Suspense>
+                  :
+                  <Signup />
               }
             </div>
           </main>

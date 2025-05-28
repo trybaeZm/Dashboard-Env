@@ -20,3 +20,4 @@ export type LocationType = {
   location :string;
   number: number
 }
+export type genderType = { male: number; female: number }

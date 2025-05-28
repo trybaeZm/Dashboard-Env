@@ -13,7 +13,7 @@ const Search = () => {
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className="relative flex h-9 w-9 items-center justify-center rounded-full hover:text-primary dark:text-white"
         >
-          <MagnifyingGlassIcon className="size-8.5 font-bold text-gray-700 dark:text-white" />
+          <MagnifyingGlassIcon width={20} className=" font-bold text-gray-700 dark:text-white" />
         </button>
 
         {/* <!-- Dropdown Start --> */}

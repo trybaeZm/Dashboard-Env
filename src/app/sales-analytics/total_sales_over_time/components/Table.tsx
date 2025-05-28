@@ -79,32 +79,34 @@ export const Table = ({ open, data }: { open: any, data: Customers[] | null }) =
     // ];
 
     return (
-        <div className='dark:bg-gray-800'>
-            <table className='dark:text-gray-200'>
-                <thead className='bg-[#F8F9FA] shadow-md dark:bg-gray-700 text-sm dark:text-gray-200'>
+        <div className='dark:bg-gray-800 text-sm'>
+            <table className="w-full dark:text-gray-200">
+                <thead className="bg-[#F8F9FA] shadow-md dark:bg-gray-700 text-sm dark:text-gray-200">
                     <tr>
-                        <th>NAME</th>
-                        <th className='md:block hidden'>EMAIL</th>
-                        <th className='md:block hidden'>PHONE</th>
-                        <th>GENDER</th>
-                        <th className='md:block hidden'>LOCATION</th>
-                        <th>JOINED DATE</th>
+                        <th className="text-left p-2">NAME</th>
+                        <th className="text-left p-2 hidden md:table-cell">EMAIL</th>
+                        <th className="text-left p-2 hidden md:table-cell">PHONE</th>
+                        <th className="text-left p-2 hidden md:table-cell">LOCATION</th>
+                        <th className="text-left p-2">JOINED DATE</th>
                     </tr>
                 </thead>
-                <tbody className='dark:text-gray-300'>
+                <tbody className="dark:text-gray-300">
                     {data?.map((e, index) => (
-                        <tr key={e.id || index} onClick={() => open(true)} className='cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600'>
-                            <td>{e.name}</td>
-                            <td className='md:block hidden'>{e.email}</td>
-                            <td className='md:block hidden'>{e.phone}</td>
-                            <td>{e.gender}</td>
-                            <td className='md:block hidden'>{e.location}</td>
-                            <td>{new Date(e.created_at).toLocaleDateString()}</td>
+                        <tr
+                            key={e.id || index}
+                            onClick={() => open(true)}
+                            className="cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
+                        >
+                            <td className="p-2">{e.name}</td>
+                            <td className="p-2 hidden md:table-cell">{e.email}</td>
+                            <td className="p-2 hidden md:table-cell">{e.phone}</td>
+                            <td className="p-2 hidden md:table-cell">{e.location}</td>
+                            <td className="p-2">{new Date(e.created_at).toLocaleDateString()}</td>
                         </tr>
                     ))}
-
                 </tbody>
             </table>
+
         </div>
     )
 

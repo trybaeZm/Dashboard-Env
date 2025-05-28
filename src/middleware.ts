@@ -10,13 +10,14 @@ export function middleware(req: NextRequest) {
   
   const res = NextResponse.redirect(new URL('/welcome', req.url))
 
-  console.log('getting local token:', localToken)
+  console.log('getting local token...')
 
   if (localToken) {
     console.log(verifyToken(localToken))
   }
  
   if (token) {
+    console.log('token exists')
     const res = NextResponse.next() // create the response object first
     // Set the token cookie
     res.cookies.set('userToken', token, {
@@ -30,6 +31,7 @@ export function middleware(req: NextRequest) {
   }
 
   if(!token){
+    console.log('token does not exist')
     NextResponse.redirect(new URL('/', req.url))
   }
 
