@@ -1,3 +1,4 @@
+import { businessOnwersType } from '@/types/businesses';
 import { supabase } from './../SupabaseConfig';
 
 interface BusinessOwner {
@@ -24,13 +25,12 @@ export async function getBusinessOwners(): Promise<BusinessOwner[] | null> {
 }
 
 // Get a specific business owner by ID
-export async function getBusinessOwnerById(id: string): Promise<BusinessOwner | null> {
+export async function getBusinessOwnerById(id: string): Promise<businessOnwersType[] | null> {
     try {
         const { data, error } = await supabase
             .from('business_owners')
             .select('*')
-            .eq('id', id)
-            .single();
+            .eq('user_id', id)
 
         if (error) {
             console.error("Error fetching business owner:", error.message);

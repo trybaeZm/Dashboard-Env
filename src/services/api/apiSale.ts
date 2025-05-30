@@ -111,3 +111,25 @@ export async function deleteSale(id: string): Promise<boolean> {
         return false;
     }
 }
+
+
+export const getSalesAnalysis = (business_id: string | null): Promise<any> => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { data, error } = await supabase
+                .from('sales')
+                .select('*')
+                .eq('business_id', business_id)
+
+            if (data) {
+                resolve(data)
+            }
+
+            if (error) {
+                reject(error)
+            }
+        } catch (error) {
+
+        }
+    })
+}

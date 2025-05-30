@@ -1,113 +1,54 @@
-import React from 'react'
-import '@/css/Table.css'
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+import React from 'react';
+import '@/css/Table.css';
 import { Customers } from '@/types/Customers';
+import { Sale } from '@/types/Sales';
 
-export const Table = ({ open, data }: { open: any, data: Customers[] | null }) => {
+type TableProps = {
+    setDialogOpen: (val: boolean) => void;
+    open: any;
+    data: Sale[] | null | undefined;
+    onTransactionClick?: any
+};
 
-    // let data = [
-    //     {
-    //         Customer_Name: 'Jack Griffin', 
-    //         Product_Services: 'Web Hosting',
-    //         Transaction_ID: 'TXN123456',
-    //         Issued_Date: '30 Jan 2024',
-    //         Total: '$200',
-    //     },
-    //     {
-    //         Customer_Name: 'Emily Carter',
-    //         Product_Services: 'Graphic Design', 
-    //         Transaction_ID: 'TXN123457',
-    //         Issued_Date: '05 Feb 2024',
-    //         Total: '$350',
-    //     },
-    //     {
-    //         Customer_Name: 'Michael Smith',
-    //         Product_Services: 'SEO Optimization',
-    //         Transaction_ID: 'TXN123458', 
-    //         Issued_Date: '12 Feb 2024',
-    //         Total: '$150',
-    //     },
-    //     {
-    //         Customer_Name: 'Sophia Johnson',
-    //         Product_Services: 'Digital Marketing',
-    //         Transaction_ID: 'TXN123459',
-    //         Issued_Date: '20 Feb 2024', 
-    //         Total: '$500',
-    //     },
-    //     {
-    //         Customer_Name: 'David Brown',
-    //         Product_Services: 'Software Development',
-    //         Transaction_ID: 'TXN123460',
-    //         Issued_Date: '25 Feb 2024',
-    //         Total: '$800',
-    //     },
-    //     {
-    //         Customer_Name: 'Olivia Wilson',
-    //         Product_Services: 'Cloud Hosting',
-    //         Transaction_ID: 'TXN123461',
-    //         Issued_Date: '28 Feb 2024',
-    //         Total: '$300',
-    //     },
-    //     {
-    //         Customer_Name: 'James Anderson',
-    //         Product_Services: 'IT Consultation',
-    //         Transaction_ID: 'TXN123462',
-    //         Issued_Date: '01 Mar 2024',
-    //         Total: '$600',
-    //     },
-    //     {
-    //         Customer_Name: 'Emma Martinez',
-    //         Product_Services: 'Social Media Management',
-    //         Transaction_ID: 'TXN123463',
-    //         Issued_Date: '05 Mar 2024',
-    //         Total: '$450',
-    //     },
-    //     {
-    //         Customer_Name: 'Liam Thomas',
-    //         Product_Services: 'Web Development',
-    //         Transaction_ID: 'TXN123464',
-    //         Issued_Date: '10 Mar 2024',
-    //         Total: '$700',
-    //     },
-    //     {
-    //         Customer_Name: 'Ava White',
-    //         Product_Services: 'Cybersecurity Audit',
-    //         Transaction_ID: 'TXN123465',
-    //         Issued_Date: '15 Mar 2024',
-    //         Total: '$900',
-    //     },
-    // ];
-
+export const Table: React.FC<TableProps> = ({ setDialogOpen, data, onTransactionClick }) => {
     return (
-        <div className='dark:bg-gray-800 text-sm'>
+        <div className="dark:bg-gray-800 text-sm">
             <table className="w-full dark:text-gray-200">
                 <thead className="bg-[#F8F9FA] shadow-md dark:bg-gray-700 text-sm dark:text-gray-200">
                     <tr>
-                        <th className="text-left p-2">NAME</th>
-                        <th className="text-left p-2 hidden md:table-cell">EMAIL</th>
-                        <th className="text-left p-2 hidden md:table-cell">PHONE</th>
-                        <th className="text-left p-2 hidden md:table-cell">LOCATION</th>
-                        <th className="text-left p-2">JOINED DATE</th>
+                        <th className="text-left p-2">SALE ID</th>
+                        <th className="text-left p-2 hidden md:table-cell">PRODUCT ID</th>
+                        <th className="text-left p-2 hidden md:table-cell">CUSTOMER ID</th>
+                        <th className="text-left p-2 hidden md:table-cell">USER ID</th>
+                        <th className="text-left p-2">AMOUNT</th>
+                        <th className="text-left p-2">SALE DATE</th>
                     </tr>
                 </thead>
                 <tbody className="dark:text-gray-300">
-                    {data?.map((e, index) => (
+                    {data?.map((sale) => (
                         <tr
-                            key={e.id || index}
-                            onClick={() => open(true)}
+                            key={sale.sale_id}
+                            onClick={() => {
+                                setDialogOpen(true);
+                                onTransactionClick?.(sale);
+                            }}
                             className="cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
                         >
-                            <td className="p-2">{e.name}</td>
-                            <td className="p-2 hidden md:table-cell">{e.email}</td>
-                            <td className="p-2 hidden md:table-cell">{e.phone}</td>
-                            <td className="p-2 hidden md:table-cell">{e.location}</td>
-                            <td className="p-2">{new Date(e.created_at).toLocaleDateString()}</td>
+                            <td className="p-2">{sale.sale_id}</td>
+                            <td className="p-2 hidden md:table-cell">{sale.product_id}</td>
+                            <td className="p-2 hidden md:table-cell">{sale.customer_id ?? 'N/A'}</td>
+                            <td className="p-2 hidden md:table-cell">{sale.user_id ?? 'N/A'}</td>
+                            <td className="p-2">K{sale.amount.toFixed(2)}</td>
+                            <td className="p-2">
+                                {sale.sale_date
+                                    ? new Date(sale.sale_date).toLocaleDateString()
+                                    : new Date(sale.created_at).toLocaleDateString()}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-
         </div>
-    )
 
-}
+    );
+};

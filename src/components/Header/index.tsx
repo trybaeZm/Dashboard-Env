@@ -10,11 +10,13 @@ import { ApiDatatype } from "@/services/token";
 import image5 from '@/components/Sidebar/icons/trybae.png'
 import { PowerIcon, User2Icon } from "lucide-react";
 import { useState } from "react";
-import { removeData } from "@/lib/createCookie";
+import { getOrgData, removeData, removeOrgData } from "@/lib/createCookie";
+import { BusinessType, businessType } from "@/types/businesses";
 
 
-const Header = ({ sidebarOpen, setUserData, userDataLoader, setSidebarOpen, userData }: {
+const Header = ({ sidebarOpen,isOrgSelected, setUserData, userDataLoader, setSidebarOpen, userData }: {
   setUserData: any,
+  isOrgSelected:any,
   sidebarOpen: string | boolean | undefined,
   setSidebarOpen: (arg0: boolean) => void,
   userData: undefined | null | ApiDatatype;
@@ -22,12 +24,14 @@ const Header = ({ sidebarOpen, setUserData, userDataLoader, setSidebarOpen, user
 }) => {
 
   const [openOptions, setOpenOptions] = useState(false)
+  const businessData : BusinessType | null = getOrgData()
 
   const LogoutUser = () => {
     removeData()
       .then((res) => {
           console.log('user deleted successfully...')
           setUserData(null)
+          removeOrgData()
           // This will reload the current page
           // window.location.reload();
         
@@ -45,7 +49,7 @@ const Header = ({ sidebarOpen, setUserData, userDataLoader, setSidebarOpen, user
       <div className="flex flex-grow items-center text-sm justify-between px-4 py-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2">
           {
-            userData ?
+            userData && isOrgSelected ?
               <>
                 {/* <!-- Hamburger Toggle BTN --> */}
                 <button
@@ -87,7 +91,7 @@ const Header = ({ sidebarOpen, setUserData, userDataLoader, setSidebarOpen, user
               alt="Logo"
               priority
             />
-            <p className="font-bold text-white ">Inxource</p>
+            <p className="font-bold text-white ">Inxource</p> <span className="text-gray-500 hover:text-gray-400 duration-500 text-sm">{businessData && ' | ' + businessData.business_name}</span> 
           </Link>
         </div>
         <div className="flex items-center gap-2 text-white 2xsm:gap-4">

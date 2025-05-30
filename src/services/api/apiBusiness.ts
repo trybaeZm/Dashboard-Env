@@ -1,4 +1,6 @@
+import { businessOnwersType, BusinessType, businessType } from '@/types/businesses';
 import { supabase } from './../SupabaseConfig';
+import { rejects } from 'assert';
 
 interface Business {
     id?: string;
@@ -33,7 +35,7 @@ export async function getBusinessById(id: string): Promise<Business | null> {
             .from('businesses')
             .select('*')
             .eq('id', id)
-            .single();
+            .single()
 
         if (error) {
             console.error("Error fetching business:", error.message);
@@ -108,4 +110,57 @@ export async function softDeleteBusiness(id: string): Promise<boolean> {
         console.error("Unexpected error deleting business:", err);
         return false;
     }
+}
+
+// custom functions
+export const getBusinessByOwnerID = (id: string): Promise<null | BusinessType[]> => {
+    let BusinessOwner : businessOnwersType[] = []
+    let businessess : BusinessType[] = []
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { data, error } = await supabase
+                .from('business_owners')
+                .select('*')
+                .eq('user_id', id)
+
+            if (error) {
+                console.error("Error fetching business owner:", error.message);
+            }
+
+            // console.log(data)
+            if (data && Array.isArray(data)) {
+                BusinessOwner.push(...data);
+            }
+        } catch (err) {
+            console.error("Unexpected error fetching business owner:", err);
+            reject(null);
+        }
+
+
+        for(let i = 0; i < BusinessOwner.length ; i++ ){
+            try {
+                const { data, error } = await supabase
+                    .from('businesses')
+                    .select('*')
+                    .eq('id', BusinessOwner[i].business_id)
+                    .single()
+    
+                if (error) {
+                    console.error("Error fetching business:", error.message);
+                    reject(null);
+                }
+                
+                // console.log(data)
+                 businessess.push(data);
+            } catch (err) {
+                console.error("Unexpected error fetching business:", err);
+                reject(null);
+            }
+        }
+
+
+        // console.log(businessess)
+        resolve(businessess)
+    })
 }

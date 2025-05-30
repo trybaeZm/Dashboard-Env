@@ -1,5 +1,4 @@
 'use client'
-import { Table } from '@/app/sales-analytics/total_sales_over_time/components/Table'
 import { ArrowLeftIcon, FilterIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -20,24 +19,28 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { getCustomersForBusiness } from '@/services/apiCustomers'
-import { getData } from '@/lib/createCookie'
+import { genderRatioData, getCustomersForBusiness } from '@/services/apiCustomers'
+import { getData, getOrgData } from '@/lib/createCookie'
 import { ApiDatatype } from '@/services/token'
 import { Customers } from '@/types/Customers'
+import { BusinessType } from '@/types/businesses'
+import { Table } from '../components/Table'
 
 const CustomerGenderRatio = () => {
 
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [selectedCustomer, setSelectedCustomer] = useState<Customers | null>(null);
     const [gender, setGender] = useState<string>('female')
+    const [data, setData] = useState<any>(null)
     const [loading, setLoading] = useState(false)
-    const [customerData, setCustomerData] = useState<Customers[] | null>(null)
+    const [customerData, setCustomerData] = useState<Customers[] | null | undefined>(null)
     const navigation = useRouter()
     const userData: ApiDatatype = getData()
-
+    const businessData: BusinessType | null = getOrgData()
 
     const getCustomers = () => {
         setLoading(true)
-        getCustomersForBusiness(userData.user_id)
+        getCustomersForBusiness(businessData?.id)
             .then((data: any) => {
                 // console.log(data)
                 if (data) {
@@ -52,9 +55,24 @@ const CustomerGenderRatio = () => {
             })
     }
 
+    const RevenueFromFemales = () => {
+        genderRatioData(businessData?.id ?? '')
+            .then((res) => {
+                // console.log(res)
+                setData(res)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+
+            })
+    }
+
 
     useEffect(() => {
         getCustomers()
+        RevenueFromFemales()
     }, [])
 
     return (
@@ -78,6 +96,7 @@ const CustomerGenderRatio = () => {
                 </div>
 
                 <div className='w-full flex items-center pe-5 justify-end'>
+
                     <DropdownMenu>
                         <DropdownMenuTrigger className='flex text-lg items-center bg-white dark:bg-boxdark'>
                             <FilterIcon className='size-4' />
@@ -91,93 +110,79 @@ const CustomerGenderRatio = () => {
                             <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200">By: dm</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <AlertDialog open={open}>
+                    <AlertDialog open={open} onOpenChange={setOpen}>
                         <AlertDialogContent className="dark:bg-gray-800">
                             <AlertDialogHeader>
-                                <AlertDialogTitle className="dark:text-gray-200">Transaction Details</AlertDialogTitle>
+                                <AlertDialogTitle className="dark:text-gray-200">Customer Details</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    <div className='flex flex-col gap-10'>
-                                        <div className='flex justify-between gap-10'>
+                                    <div className="flex flex-col gap-10">
+                                        <div className="flex justify-between gap-10">
                                             <div>
-                                                <div className='text-sm text-[#8B909A] dark:text-gray-400'>
-                                                    Customer Name
-                                                </div>
-                                                <div className='text-lg font-bold dark:text-gray-200'>
-                                                    James Sakala
+                                                <div className="text-sm text-[#8B909A] dark:text-gray-400">Customer Name</div>
+                                                <div className="text-lg font-bold dark:text-gray-200">
+                                                    {selectedCustomer?.name ?? "N/A"}
                                                 </div>
                                             </div>
                                             <div>
-                                                <div className='text-sm text-[#8B909A] dark:text-gray-400'>
-                                                    Transaction Date
-                                                </div>
-                                                <div className='text-lg font-bold dark:text-gray-200'>
-                                                    12/12/2024
+                                                <div className="text-sm text-[#8B909A] dark:text-gray-400">Customer Type</div>
+                                                <div className="text-lg font-bold dark:text-gray-200">
+                                                    {selectedCustomer?.customer_type ?? "N/A"}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='flex justify-between gap-10'>
+                                        <div className="flex justify-between gap-10">
                                             <div>
-                                                <div className='text-sm text-[#8B909A] dark:text-gray-400'>
-                                                    Product/Services
-                                                </div>
-                                                <div className='text-lg font-bold dark:text-gray-200'>
-                                                    30 Day Non-Collateral Loan
+                                                <div className="text-sm text-[#8B909A] dark:text-gray-400">Phone Number</div>
+                                                <div className="text-lg font-bold dark:text-gray-200">
+                                                    {selectedCustomer?.phone ?? "N/A"}
                                                 </div>
                                             </div>
                                             <div>
-                                                <div className='text-sm text-[#8B909A] dark:text-gray-400'>
-                                                    Phone Number
-                                                </div>
-                                                <div className='text-lg font-bold dark:text-gray-200'>
-                                                    0934573913
+                                                <div className="text-sm text-[#8B909A] dark:text-gray-400">Email</div>
+                                                <div className="text-lg font-bold dark:text-gray-200">
+                                                    {selectedCustomer?.email ?? "N/A"}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='flex justify-between gap-10'>
+                                        <div className="flex justify-between gap-10">
                                             <div>
-                                                <div className='text-sm text-[#8B909A] dark:text-gray-400'>
-                                                    Receipt No.
-                                                </div>
-                                                <div className='text-lg font-bold dark:text-gray-200'>
-                                                    348210778
+                                                <div className="text-sm text-[#8B909A] dark:text-gray-400">Location</div>
+                                                <div className="text-lg font-bold dark:text-gray-200">
+                                                    {selectedCustomer?.location ?? "N/A"}
                                                 </div>
                                             </div>
                                             <div>
-                                                <div className='text-sm text-[#8B909A] dark:text-gray-400'>
-                                                    Email
-                                                </div>
-                                                <div className='text-lg font-bold dark:text-gray-200'>
-                                                    onejemsgalactic@gmail.com
+                                                <div className="text-sm text-[#8B909A] dark:text-gray-400">Gender</div>
+                                                <div className="text-lg font-bold dark:text-gray-200">
+                                                    {selectedCustomer?.gender ?? "N/A"}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='flex justify-between gap-10'>
-                                            <div>
-                                                <div className='text-sm text-[#8B909A] dark:text-gray-400'>
-                                                    Transaction Amount
-                                                </div>
-                                                <div className='text-lg font-bold dark:text-gray-200'>
-                                                    3ZMW 4,500.00
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className='text-sm text-[#8B909A] dark:text-gray-400'>
-                                                    Adreess
-                                                </div>
-                                                <div className='text-lg font-bold dark:text-gray-200'>
-                                                    41 Darlington Avenue, Wakanda
-                                                </div>
+                                        <div>
+                                            <div className="text-sm text-[#8B909A] dark:text-gray-400">Customer Since</div>
+                                            <div className="text-lg font-bold dark:text-gray-200">
+                                                {selectedCustomer?.created_at
+                                                    ? new Date(selectedCustomer.created_at).toLocaleDateString()
+                                                    : "N/A"}
                                             </div>
                                         </div>
                                     </div>
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel className="dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600" onClick={() => setOpen(false)}>Cancel</AlertDialogCancel>
-                                <AlertDialogAction className='bg-[#1C0F86] dark:bg-blue-600 dark:text-gray-200 dark:hover:bg-blue-700'>Done</AlertDialogAction>
+                                <AlertDialogCancel
+                                    className="dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                                    onClick={() => setOpen(false)}
+                                >
+                                    Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction className="bg-[#1C0F86] dark:bg-blue-600 dark:text-gray-200 dark:hover:bg-blue-700">
+                                    Done
+                                </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
+
                 </div>
             </div>
             {
@@ -193,20 +198,26 @@ const CustomerGenderRatio = () => {
                                     <div className='flex flex-col gap-5 grow'>
                                         <div className='flex flex-wrap justify-between '>
                                             <div className='grow text-center'>
-                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>ZMW 12,000</div>
-                                                <div className='font-light'>Revenue from Female</div>
+                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>ZMW {gender == 'male' ? data?.Revenue.male : data?.Revenue.female}</div>
+                                                <div className='font-light'>Revenue from {gender}</div>
                                             </div>
                                             <div className='grow text-center'>
-                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>137</div>
+                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>{gender == 'male' ? data?.NumberOfSales.male : data?.NumberOfSales.female}</div>
                                                 <div className='font-light'>Number of Sales</div>
                                             </div>
                                             <div className='grow text-center'>
-                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>12%</div>
-                                                <div className='font-light'>Female Customer Ratio</div>
+                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>{gender == 'male' ? data?.CustomerRatio.male : data?.CustomerRatio.female}%</div>
+                                                <div className='font-light'>{gender} Customer Ratio</div>
                                             </div>
                                         </div>
                                         <div>
-                                            <Table open={setOpen} data={customerData?.filter(e => e.gender == gender) ?? null} />
+                                            <Table
+                                                onCustomerClick={(customer:any) => setSelectedCustomer(customer)}
+                                                setDialogOpen={setOpen}
+                                                open={open}
+                                                data={customerData?.filter(e => e.gender === gender) ?? null}
+                                            />
+
                                         </div>
                                     </div>
                                 </div>

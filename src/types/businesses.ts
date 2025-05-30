@@ -17,3 +17,25 @@ export type businessesType = {
     int_business_id: number;
     created_at: string; // or `Date` if you parse it
 }
+
+export type businessOnwersType = {
+    business_id: string;
+    created_at: string; // ISO date string
+    id: string;
+    int_business_id: number;
+    int_user_id: number;
+    owner_id: number;
+    user_id: string;
+}
+
+
+
+export type BusinessType =  {
+    id?: string;
+    company_alias: string;
+    business_name: string;
+    industry?: string;
+    registration_number?: string;
+    created_at?: string;
+    deleted_at?: string | null;
+}

@@ -1,52 +1,71 @@
+import { SalesAnalyticsData } from '@/services/api/products';
 import { ApexOptions } from 'apexcharts';
 import React from 'react'
 import ReactApexChart from 'react-apexcharts';
+import { format } from 'date-fns';
+import { parseISO } from 'date-fns/parseISO';
 
-const BarChart = () => {
+const BarChart = ({ data }: { data: null | SalesAnalyticsData }) => {
 
-    const series2 = [
+    const salesData = data?.sales ?? [];
+
+    // Calculate sales by day (ensure all days are included)
+    const salesByDayMap = salesData.reduce<Record<string, number>>((acc, sale) => {
+        const day = format(parseISO(sale.created_at), 'EEEE');
+        acc[day] = (acc[day] ?? 0) + sale.amount;
+        return acc;
+    }, {});
+
+    // Define the full week
+    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    // Convert to array with default 0 for missing days
+    const salesByDayArray = daysOfWeek.map(day => salesByDayMap[day] ?? 0);
+
+    // Now use this data in the chart
+    const series = [
         {
-            name: 'Population', // Name for the dataset
-            data: [44, 55, 13, 30, 89], // Values for each category
+            name: 'Total Sales',
+            data: salesByDayArray,
         },
     ];
 
-    const options2: ApexOptions = {
+    const options: ApexOptions = {
         chart: {
             type: 'bar' as const,
             toolbar: {
-                show: false, // ✅ Hides the options (menu) icon
+                show: false,
             },
-            background: 'transparent'
+            background: 'transparent',
         },
-        colors: ['#7165A6', '#D0CDFD', '#D0CDFD', '#1A06709E','#1A0670'], // Custom bar colors
+        colors: ['#7165A6'],
         dataLabels: {
-            enabled: false, // Hide numbers on bars
+            enabled: false,
         },
         plotOptions: {
             bar: {
-                horizontal: false, // Change to true for horizontal bars
-                columnWidth: '50%', // Adjust bar width
-                borderRadius: 8, // Round bar edges
+                horizontal: false,
+                columnWidth: '50%',
+                borderRadius: 8,
             },
         },
         xaxis: {
-            categories: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], // X-axis labels
+            categories: daysOfWeek,  // All days
             labels: {
                 style: {
-                    colors: '#616262'
-                }
-            }
+                    colors: '#616262',
+                },
+            },
         },
         yaxis: {
             labels: {
                 style: {
-                    colors: '#616262'
-                }
-            }
+                    colors: '#616262',
+                },
+            },
         },
         theme: {
-            mode: 'dark'
+            mode: 'dark',
         },
         responsive: [
             {
@@ -64,15 +83,14 @@ const BarChart = () => {
     };
 
     return (
-        <>
-            <ReactApexChart
-                options={options2}
-                series={series2}
-                type="bar"
-                width="100%"
-                height={200} />
-        </>
-    )
-}
+        <ReactApexChart
+            options={options}
+            series={series}
+            type="bar"
+            width="100%"
+            height={200}
+        />
+    );
+};
 
-export default BarChart
+export default BarChart;

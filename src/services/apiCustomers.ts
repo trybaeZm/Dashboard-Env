@@ -1,6 +1,7 @@
 import { businessesType, businessType } from '@/types/businesses';
 import { supabase } from './SupabaseConfig';
 import { Customers } from '@/types/Customers';
+import { Sale } from '@/types/Sales';
 
 export async function getCustomers() {
     try {
@@ -74,84 +75,34 @@ export async function deleteCustomer(customerId: string): Promise<Customers | nu
 }
 
 
-
-
-
-export const getCustomersForBusiness = async (id: any): Promise<Customers | null> => {
-
+export const getCustomersForBusiness = async (business_id: any): Promise<Customers[] | null> => {
     return new Promise(async (resolve, reject) => {
         console.log('getting user  data...')
-
-        const getbusinssId = async (userId: any) => {
-            try {
-                // console.log('deleting data')
-                // this line is working just fine i think lololool...
-                const { data, error } = await supabase
-                    .from('business_owners')
-                    .select('*')
-                    .eq('owner_id', userId);
-
-                // error handling
-                if (error) {
-                    console.error("Error getting business:", error.message);
-                    return null;
-                }
-
-                // if success but table returns empty array
-                if (data === null) {
-                    reject(null)
-                    return null;
-                }
-
-                // console.log("Customer retrieved successfully:", data);
-                // returns array if data has a value
-                return data;
-
-
-            } catch (err) {
-                console.error("Unexpected error getting business:", err);
+        try {
+            // console.log('deleting data')
+            // this line is working just fine i think lololool...
+            const { data, error } = await supabase
+                .from('customers')
+                .select('*')
+                .eq('business_id', business_id)
+            // error handling
+            if (error) {
+                console.error("Error getting customer:", error.message);
                 reject(null)
                 return null;
             }
-        }
-        const getCustomers = async (business_id: any) => {
-            try {
-                // console.log('deleting data')
-                // this line is working just fine i think lololool...
-                const { data, error } = await supabase
-                    .from('customers')
-                    .select('*')
-                    .eq('business_id', business_id)
-                // error handling
-                if (error) {
-                    console.error("Error deleting customer:", error.message);
-                    reject(null)
-                    return null;
-                }
-                // if success but table returns empty array
-                if (data === null) {
-                    return null;
-                }
-                //    console.log("customers retrieved successfully: ", data.length);
-                // returns array if data has a value
-                return data;
-            } catch (err) {
-                console.error("Unexpected error retrieving customer:", err);
-                reject(null)
+            // if success but table returns empty array
+            if (data === null) {
                 return null;
             }
-        }
-
-
-
-        const BusinessData: businessType[] | any = await getbusinssId(id)
-        if (BusinessData.length > 0) {
-            const businessDatas: businessesType[] | any = await getCustomers(BusinessData[0].business_id)
-            resolve(businessDatas)
-        } else {
+            //    console.log("customers retrieved successfully: ", data.length);
+            // returns array if data has a value
+            resolve(data);
+        } catch (err) {
+            console.error("Unexpected error retrieving customer:", err);
             reject(null)
+            return null;
         }
-
 
     })
 }
@@ -234,8 +185,8 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
                     // console.log("❌ The timestamp is NOT within the last 6 months.");
                     repeatCustomer++;
                 }
-                
-                
+
+
                 customerPriceArray.push({ name: customers[i].name, id: customers[i].id, amount: totalAmount })
                 // console.log('getting sales for user: ', userid)               
             }
@@ -253,7 +204,7 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
                 AreatoCustomers.push({ location: commonAreas[i], number: number })
             }
 
-            
+
 
 
 
@@ -269,4 +220,70 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
         resolve({ customer: customerPriceArray, location: AreatoCustomers, gender: { male: male, female: female }, customerNumber: { new: newCstomer, repeat: repeatCustomer } })
     })
 
+}
+
+
+export const genderRatioData = async (business_id: string | null): Promise<null | any> => { 
+    return new Promise(async (resolve, reject) => {
+        const customers = await getCustomersForBusiness(business_id)
+        let Sales: Sale[] | null = []
+
+         try {
+            const { data, error } = await supabase
+                .from('sales')
+                .select()
+
+            if (data) {
+                Sales.push(...data)
+            }
+
+            if(error){
+                console.log(error)
+                reject(null)
+            }
+        } catch (err) {
+            console.log(err)
+            reject(null)
+        }
+    
+        const maleCustomers = (customers ?? []).filter((e) => e.gender === 'male')
+        const femaleCustomers = (customers ?? []).filter((e) => e.gender === 'female')
+    
+        const getTotalRevenue = (customer: Customers[]) => {
+            let CollectedSales = []
+            for (let i = 0; i < customer.length; i++) {
+                for (let j = 0; j < Sales.length; j++) {
+                    if (String(Sales[j].customer_id) == String(customer[i].id)) {
+                        CollectedSales.push(...Array(Sales[j]))
+                    }
+                }
+            }
+    
+            return CollectedSales
+        }
+    
+        const MaleSales = getTotalRevenue(maleCustomers)
+        const FeMaleSales = getTotalRevenue(femaleCustomers)
+    
+        // Revenue
+        let TotalRevenueFemal: number =  FeMaleSales.reduce((prev, curr)=> prev + curr.amount, 0)
+        let TotalRevenueMale: number = MaleSales.reduce((prev, curr)=> prev + curr.amount, 0)
+        let TotalRevenue: number = TotalRevenueFemal + TotalRevenueMale
+
+
+       
+
+
+        resolve({
+            Revenue: {
+                Total: TotalRevenue, male: TotalRevenueMale, female: TotalRevenueFemal
+            },
+            NumberOfSales: {
+                male: MaleSales.length, female: FeMaleSales.length
+            },
+            CustomerRatio: {
+                male: ((maleCustomers.length / ((customers?.length ?? 0) || 1)) * 100).toFixed(2), female: ((femaleCustomers.length / ((customers?.length ?? 0) || 1)) * 100).toFixed(2) 
+            }
+        })
+    })
 }

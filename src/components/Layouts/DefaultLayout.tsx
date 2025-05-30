@@ -3,18 +3,19 @@ import React, { useState, ReactNode, Suspense, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { useSearchParams } from "next/navigation";
-import { createCookie, getCookie, getData, storeData } from "@/lib/createCookie";
+import { createCookie, getCookie, getData, getOrgData, storeData } from "@/lib/createCookie";
 import { getUserDataWithToken, ApiDatatype, verifyToken } from "@/services/token";
 import Signup from "../signupPage/Signup";
 
 export default function DefaultLayout({
-  children,
+  children
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState<ApiDatatype | null | undefined | any>(null)
   const [userDataLoader, setUserDataLoader] = useState(false)
+  const isOrgSelected= getOrgData() 
 
   const searchParams = useSearchParams();
   let token: string | null = searchParams.get('token');
@@ -68,13 +69,18 @@ export default function DefaultLayout({
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <div className="dark:bg-gray-800">
         {/* <!-- ===== Sidebar Start ===== --> */}
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        {
+          isOrgSelected ?
+          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          :
+          <></>
+        }
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
         <div className="dark:bg-gray-800">
           {/* <!-- ===== Header Start ===== --> */}
-          <Header setUserData={setUserData} userDataLoader={userDataLoader} userData={userData} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <Header isOrgSelected={isOrgSelected} setUserData={setUserData} userDataLoader={userDataLoader} userData={userData} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}

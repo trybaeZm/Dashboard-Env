@@ -1,17 +1,23 @@
 'use client'
 import { CopyIcon, EditIcon, ImageIcon, PlusIcon, TrashIcon } from 'lucide-react'
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { PhotoIcon } from '@heroicons/react/24/outline';
+import { getOrgData } from '@/lib/createCookie';
+import { getProductsAndServices, ProductWithSales } from '@/services/api/products';
+import { BusinessType } from '@/types/businesses';
 
 export const ProductsAndServices = () => {
 
     const [modal, setModal] = useState(false)
     const [modal2, setModal2] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
+    const [productData, setProductData] = useState<ProductWithSales[] | null | undefined>(null)
+    const businessData: BusinessType | null | undefined = getOrgData()
 
     const options = [
         {
@@ -20,16 +26,37 @@ export const ProductsAndServices = () => {
             quantity: "2400 Units Sold"
         },
         {
-            title: "30 Day Non-Collateral Loans", 
+            title: "30 Day Non-Collateral Loans",
             amount: "ZMK2,500.00",
             quantity: "2400 Units Sold"
         },
         {
             title: "60 Day Non-Collateral Loans",
-            amount: "ZMK2,500.00", 
+            amount: "ZMK2,500.00",
             quantity: "2400 Units Sold"
         },
     ]
+
+    const getProducts = () => {
+        setLoading(true)
+        getProductsAndServices(businessData?.id)
+            .then((res) => {
+                if (res) {
+                    // console.log(res)
+                    setProductData(res)
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
+
+    useEffect(() => {
+        getProducts()
+    }, [])
     return (
         <div className='pt-20  dark:text-gray-200'>
             <div className={`fixed top-0 bottom-0 flex transition-all duration-300 left-0 right-0 flex justify-end z-999 ${modal ? "translate-x-0" : " translate-x-full"}`}>
@@ -88,8 +115,6 @@ export const ProductsAndServices = () => {
                     </div>
                 </div>
             </div>
-
-            
             <div className={`fixed top-0 bottom-0 flex transition-all duration-300 left-0 right-0 flex justify-end z-999 ${modal2 ? "translate-x-0" : " translate-x-full"}`}>
                 <div className='absolute z-0 top-0 bottom-0 left-0 right-0 flex justify-end ' onClick={() => setModal2(false)}></div>
                 <div className='bg-white dark:bg-boxdark shadow-lg shadow-black/10 pt-20 top-0 bottom-0 absolute overflow-y-auto px-10 py-5'>
@@ -97,6 +122,9 @@ export const ProductsAndServices = () => {
                         <div className='text-4xl font-bold dark:text-gray-200'>
                             Add Product/Service
                         </div>
+                        {/*                         
+                        {productData?.map((e, key)=>
+                    <>
                         <div className='flex max-w-[500px] border border-black dark:border-gray-700 rounded-lg'>
                             <div className='px-6 flex items-center bg-[#EDF0F7] dark:bg-gray-700'>
                                 <PhotoIcon className='w-[40px] dark:text-gray-200' />
@@ -108,6 +136,9 @@ export const ProductsAndServices = () => {
                             </div>
                         </div>
                         <hr className='dark:border-gray-700' />
+                    </>    
+                    )
+                        } */}
                         <div className='flex flex-col gap-4'>
                             <div className='p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center'>
                                 <PhotoIcon className='w-[30px] dark:text-gray-200' />
@@ -146,11 +177,11 @@ export const ProductsAndServices = () => {
                     </div>
                 </div>
             </div>
-            
+
             <div className='flex justify-between z-1'>
                 <div className='text-2xl font-bold dark:text-gray-200'>Products and Services</div>
                 <div>
-                    <button onClick={()=> setModal2(true)} className='flex items-center rounded-md gap-3 border border-black dark:border-gray-600 py-1 px-3 dark:text-gray-200'>
+                    <button onClick={() => setModal2(true)} className='flex items-center rounded-md gap-3 border border-black dark:border-gray-600 py-1 px-3 dark:text-gray-200'>
                         <PlusIcon className='size-4' />
                         Add Products/Services
                     </button>
@@ -159,7 +190,7 @@ export const ProductsAndServices = () => {
             <div className='flex justify-center z-1 py-5'>
                 <div className='max-w-[800px] flex flex-col gap-5 w-full'>
                     {
-                        options.map((e) =>
+                        productData?.map((e) =>
                             <div className='border relative flex gap-4 items-center border-black dark:border-gray-700 rounded-md'>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger className='flex absolute top-3 right-3 text-lg items-center'>
@@ -176,9 +207,9 @@ export const ProductsAndServices = () => {
                                     <ImageIcon className='size-[50px] dark:text-gray-200' />
                                 </div>
                                 <div className='p-4'>
-                                    <div className='text-lg font-bold dark:text-gray-200'>{e.title}</div>
-                                    <div className='text-[#1C0F86] dark:text-blue-400 font-bold text-md'>{e.amount}</div>
-                                    <div className='font-light text-sm dark:text-gray-400'>{e.quantity}</div>
+                                    <div className='text-lg font-bold dark:text-gray-200'>{e.name}</div>
+                                    <div className='text-[#1C0F86] dark:text-blue-400 font-bold text-md'>{'ZMK ' + e.price.toFixed(2)}</div>
+                                    <div className='font-light text-sm dark:text-gray-400'>{e.sales.length} { e.sales.length > 0 ? 'Units' : 'Unit'} Sold</div>
                                 </div>
                             </div>
                         )

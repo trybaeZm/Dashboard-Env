@@ -3,23 +3,22 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Dashboard from "@/components/Dashboard/Dashboard";
 import React, { Suspense } from "react";
 import Loader from "@/components/common/Loader";
-import { NextRequest } from "next/server";
-import { Busenesses } from "@/components/Businesses/Busenesses";
 export const metadata: Metadata = {
   title: "Trybae Solutions",
   description: "Trybae Admin Dashboard",
 };
 
- function Home() {
+function Page() {
+
   return (
     <>
       <DefaultLayout>
-        <>
-          <Busenesses/>
-        </>
+        <Suspense fallback={<div><Loader /></div>}>
+          <Dashboard />
+        </Suspense>
       </DefaultLayout>
     </>
   );
 }
 
-export default Home
+export default Page

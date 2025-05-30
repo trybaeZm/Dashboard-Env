@@ -1,3 +1,4 @@
+import { BusinessType } from '@/types/businesses';
 import Cookies from 'js-cookie'
 
 export const createCookie = async (token: string) => {
@@ -55,6 +56,36 @@ export const storeData = (data: any) => {
     console.error("Failed to store data:", error);
   }
 }
+
+
+export const storeOrgData = (data: BusinessType) => {
+  try {
+    // Convert the array to a JSON string and store in cookies
+    Cookies.set('BusinessID', JSON.stringify(data), { expires: 7, path: '/' }); // Expires in 7 days
+    console.log("BusinessID array stored successfully in cookies");
+  } catch (error) {
+    console.error("Failed to store BusinessID array in cookies:", error);
+  }
+};
+
+export const getOrgData = (): BusinessType | null => {
+  try {
+    const data = Cookies.get('BusinessID');
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error("Failed to retrieve BusinessID array from cookies:", error);
+    return null;
+  }
+};
+
+export const removeOrgData = (): void => {
+  try {
+    Cookies.remove('BusinessID');
+    console.log("BusinessID cookie has been removed.");
+  } catch (error) {
+    console.error("Failed to remove BusinessID cookie:", error);
+  }
+};
 
 export const removeData = (): Promise<boolean | null> => {
   return new Promise((resolve, reject) => {

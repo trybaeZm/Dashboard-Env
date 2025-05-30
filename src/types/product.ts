@@ -8,4 +8,5 @@ export type Product = {
   description: string;
   sold: number,
   profit: number,
+  id: string;
 };

@@ -8,12 +8,13 @@ import GenderPieChart from './components/GenderChart';
 import LatestChart from './components/DemoLatest';
 import { getCustomersForBusiness, getCuststomerSales } from '@/services/apiCustomers';
 import { Customers, genderType, LocationType } from '@/types/Customers';
-import { getData } from '@/lib/createCookie';
+import { getData, getOrgData } from '@/lib/createCookie';
 import { ApiDatatype } from '@/services/token';
 import TopCustomers from './AnalyticsComponents/TopCustomers';
 import TopArea from './AnalyticsComponents/TopArea';
 import { NewvsRepeat } from './AnalyticsComponents/NewvsRepeat';
 import { GeographicalLocation } from './AnalyticsComponents/GeographicalLocation';
+import { businessesType, BusinessType } from '@/types/businesses';
 
 export const CustomerAnalytics = () => {
   const navigation = useRouter()
@@ -23,10 +24,11 @@ export const CustomerAnalytics = () => {
   const [gender, setGender] = useState<genderType | null>(null)
   const [numberOfNewRepeat, setNumberOfNewRepeat] = useState<number | null>(null)
   const userData: ApiDatatype = getData()
+  const business: BusinessType | null = getOrgData()
 
   const getCustomers = () => {
     setLoading(true)
-    getCuststomerSales(userData.user_id)
+    getCuststomerSales(business?.id)
       .then((res) => {
         console.log(res)
         setCustomerData(res.customer)
