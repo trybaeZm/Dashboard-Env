@@ -38,17 +38,18 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/', req.url))
   }
 
-  // If first time visiting and not on /welcome, redirect to /welcome and set didVisit cookie
-  if (!firstTime && req.nextUrl.pathname !== '/welcome') {
-    const res = NextResponse.redirect(new URL('/welcome', req.url))
+   if (!firstTime) {
+    const res = NextResponse.redirect(new URL('/welcome', req.url));
     res.cookies.set('didVisit', 'true', {
       httpOnly: true,
-      secure: true,
+      secure: true, // Only secure in production
       sameSite: 'strict',
       path: '/',
-    })
-    return res
+      maxAge: 60 * 60 * 24 * 7, // Optional: 1 week
+    });
+    return res;
   }
+    
 
   // If none of the above conditions match, continue normally
   return NextResponse.next()
@@ -59,7 +60,10 @@ export const config = {
   matcher: [
     '/customer-analytics/:path*',
     '/sales-analytics/:path*',
+    '/orders/:path*',
+    '/lennyAi/:path*',
     '/orders/:path*'
+    
   ],
 
 }

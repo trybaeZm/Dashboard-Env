@@ -34,7 +34,7 @@ const menuGroups = [
       {
         icon: <Squares2X2Icon className="size-6" />,
         label: "Overview",
-        route: "/",
+        route: "/overview",
       },
       {
         icon: <Image alt="" src={image} className="size-6" />,
@@ -60,11 +60,6 @@ const menuGroups = [
         icon: <ClipboardDocumentIcon className="size-5" />,
         label: "Orders",
         route: "/orders",
-      },
-      {
-        icon: <UsersIcon className="size-5" />,
-        label: "Customers",
-        route: "/customers",
       },
       {
         icon: <Image alt="" src={image4} className="size-6" />,

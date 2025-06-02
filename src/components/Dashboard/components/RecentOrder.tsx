@@ -1,9 +1,10 @@
 import React from 'react'
 import './customstyles/Table.css'
+import { DashboardSummary } from '@/services/api/Dashboard'
 
 
-export const RecentOrder = () => {
-    let data = [
+export const RecentOrder = ({data}:{data: null | undefined | DashboardSummary}) => {
+    let data2 = [
         {
             ID: '#50989',
             Cutomer: 'Jack griffin',
@@ -57,14 +58,14 @@ export const RecentOrder = () => {
                     </tr>
                 </thead>
                 <tbody className='text-black dark:text-gray-300'>
-                    {data.map(e => {
+                    {data?.OrderData.allOrders.map(e => {
                         return (
                             <>
                                 <tr className='border-b border-gray-200 dark:border-gray-600'>
-                                    <td>{e.ID}</td>
-                                    <td>{e.Cutomer}</td>
-                                    <td>{e.Status}</td>
-                                    <td>{e.Total}</td>
+                                    <td>{e.id}</td>
+                                    <td>{e.customer_id}</td>
+                                    <td>{e.order_status}</td>
+                                    <td>{e.total_amount}</td>
                                 </tr>
                             </>
                         )

@@ -1,12 +1,19 @@
+import { DashboardSummary } from '@/services/api/Dashboard';
 import { ApexOptions } from 'apexcharts';
 import React from 'react'
 import ReactApexChart from "react-apexcharts";
 
-const AreaChart = () => {
+const AreaChart = ({data}:{data:DashboardSummary| null | undefined}) => {
+
+    const getDate =(data1:string) => {
+        const data = new Date(data1)
+
+        return data.getDate()
+    }
     const series = [
         {
-            name: "Population", // Dataset name
-            data: [44, 55, 13, 30], // Values for each category
+            name: "amount", // Dataset name
+            data: data?.OrderData.allOrders.map((e: any) => e.total_amount) ?? [], // Ensure data is always an array
         },
     ];
 
@@ -36,7 +43,7 @@ const AreaChart = () => {
             },
         },
         xaxis: {
-            categories: ["12am", "3am", "6am", "9am"], // X-axis labels
+            categories: data?.OrderData.allOrders.map((e:any)=> getDate(e.created_at)), // X-axis labels
             axisBorder: {
                 show: false,
             },

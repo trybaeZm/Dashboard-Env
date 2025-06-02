@@ -15,7 +15,7 @@ export type ApiDatatype = {
 }
 
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_default_secret';
+const JWT_SECRET =  'your_default_secret';
 
 if (typeof JWT_SECRET !== 'string') {
   throw new Error('JWT_SECRET must be a string');

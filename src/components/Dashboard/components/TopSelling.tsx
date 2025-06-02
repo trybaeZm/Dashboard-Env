@@ -1,6 +1,7 @@
+import { DashboardSummary } from '@/services/api/Dashboard';
 import React from 'react'
 
-export const TopSelling = () => {
+export const TopSelling = ({data}:{data:any | null}) => {
     type Product = {
         name: string;
         itemCode: string;
@@ -39,21 +40,21 @@ export const TopSelling = () => {
             </button>
           </div>
           <ul>
-            {topSelling.map((product, index) => (
+            {data?.TopSelling?.map((product:any, index:any) => (
               <li
                 key={index}
                 className="flex items-center justify-between border-b border-stroke py-2 pl-7 dark:border-strokedark"
               >
                 <div>
                   <h3 className="font-semibold text-black dark:text-white">
-                    {product.name}
+                    {product.product.name}
                   </h3>
                   <p className="text-sm font-normal text-body dark:text-bodydark">
-                    Item: {product.itemCode}
+                    Item: {product.product.category}
                   </p>
                 </div>
                 <span className="font-semibold text-black dark:text-white">
-                  {product.price}
+                  K{product.amount}
                 </span>
               </li>
             ))}

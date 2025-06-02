@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { PiFunnel } from 'react-icons/pi'
+import { Input } from '@/components/ui/input'
 
 export const Busenesses = () => {
     const navigation = useRouter()
@@ -49,10 +50,101 @@ export const Busenesses = () => {
                 </button>
             </div>
 
+            <div className='fixed top-0 bottom-0  left-0 grid grid-cols-12 right-0 bg-[#00000050] z-[999] justify-center flex items-center'>
+                <div className='col-span-1'></div>
+                <form className="flex col-span-10 bg-gray-700 p-5 flex-col gap-3">
+                    <div className='flex flex-wrap gap-3'>
+                        {/* Business Name */}
+                        <div className='grow'>
+                            <label className="text-black dark:text-white">
+                                Business Name
+                            </label>
+                            <Input
+                                required
+                                type="text"
+                                placeholder="Enter business name"
+                                className="bg-white dark:bg-gray-800"
+                                name="business_name"
+                            />
+                        </div>
+
+                        {/* Company Alias */}
+                        <div className='grow'>
+                            <label className="text-black dark:text-white">
+                                Company Alias
+                            </label>
+                            <Input
+                                required
+                                type="text"
+                                placeholder="Enter company alias"
+                                className="bg-white dark:bg-gray-800"
+                                name="company_alias"
+                            />
+                        </div>
+                    </div>
+
+
+                    <div className='flex flex-wrap gap-3'>
+                        {/* Industry */}
+                        <div className='grow'>
+                            <label className="text-black dark:text-white">
+                                Industry
+                            </label>
+                            <Input
+                                required
+                                type="text"
+                                placeholder="Enter industry (optional)"
+                                className="bg-white dark:bg-gray-800"
+                                name="industry"
+                            />
+                        </div>
+
+                        {/* Registration Number */}
+                        <div className='grow'>
+                            <label className="text-black dark:text-white">
+                                Registration Number
+                            </label>
+                            <Input
+                                required
+                                type="text"
+                                placeholder="Enter registration number (optional)"
+                                className="bg-white dark:bg-gray-800"
+                                name="registration_number"
+                            />
+                        </div>
+                        {/* Registration Number */}
+                        <div className='grow'>
+                            <label className="text-black dark:text-white">
+                                Phone Number
+                            </label>
+                            <Input
+                                type="text"
+                                placeholder="Enter registration number (optional)"
+                                className="bg-white dark:bg-gray-800"
+                                name="registration_number"
+                            />
+                        </div>
+                    </div>
+                    <div className='flex gap-3 justify-end'>
+                        <button type='button' className='bg-gray-300 text-gray-600 py-2 px-4 rounded-[100px] flex items-center gap-2 hover:bg-[#2a1ba8] dark:hover:bg-[#150b66]'>
+                            Close
+                        </button>
+                        <button type='submit' className='bg-[#1C0F86] text-white py-2 px-4 rounded-[100px] flex items-center gap-2 hover:bg-[#2a1ba8] dark:hover:bg-[#150b66]'>
+                            Proceed
+                        </button>
+                    </div>
+
+                </form>
+                <div className='col-span-1'></div>
+
+
+            </div>
+
+
             <div className='flex gap-3'>
                 {
                     loading ?
-                        <div className='h-24 bg-gray-700 animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+                        <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
                         :
                         <>
                             {
