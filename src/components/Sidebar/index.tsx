@@ -13,7 +13,9 @@ import {
   EyeDropperIcon,
   Squares2X2Icon,
   UsersIcon,
-  ClipboardDocumentIcon
+  ClipboardDocumentIcon,
+  Cog6ToothIcon,
+  WalletIcon,
 } from "@heroicons/react/24/outline";
 
 // icons imports
@@ -68,6 +70,16 @@ const menuGroups = [
         children: [
           { label: "Whats app sales agent", route: "/whatsAppSalesAgent" },
         ],
+      },
+      {
+        icon: <WalletIcon className="size-5" />,
+        label: "Wallet",
+        route: "/wallet",
+      },
+      {
+        icon: <Cog6ToothIcon className="size-5" />,
+        label: "Settings",
+        route: "/settings",
       },
     ],
   },

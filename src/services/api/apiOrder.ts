@@ -1,13 +1,16 @@
 import { supabase } from './../SupabaseConfig';
 
 interface Order {
-    id?: string;
-    business_id?: string | null;
-    customer_id?: string | null;
-    total_amount: number;
-    order_status: 'pending' | 'completed' | 'cancelled' | 'shipped'; 
-    created_at?: string;
-    updated_at?: string;
+  id?: string;
+  order_id?: number;
+  business_id?: string;
+  customer_id?: string;
+  total_amount: number;
+  order_status?: string;
+  created_at?: string;
+  customers?: {
+    name?: string;
+  };
 }
 
 // Get all orders
@@ -109,4 +112,35 @@ export async function deleteOrder(id: string): Promise<boolean> {
         console.error("Unexpected error deleting order:", err);
         return false;
     }
+}
+
+export async function getOrdersByBusinessId(business_id: string): Promise<Order[] | null> {
+  try {
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        id,
+        order_id,
+        business_id,
+        customer_id,
+        total_amount,
+        order_status,
+        created_at,
+        customers (
+          name
+        )
+      `)
+      .eq('business_id', business_id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error("Error fetching orders:", error.message);
+      return null;
+    }
+
+    return data;
+  } catch (err) {
+    console.error("Unexpected error fetching orders:", err);
+    return null;
+  }
 }

@@ -34,7 +34,7 @@
     ".next/types/**/*.ts",
     "next.config.ts",
     "build/types/**/*.ts"
-, "next.config.js", "front/src/app/api/recent-questions/route.ts"  ],
+, "next.config.js", "front/src/app/api/recent-questions/route.ts", "src/app/settings/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]
