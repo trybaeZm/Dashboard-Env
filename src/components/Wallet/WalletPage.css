@@ -10,15 +10,6 @@
       --border-radius: 10px;
     }
 
-    .wallet-container {
-      max-width: 1000px;
-      margin: 5em auto;
-      background: white;
-      padding: 30px;
-      border-radius: var(--border-radius);
-      box-shadow: var(--card-shadow);
-    }
-
     .wallet-header {
       display: flex;
       justify-content: space-between;
@@ -36,7 +27,6 @@
 
     .wallet-label {
       font-size: 14px;
-      color: #666;
     }
 
     .wallet-balance {

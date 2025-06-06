@@ -2,17 +2,9 @@ import { businessOnwersType, BusinessType, businessType } from '@/types/business
 import { supabase } from './../SupabaseConfig';
 import { rejects } from 'assert';
 
-interface Business {
-    id?: string;
-    business_name: string;
-    industry?: string;
-    registration_number?: string;
-    created_at?: string;
-    deleted_at?: string | null;
-}
 
 // Get all businesses
-export async function getBusinesses(): Promise<Business[] | null> {
+export async function getBusinesses(): Promise<BusinessType[] | null> {
     try {
         const { data, error } = await supabase.from('businesses').select('*');
 
@@ -29,7 +21,7 @@ export async function getBusinesses(): Promise<Business[] | null> {
 }
 
 // Get a specific business by ID
-export async function getBusinessById(id: string): Promise<Business | null> {
+export async function getBusinessById(id: string): Promise<BusinessType | null> {
     try {
         const { data, error } = await supabase
             .from('businesses')
@@ -50,7 +42,9 @@ export async function getBusinessById(id: string): Promise<Business | null> {
 }
 
 // Create a new business
-export async function createBusiness(newData: Business): Promise<Business | null> {
+export async function createBusiness(newData: BusinessType, userData: any): Promise<any | null> {
+    let dataFromBusiness: any = {};
+
     try {
         const { data, error } = await supabase
             .from('businesses')
@@ -63,15 +57,38 @@ export async function createBusiness(newData: Business): Promise<Business | null
             return null;
         }
 
-        return data;
+        dataFromBusiness = data;
+
+
     } catch (err) {
         console.error("Unexpected error creating business:", err);
+        return null;
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('business_owners')
+            .insert({
+                user_id: userData.id, // Assuming userData contains the user ID
+                int_user_id: userData.user_id,
+                owner_id: userData.user_id, // Assuming userData contains the owner ID
+                business_id: dataFromBusiness.id,
+                int_business_id: dataFromBusiness.business_id,
+            })
+            .select()
+            .single();
+
+        if (data) {
+            return data;
+        }
+    } catch (err) {
+        console.error("Unexpected error creating business owner:", err);
         return null;
     }
 }
 
 // Update a business by ID
-export async function updateBusiness(id: string, updatedData: Partial<Business>): Promise<Business | null> {
+export async function updateBusiness(id: string, updatedData: Partial<BusinessType>): Promise<BusinessType | null> {
     try {
         const { data, error } = await supabase
             .from('businesses')
@@ -113,28 +130,28 @@ export async function softDeleteBusiness(id: string): Promise<boolean> {
 }
 
 export async function uploadBusinessLogo(file: File, businessId: string): Promise<string | null> {
-  const filePath = `${businessId}/${Date.now()}_${file.name}`;
+    const filePath = `${businessId}/${Date.now()}_${file.name}`;
 
-  const { data, error } = await supabase.storage
-    .from('business-logos')
-    .upload(filePath, file);
+    const { data, error } = await supabase.storage
+        .from('business-logos')
+        .upload(filePath, file);
 
-  if (error) {
-    console.error('Upload error:', error.message);
-    return null;
-  }
+    if (error) {
+        console.error('Upload error:', error.message);
+        return null;
+    }
 
-  const { data: urlData } = supabase.storage
-    .from('business-logos')
-    .getPublicUrl(filePath);
+    const { data: urlData } = supabase.storage
+        .from('business-logos')
+        .getPublicUrl(filePath);
 
-  return urlData.publicUrl || null;
+    return urlData.publicUrl || null;
 }
 
 // custom functions
 export const getBusinessByOwnerID = (id: string): Promise<null | BusinessType[]> => {
-    let BusinessOwner : businessOnwersType[] = []
-    let businessess : BusinessType[] = []
+    let BusinessOwner: businessOnwersType[] = []
+    let businessess: BusinessType[] = []
 
     return new Promise(async (resolve, reject) => {
         try {
@@ -157,21 +174,21 @@ export const getBusinessByOwnerID = (id: string): Promise<null | BusinessType[]>
         }
 
 
-        for(let i = 0; i < BusinessOwner.length ; i++ ){
+        for (let i = 0; i < BusinessOwner.length; i++) {
             try {
                 const { data, error } = await supabase
                     .from('businesses')
                     .select('*')
                     .eq('id', BusinessOwner[i].business_id)
                     .single()
-    
+
                 if (error) {
                     console.error("Error fetching business:", error.message);
                     reject(null);
                 }
-                
+
                 // console.log(data)
-                 businessess.push(data);
+                businessess.push(data);
             } catch (err) {
                 console.error("Unexpected error fetching business:", err);
                 reject(null);

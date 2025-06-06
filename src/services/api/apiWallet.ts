@@ -109,7 +109,7 @@ export async function deleteWithdrawal(id: string): Promise<boolean> {
     }
 }
 
-export async function getWithdrawalsByBusinessId(business_id: string): Promise<Withdrawal[] | null> {
+export async function getWithdrawalsByBusinessId(business_id: string | null | undefined): Promise<Withdrawal[] | null> {
     try {
         const { data, error } = await supabase
             .from('withdrawals')
@@ -129,7 +129,7 @@ export async function getWithdrawalsByBusinessId(business_id: string): Promise<W
     }
 }
 
-export async function getWalletBalance(businessId: string): Promise<number | null> {
+export async function getWalletBalance(businessId: string| undefined | null): Promise<number | null> {
   try {
     const { data, error } = await supabase
       .from('businesses')

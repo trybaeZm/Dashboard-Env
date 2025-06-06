@@ -14,10 +14,7 @@
 .withdraw-container {
   max-width: 1000px;
   margin: 5em auto;
-  background: white;
   padding: 30px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
 }
 
 
@@ -38,7 +35,6 @@ h1 {
 }
 
 .available-balance {
-  background-color: rgba(26, 115, 232, 0.1);
   color: var(--primary-color);
   padding: 8px 16px;
   border-radius: 20px;
@@ -54,7 +50,6 @@ label {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #555;
 }
 
 input,
@@ -100,7 +95,6 @@ select.error {
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #666;
 }
 
 .input-with-icon input {
@@ -109,7 +103,6 @@ select.error {
 
 .submit-btn {
   background-color: var(--primary-color);
-  color: white;
   border: none;
   padding: 14px 20px;
   border-radius: var(--border-radius);
@@ -132,7 +125,6 @@ select.error {
 .form-info {
   margin-top: 24px;
   padding: 16px;
-  background-color: #f8f9fa;
   border-radius: var(--border-radius);
   border-left: 4px solid var(--primary-color);
   font-size: 14px;

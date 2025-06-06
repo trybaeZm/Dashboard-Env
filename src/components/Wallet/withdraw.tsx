@@ -7,26 +7,27 @@ import "./WithdrawForm.css";
 const businessId = "123e4567-e89b-12d3-a456-426614174005";
 
 const WithdrawForm = () => {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<any>({
     amount: "",
     method: "",
     account_details: "",
     business_id: businessId
   });
   const router = useRouter();
-  const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [balance, setBalance] = useState(null);
+  const [errors, setErrors] = useState<any>({});
+  const [success, setSuccess] = useState<any | boolean>(false);
+  const [loading, setLoading] = useState<any | boolean>(false);
+  const [balance, setBalance] = useState<any | null>(null);
 
   useEffect(() => {
     if (businessId) {
-      getWalletBalance(businessId).then(setBalance);
+      getWalletBalance(businessId)
+        .then(setBalance);
     }
   }, [businessId]);
 
   const validate = () => {
-    const newErrors = {};
+    const newErrors: any = {};
     const amount = parseFloat(form.amount);
 
     if (!form.amount || isNaN(amount) || amount <= 0) {
@@ -58,18 +59,18 @@ const WithdrawForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e) => {
-    setForm((prev) => ({
+  const handleChange = (e: any) => {
+    setForm((prev: any) => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
-    setErrors((prev) => ({
+    setErrors((prev: any) => ({
       ...prev,
       [e.target.name]: ""
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -89,7 +90,12 @@ const WithdrawForm = () => {
   };
 
   return (
-    <div className="withdraw-container">
+    <div className="withdraw-container bg-gray-700 rounded-md text-white">
+      <div className="flex justify-between items-center">
+        <div className="action-buttons">
+          <button onClick={()=> router.back()} className="bg-blue-500 rounded-md py-2 px-4" >Return to Withdrawal screen</button>
+        </div>
+      </div>
       <h1>Request Withdrawal</h1>
 
       <div className="form-header">
@@ -98,8 +104,8 @@ const WithdrawForm = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <div className="space-y-3">
           <label htmlFor="amount">Amount (ZMW)</label>
           <input
             type="number"
@@ -109,18 +115,18 @@ const WithdrawForm = () => {
             min="1"
             step="0.01"
             placeholder="Enter amount"
-            className={errors.amount ? "error" : ""}
+            className={errors.amount ? "error text-black " : " text-black "}
           />
           {errors.amount && <div className="error-message">{errors.amount}</div>}
         </div>
 
-        <div className="form-group">
+        <div className="space-y-3">
           <label htmlFor="method">Withdrawal Method</label>
           <select
             name="method"
             value={form.method}
             onChange={handleChange}
-            className={errors.method ? "error" : ""}
+            className={errors.method ? "error text-black " : " text-black  "}
           >
             <option value="">Select a method</option>
             <option value="mobile">Mobile Money</option>
@@ -129,7 +135,7 @@ const WithdrawForm = () => {
           {errors.method && <div className="error-message">{errors.method}</div>}
         </div>
 
-        <div className="form-group">
+        <div className="space-y-3">
           <label htmlFor="account_details">
             {form.method === "mobile"
               ? "Mobile Money Number"
@@ -149,7 +155,7 @@ const WithdrawForm = () => {
             }
             value={form.account_details}
             onChange={handleChange}
-            className={errors.account_details ? "error" : ""}
+            className={errors.account_details ? "error text-black " : " text-black "}
           />
           {errors.account_details && (
             <div className="error-message">{errors.account_details}</div>

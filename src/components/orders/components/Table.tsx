@@ -3,78 +3,21 @@ import '@/css/Table.css'
 import { CheckCircleIcon, ChevronLeftIcon, ChevronRightIcon, ClockIcon } from "@heroicons/react/16/solid";
 import { Check, DotIcon, ImageIcon } from 'lucide-react';
 import { MdArrowBack } from 'react-icons/md';
+import { OrderData } from '@/types/Orders';
 
-export const Table = ({ open, filter }: { open: any, filter: string }) => {
+export const Table = ({ open, filter, data }: { open: any, filter: string, data: OrderData[] | undefined | null }) => {
     // api for getting orders data can be pkaced here
     const [show, setShow] = useState(false)
-    const [option, setOption] = useState<string | null>(null)
-    let data = [
-        {
-            Order_Status: 'Pending',
-            Order_Date: '08 Mar 2025',
-            Customer_Name: 'John Doe',
-            Product_Services: 'Web Hosting Plan',
-            Order_ID: 'ORD10234',
-            Payment_Status: 'Partly Paid'
-        },
-        {
-            Order_Status: 'Complete',
-            Order_Date: '06 Mar 2025',
-            Customer_Name: 'Jane Smith',
-            Product_Services: 'Laptop',
-            Order_ID: 'ORD10235',
-            Payment_Status: 'Fully Paid'
-        },
-        {
-            Order_Status: 'Pending',
-            Order_Date: '07 Mar 2025',
-            Customer_Name: 'Michael Brown',
-            Product_Services: 'Wireless Router',
-            Order_ID: 'ORD10236',
-            Payment_Status: 'Fully Paid'
-        },
-        {
-            Order_Status: 'Complete',
-            Order_Date: '05 Mar 2025',
-            Customer_Name: 'Emily Johnson',
-            Product_Services: 'Cloud Storage Upgrade',
-            Order_ID: 'ORD10237',
-            Payment_Status: 'Partly Paid'
-        },
-        {
-            Order_Status: 'Pending',
-            Order_Date: '09 Mar 2025',
-            Customer_Name: 'Chris Williams',
-            Product_Services: 'Software Subscription',
-            Order_ID: 'ORD10238',
-            Payment_Status: 'Partly Paid'
-        },
-        {
-            Order_Status: 'Complete',
-            Order_Date: '04 Mar 2025',
-            Customer_Name: 'Sarah Miller',
-            Product_Services: 'Smartphone',
-            Order_ID: 'ORD10239',
-            Payment_Status: 'Fully Paid'
-        },
-        {
-            Order_Status: 'Pending',
-            Order_Date: '10 Mar 2025',
-            Customer_Name: 'David Anderson',
-            Product_Services: 'Office Chair',
-            Order_ID: 'ORD10240',
-            Payment_Status: 'Partly Paid'
-        }
-    ]
+    const [option, setOption] = useState<number | null>(null)
 
 
 
 
     return (
         <>
-            <div className={`fixed flex justify-center items-center top-0 bottom-0 left-0 right-0 z-[999] ${option ? '' : 'hidden'} `}>
+            <div className={`fixed flex justify-center items-center  top-0 bottom-0 left-0 right-0 z-[999] ${option ? '' : 'hidden'} `}>
                 <div onClick={() => setOption(null)} className='absolute h-full w-full bg-[#00000050] '></div>
-                {data.filter(e => e.Order_ID === option).map(e => {
+                {data?.filter(e => e.order_id === option).map(e => {
                     return (
                         <div className=' rounded-md overflow-y-auto max-h-[90vh] absolute bg-white shadow-md dark:bg-gray-800'>
                             <div className='flex p-5 gap-10 sticky top-0 bg-gray-200 dark:bg-gray-800 justify-between items-center'>
@@ -90,142 +33,136 @@ export const Table = ({ open, filter }: { open: any, filter: string }) => {
                                     <div className='text-2xl text-gray-800 dark:text-gray-200 font-bold'>Order Details</div>
                                 </div>
                                 <button className='bg-[#1A0670] text-white px-4 py-2 rounded-md flex items-center gap-2'>
-                                    {e.Payment_Status === 'Pending' ? <ClockIcon className='size-4' /> : <CheckCircleIcon className='size-4' />}
-                                    {e.Payment_Status}
+                                    {e.order_status === 'Pending' ? <ClockIcon className='size-4' /> : <CheckCircleIcon className='size-4' />}
+                                    {e.order_status}
                                 </button>
                             </div>
-                            <div className='mt-5 p-5 max-w-[500px]'>
+                            <div className='mt-5 p-5 space-y-5'>
                                 {show ?
                                     <>
-                                        <div className='text-lg font-bold'>
-                                            Summarized Notes from Customer
-                                        </div>
-                                        <div className='pl-5'>
-                                            <div className='flex'>
-                                                <DotIcon /><div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga eveniet quod beatae explicabo temporibu</div>
+                                        <div className='space-y-3 text-gray-800 dark:text-gray-200'>
+                                            <div className='text-lg font-bold'>
+                                                Summarized Notes from Customer
                                             </div>
-                                            <div className='flex'>
-                                                <DotIcon /><div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga eveniet quod beatae explicabo temporibu</div>
+                                            <div className='pl-5'>
+                                               -
                                             </div>
-                                            <div className='flex'>
-                                                <DotIcon /><div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga eveniet quod beatae explicabo temporibu</div>
-                                            </div>
-                                            <div className='flex'>
-                                                <DotIcon /><div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga eveniet quod beatae explicabo temporibu</div>
-                                            </div>
-                                        </div>
-                                        <hr className='border my-3 border-gray-600' />
-                                        <div className='flex flex-col gap-3'>
-                                            <div className='text-lg font-bold'>Images from the customer</div>
-                                            <div className='flex overflow-y-auto  gap-4'>
-                                                {
-                                                    [1, 2, 3, 4, 5].map((e) =>
-                                                        <div className='border border-black rounded-md p-10'>
-                                                            <ImageIcon size={50} />
-                                                        </div>
-                                                    )
-                                                }
+                                            <hr className='border my-3 border-gray-600' />
+                                            <div className='flex flex-col gap-3'>
+                                                <div className='text-lg font-bold'>Images from the customer</div>
+                                                <div className='flex overflow-y-auto  gap-4'>
+                                                    {
+                                                        [1, 2, 3, 4, 5].map((e) =>
+                                                            <div className='border border-black dark:border-gray-200 rounded-md p-10'>
+                                                                <ImageIcon size={50} />
+                                                            </div>
+                                                        )
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
 
                                     </>
                                     :
                                     <>
-                                        <table>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-sm'>
-                                                <th className='text-left'>Customer Name</th>
-                                                <th className='text-left'>Order ID</th>
-                                            </tr>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-lg'>
-                                                <td className='text-left'>{e.Customer_Name}</td>
-                                                <td className='text-left'>{e.Order_ID}</td>
-                                            </tr>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-sm'>
-                                                <th className='text-left'>Productt/Services</th>
-                                                <th className='text-left'>Due Date</th>
-                                            </tr>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-lg'>
-                                                <td className='text-left'>{e.Product_Services}</td>
-                                                <td className='text-left'>{e.Order_Date}</td>
-                                            </tr>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-sm'>
-                                                <th className='text-left'>Quantity</th>
-                                                <th className='text-left'>Phone Number</th>
-                                            </tr>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-lg'>
-                                                <td className='text-left'>5</td>
-                                                <td className='text-left'>0983828228</td>
-                                            </tr>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-sm'>
-                                                <th className='text-left'>Transaction Amoun</th>
-                                                <th className='text-left'>Email</th>
-                                            </tr>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-lg'>
-                                                <td className='text-left'>ZMW 9000.00</td>
-                                                <td className='text-left'>john@gmail.com</td>
-                                            </tr>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-sm'>
-                                                <th></th>
-                                                <th className='text-left'>Adress</th>
-                                            </tr>
-                                            <tr className='text-gray-800 dark:text-gray-200 text-lg'>
-                                                <td></td>
-                                                <td className='text-left'>123 Main St, Anytown, USA</td>
-                                            </tr>
-                                        </table>
+                                        <div className=" text-gray-800 flex flex-wrap gap-5 dark:text-gray-200">
+                                            <div className='grow flex flex-col gap-3'>
+                                                <div className="">
+                                                    <div className="text-sm font-bold">Customer Name</div>
+                                                    <div className="">{e.customers.name}</div>
+                                                </div>
+                                                <div className="">
+                                                    <div className="text-sm font-bold">Order ID</div>
+                                                    <div className="">{e.order_id}</div>
+                                                </div>
+                                                <div className="">
+                                                    <div className="text-sm font-bold">Product/Services</div>
+                                                    <div className=""></div>
+                                                </div>
+                                            </div>
+                                            <div className='grow flex flex-col gap-3'>
+                                                <div className="">
+                                                    <div className="text-sm font-bold">Due Date</div>
+                                                    <div className="">{e.created_at}</div>
+                                                </div>
+                                                <div className="">
+                                                    <div className="text-sm font-bold">Quantity</div>
+                                                    <div className=""></div>
+                                                </div>
+                                                <div className="">
+                                                    <div className="text-sm font-bold">Phone Number</div>
+                                                    <div className=""></div>
+                                                </div>
+                                            </div>
 
-                                        <button onClick={() => setShow(true)} className='text-[#1A0670] font-bold border border-[#1A0670] rounded-lg text-center p-3 w-full'>View Customer Order Specifications</button>
+                                            <div className='grow flex flex-col gap-3'>
+                                                <div className="">
+                                                    <div className="text-sm font-bold">Transaction Amount</div>
+                                                    <div className="">{e.total_amount ? "KMW "+ e.total_amount.toFixed(2) : "ZMW"+0}</div>
+                                                </div>
+                                                <div className="">
+                                                    <div className="text-sm font-bold">Email:</div>
+                                                    <div className=""></div>
+                                                </div>
+                                                <div className="">
+                                                    <div className="text-sm font-bold">Address</div>
+                                                    <div className="">123 Main St, Anytown, USA</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <button onClick={() => setShow(true)} className='text-[#1A0670] bg-gray-600 font-bold border border-[#1A0670] rounded-lg text-center p-3 w-full'>View Customer Order Specifications</button>
                                     </>
                                 }
                                 <div className='mt-5 flex justify-end gap-2'>
-                                    <button onClick={() => {setOption(null);setShow(false)}} className='border-gray-500 text-gray-800 border px-4 py-2 rounded-md flex items-center gap-2'>
+                                    <button onClick={() => { setOption(null); setShow(false) }} className='border-gray-500 text-white border px-4 py-2 rounded-md flex items-center gap-2'>
                                         cancel
                                     </button>
-                                    <button onClick={() => {setOption(null);setShow(false)}} className='bg-[#1A0670] text-white px-4 py-2 rounded-md flex items-center gap-2'>
+                                    <button onClick={() => { setOption(null); setShow(false) }} className='bg-[#1A0670] text-white px-4 py-2 rounded-md flex items-center gap-2'>
                                         <Check />
                                         Mark as Setteled
                                     </button>
                                 </div>
-
                             </div>
 
                         </div>
                     )
                 })}
             </div>
-            <div className='dark:bg-gray-800 text-sm md:text-md'>
+            <div className='dark:bg-gray-700 p-4 shadow-md  text-sm md:text-md'>
                 <table className='dark:text-gray-200'>
                     <thead className='bg-[#F8F9FA] shadow-md dark:bg-gray-700 dark:text-gray-200'>
                         <tr>
                             <th>ORDER STATUS</th>
                             <th>ORDER DATE</th>
                             <th>CUSTOMER NAME</th>
-                            <th  className='md:block hidden'>PRODUCT/SERVICES</th>
-                            <th className='md:block hidden'>ORDER ID</th>
-                            <th  className='md:block hidden'>PAYMENT STATUS</th>
+                            <th className=''>PRODUCT/SERVICES</th>
+                            <th className=''>ORDER ID</th>
+                            <th className=''>PAYMENT STATUS</th>
                         </tr>
                     </thead>
-                    <tbody className='dark:text-gray-300'>
-                        {data.filter(e => filter == '' ? e : e.Order_Status == filter).map(e => {
-                            return (
-                                <>
-                                    <tr onClick={() => setOption(e.Order_ID)} className='cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600'>
-                                        <td className='flex justify-center'>
-                                            <div className={` ${e.Order_Status === 'Pending' ? 'bg-[#1A0670] text-white ' : 'text-[#1A0670]'}  py-1 px-3 dark:text-white rounded-md text-center flex items-center gap-2`}>
-                                                {e.Order_Status === 'Pending' && <ClockIcon className='size-4' />}
-                                                {e.Order_Status === 'Complete' && <CheckCircleIcon className='size-4' />}
-                                                {e.Order_Status}
-                                            </div>
-                                        </td>
-                                        <td>{e.Order_Date}</td>
-                                        <td>{e.Customer_Name}</td>
-                                        <td className='md:block hidden'>{e.Product_Services}</td>
-                                        <td className='md:block hidden'>{e.Order_ID}</td>
-                                        <td  className='md:block hidden'>{e.Payment_Status}</td>
-                                    </tr>
-                                </>
-                            )
-                        })}
+                    <tbody className='dark:text-gray-300 table-container'>
+                        {data?.filter(e => filter === '' || e.order_status === filter).map(e => (
+                            <tr
+                                key={e.id}
+                                onClick={() => setOption(e.order_id)}
+                                className=''
+                            >
+                                <td className='flex justify-center'>
+                                    <div className={`py-1 px-3 rounded-md text-center flex items-center gap-2 ${e.order_status === 'pending' ? 'bg-[#1A0670] text-white' : 'text-[#1A0670] dark:text-white'}`}>
+                                        {e.order_status === 'pending' && <ClockIcon className='size-4' />}
+                                        {e.order_status === 'complete' && <CheckCircleIcon className='size-4' />}
+                                        {e.order_status.charAt(0).toUpperCase() + e.order_status.slice(1)}
+                                    </div>
+                                </td>
+                                <td>{new Date(e.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                                <td>{e.customers?.name}</td>
+                                <td className=''>–</td> {/* Product/Services not in structure – you can customize this if needed */}
+                                <td className=''>{e.order_id}</td>
+                                <td className=''>ZMW {e.total_amount?.toFixed(2)}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

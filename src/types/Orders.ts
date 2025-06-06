@@ -1,0 +1,12 @@
+export type OrderData = {
+  id: string;
+  order_id: number;
+  business_id: string;
+  customer_id: string;
+  order_status: string; // extend with more statuses if needed
+  total_amount: number;
+  created_at: string; // ISO date string
+  customers: {
+    name: string;
+  };
+};

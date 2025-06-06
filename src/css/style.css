@@ -13,6 +13,35 @@
   }
 }
 
+/* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #555;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(0, 0, 0, 0.01);
+    }
+
+    
 @layer utilities {
   .text-gradient {
     @apply bg-gradient-to-r from-[#1C0F86] to-[#5E53F0BF] bg-clip-text text-transparent;

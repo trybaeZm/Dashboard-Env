@@ -1,5 +1,4 @@
 import { createCookie, storeData } from '@/lib/createCookie';
-import { SignInButton, SignUpButton } from '@clerk/nextjs'
 import { TextField, Checkbox } from '@mui/material';
 import React, { useState } from 'react'
 
@@ -23,8 +22,6 @@ const Signup = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         setLoading(true)
         event.preventDefault();
-
-
         try {
             const formData = new FormData(event.currentTarget); // Create FormData object
             const data: any = Object.fromEntries(formData.entries()); // Convert to object
@@ -64,7 +61,6 @@ const Signup = () => {
             console.error('Error:', error.message);
             setError(true);
         }
-
     };
 
     const handleSubmit2 = async (event: React.FormEvent<HTMLFormElement>) => {

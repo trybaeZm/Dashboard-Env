@@ -38,4 +38,14 @@ export type BusinessType =  {
     registration_number?: string;
     created_at?: string;
     deleted_at?: string | null;
+    phone?: string;
+}
+
+interface Business {
+    id?: string;
+    business_name: string;
+    industry?: string;
+    registration_number?: string;
+    created_at?: string;
+    deleted_at?: string | null;
 }

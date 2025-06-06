@@ -1,14 +1,23 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Input } from '../ui/input'
 import { FilterIcon, FuelIcon, Link } from 'lucide-react'
 import { FunnelIcon } from '@heroicons/react/24/outline'
 import { Table } from './components/Table'
 import { usePathname } from 'next/navigation'
+import Container from '../Layouts/Container'
+import { OrderData } from '@/types/Orders'
+import { getWalletBalance } from '@/services/api/apiWallet'
+import { getOrdersByBusinessId } from '@/services/api/apiOrder'
+import { getOrgData } from '@/lib/createCookie'
+
 export const Orders = () => {
     const [open, setOpen] = useState(false)
     const router = usePathname()
+    const [orderData, setOrderData] = useState<null | OrderData[] | undefined>()
     const [filterValue, setFilterValue] = useState('')
+    const [loading, setLoading] = useState(false)
+    const businessData = getOrgData() // Assuming this function returns the business data
 
 
     const NvLink = ({ href, children }: { href: string, children: any }) => {
@@ -18,13 +27,34 @@ export const Orders = () => {
         )
     }
 
+    const getBusinessData = () => {
+        setLoading(true)
+        getOrdersByBusinessId(businessData?.id)
+            .then((res) => {
+                // console.log(res)
+                setOrderData(res)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+            .finally(() => {
+                setLoading(false)
+            });
+    }
+
+    useEffect(() => {
+        getBusinessData()
+    }, [])
+
+
+
     return (
         <div>
             <div className='pt-20 flex flex-col gap-3'>
                 <div className='flex items-center gap-10'>
                     <button onClick={() => setFilterValue('')} className={`${filterValue === '' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>All</button>
-                    <button onClick={() => setFilterValue('Pending')} className={`${filterValue === 'Pending' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>Pending</button>
-                    <button onClick={() => setFilterValue('Complete')} className={`${filterValue === 'Complete' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>Settled</button>
+                    <button onClick={() => setFilterValue('pending')} className={`${filterValue === 'pending' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>Pending</button>
+                    <button onClick={() => setFilterValue('completed')} className={`${filterValue === 'completed' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>Settled</button>
                 </div>
 
                 <div className='flex items-center gap-3'>
@@ -39,7 +69,9 @@ export const Orders = () => {
                     </button>
                 </div>
                 <div className='mt-5'>
-                    <Table filter={filterValue} open={setOpen}/>
+                    <Container>
+                        <Table data={orderData} filter={filterValue} open={setOpen} />
+                    </Container>
                 </div>
             </div>
 

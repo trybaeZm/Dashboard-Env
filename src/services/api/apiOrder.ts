@@ -23,11 +23,18 @@ export async function getOrders(): Promise<Order[] | null> {
             return null;
         }
 
-        return data;
-    } catch (err) {
-        console.error("Unexpected error fetching orders:", err);
-        return null;
-    }
+    // Map customers array to single object if present
+    const mappedData = data?.map((order: any) => ({
+      ...order,
+      customers: order.customers && Array.isArray(order.customers) ? order.customers[0] : order.customers
+    })) ?? null;
+
+    return mappedData;
+    
+  } catch (err) {
+    console.error("Unexpected error fetching orders:", err);
+    return null;
+  }
 }
 
 // Get a specific order by ID
@@ -114,7 +121,7 @@ export async function deleteOrder(id: string): Promise<boolean> {
     }
 }
 
-export async function getOrdersByBusinessId(business_id: string): Promise<Order[] | null> {
+export async function getOrdersByBusinessId(business_id: string | null | undefined): Promise<any> {
   try {
     const { data, error } = await supabase
       .from('orders')
@@ -139,6 +146,7 @@ export async function getOrdersByBusinessId(business_id: string): Promise<Order[
     }
 
     return data;
+
   } catch (err) {
     console.error("Unexpected error fetching orders:", err);
     return null;
