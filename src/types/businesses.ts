@@ -32,6 +32,7 @@ export type businessOnwersType = {
 
 export type BusinessType =  {
     id?: string;
+    business_id: number;
     company_alias: string;
     business_name: string;
     industry?: string;

@@ -6,8 +6,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { PhotoIcon } from '@heroicons/react/24/outline';
-import { getOrgData } from '@/lib/createCookie';
-import { getProductsAndServices, ProductWithSales } from '@/services/api/products';
+import { getData, getOrgData } from '@/lib/createCookie';
+import { createProductAndService, getProductsAndServices, ProductWithSales } from '@/services/api/products';
 import { BusinessType } from '@/types/businesses';
 
 export const ProductsAndServices = () => {
@@ -15,27 +15,15 @@ export const ProductsAndServices = () => {
     const [modal, setModal] = useState(false)
     const [modal2, setModal2] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [loading2, setLoading2] = useState(false)
     const [open, setOpen] = useState(false)
     const [productData, setProductData] = useState<ProductWithSales[] | null | undefined>(null)
     const businessData: BusinessType | null | undefined = getOrgData()
+    const user = getData()
 
-    const options = [
-        {
-            title: "15 Day Non-Collateral Loans",
-            amount: "ZMK2,500.00",
-            quantity: "2400 Units Sold"
-        },
-        {
-            title: "30 Day Non-Collateral Loans",
-            amount: "ZMK2,500.00",
-            quantity: "2400 Units Sold"
-        },
-        {
-            title: "60 Day Non-Collateral Loans",
-            amount: "ZMK2,500.00",
-            quantity: "2400 Units Sold"
-        },
-    ]
+    const options = ["Phones", "Cakes", "Loans"];
+
+
 
     const getProducts = () => {
         setLoading(true)
@@ -54,6 +42,44 @@ export const ProductsAndServices = () => {
             })
     }
 
+    const addProduct = (e: React.FormEvent<HTMLFormElement>) => {
+        setLoading2(true)
+        e.preventDefault()
+
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        const category = formData.get('category') as string;
+        const name = formData.get('name') as string;
+        const price = parseFloat(formData.get('price') as string);
+        const description = formData.get('description') as string;
+
+       
+        createProductAndService(
+            {
+                price: price,
+                name: name,
+                category: category,
+                description: description,
+                business_id: businessData?.id || "",
+                int_business_id: businessData?.business_id || 0,
+            }
+        )
+            .then((res) => {
+                if (res) {
+                    console.log(res)
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+            .finally(() => {
+                setModal2(false)
+                getProducts()
+                setLoading2(false)
+            })
+    }
+
+
     useEffect(() => {
         getProducts()
     }, [])
@@ -71,7 +97,7 @@ export const ProductsAndServices = () => {
                                 <PhotoIcon className='w-[40px] dark:text-gray-200' />
                             </div>
                             <div className='p-4 flex flex-col gap-1'>
-                                <div className='font-bold dark:text-gray-200'>Product/Service Name Card</div>
+                                <div clas9sName='font-bold dark:text-gray-200'>Product/Service Name Card</div>
                                 <div className='text-sm text-[#717D96] dark:text-gray-400'>ZMW XXXX</div>
                                 <div className='text-[#717D96] dark:text-gray-400'>product description</div>
                             </div>
@@ -139,41 +165,58 @@ export const ProductsAndServices = () => {
                     </>    
                     )
                         } */}
-                        <div className='flex flex-col gap-4'>
+                        <form onSubmit={addProduct} className='flex flex-col gap-4'>
                             <div className='p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center'>
                                 <PhotoIcon className='w-[30px] dark:text-gray-200' />
                             </div>
                             <div className='flex flex-col gap-3'>
                                 <div className='flex flex-col gap-1'>
-                                    <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Product/Service</label>
-                                    <Select>
-                                        <SelectTrigger className="w-full dark:bg-gray-700 dark:text-gray-200">
-                                            <SelectValue placeholder="Select" />
-                                        </SelectTrigger>
-                                        <SelectContent className="dark:bg-gray-700">
-                                            <SelectItem value="option" className="dark:text-gray-200">option</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <label
+                                        htmlFor="productSelect"
+                                        className="font-bold text-[#4B4F4F] dark:text-gray-300 text-sm"
+                                    >
+                                        Product/Service
+                                    </label>
+                                    <select
+                                        id="productSelect"
+                                        name='category'
+                                        required
+                                        className="w-full p-2 border rounded-md dark:bg-gray-700 dark:text-gray-200"
+                                    >
+                                        <option value="" disabled>
+                                            Select
+                                        </option>
+                                        {options.map((option, index) => (
+                                            <option key={index} value={option} className="dark:text-gray-200">
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div className='flex flex-col gap-1'>
                                     <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Enter Product/Service Name</label>
-                                    <Input type='text' className="dark:bg-gray-700 dark:text-gray-200" />
+                                    <Input required name='name' type='text' className="dark:bg-gray-700 dark:text-gray-200" />
                                 </div>
                                 <div className='flex flex-col gap-1'>
                                     <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Enter the Selling Price</label>
-                                    <Input type='text' className="dark:bg-gray-700 dark:text-gray-200" />
+                                    <Input required name='price' type='number' className="dark:bg-gray-700 dark:text-gray-200" />
                                 </div>
                                 <div className='flex flex-col gap-1'>
                                     <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Describe the Product/Service Briefly (Optional)</label>
-                                    <Input type='textarea' className="dark:bg-gray-700 dark:text-gray-200" />
+                                    <Input name='description' type='textarea' className="dark:bg-gray-700 dark:text-gray-200" />
                                 </div>
                             </div>
 
                             <div className='flex gap-3 justify-end'>
-                                <button onClick={() => setModal(false)} className='border py-2 rounded-[100px] border-[#B9B9B9] text-[#B9B9B9] dark:border-gray-600 dark:text-gray-400 px-4'>Cancel</button>
-                                <button onClick={() => setModal(false)} className='bg-[#1C0F86] py-2 rounded-[100px] text-white px-4'>Finish</button>
+                                <button type='button' onClick={() => setModal(false)} className='border py-2 rounded-[100px] border-[#B9B9B9] text-[#B9B9B9] dark:border-gray-600 dark:text-gray-400 px-4'>Cancel</button>
+                                <button disabled={loading2} type='submit' className='bg-[#1C0F86] py-2 rounded-[100px] text-white px-4'>
+                                {
+                                    loading2 ? <span className='animate-spin'>Loading...</span> : 
+                                    <span>Finish</span>
+                                }
+                                </button>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -190,29 +233,40 @@ export const ProductsAndServices = () => {
             <div className='flex justify-center z-1 py-5'>
                 <div className='max-w-[800px] flex flex-col gap-5 w-full'>
                     {
-                        productData?.map((e) =>
-                            <div className='border relative flex gap-4 items-center border-black dark:border-gray-700 rounded-md'>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className='flex absolute top-3 right-3 text-lg items-center'>
-                                        <PiDotsThreeOutlineFill className='size-6 dark:text-gray-200' />
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="bg-white dark:bg-boxdark">
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200" onClick={() => setModal(true)}> <EditIcon /> Edit</DropdownMenuItem>
-                                        <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"> <CopyIcon /> Duplicate</DropdownMenuItem>
-                                        <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"> <TrashIcon /> Delete</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                                <div className='p-9 bg-[#EDF0F7] dark:bg-gray-700'>
-                                    <ImageIcon className='size-[50px] dark:text-gray-200' />
+                        loading ?
+                        <div className=' grow space-y-3 gap-3'>
+                            <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+                            <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+                            <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+                        </div>
+                        :
+                        <>
+                        {
+                            productData?.map((e) =>
+                                <div className='border relative flex gap-4 items-center border-black dark:border-gray-700 rounded-md'>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger className='flex absolute top-3 right-3 text-lg items-center'>
+                                            <PiDotsThreeOutlineFill className='size-6 dark:text-gray-200' />
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent className="bg-white dark:bg-boxdark">
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200" onClick={() => setModal(true)}> <EditIcon /> Edit</DropdownMenuItem>
+                                            <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"> <CopyIcon /> Duplicate</DropdownMenuItem>
+                                            <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"> <TrashIcon /> Delete</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                    <div className='p-9 bg-[#EDF0F7] dark:bg-gray-700'>
+                                        <ImageIcon className='size-[50px] dark:text-gray-200' />
+                                    </div>
+                                    <div className='p-4'>
+                                        <div className='text-lg font-bold dark:text-gray-200'>{e.name}</div>
+                                        <div className='text-[#1C0F86] dark:text-blue-400 font-bold text-md'>{'ZMK ' + e.price.toFixed(2)}</div>
+                                        <div className='font-light text-sm dark:text-gray-400'>{e.sales.length} {e.sales.length > 0 ? 'Units' : 'Unit'} Sold</div>
+                                    </div>
                                 </div>
-                                <div className='p-4'>
-                                    <div className='text-lg font-bold dark:text-gray-200'>{e.name}</div>
-                                    <div className='text-[#1C0F86] dark:text-blue-400 font-bold text-md'>{'ZMK ' + e.price.toFixed(2)}</div>
-                                    <div className='font-light text-sm dark:text-gray-400'>{e.sales.length} { e.sales.length > 0 ? 'Units' : 'Unit'} Sold</div>
-                                </div>
-                            </div>
-                        )
+                            )
+                        }
+                        </>
                     }
                 </div>
             </div>

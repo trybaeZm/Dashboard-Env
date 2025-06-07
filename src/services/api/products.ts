@@ -1,4 +1,4 @@
-import { Product } from "@/types/product"
+import { Product, ProductInsert } from "@/types/product"
 import { supabase } from "../SupabaseConfig"
 import { Sale } from "@/types/Sales";
 import { Customers } from "@/types/Customers";
@@ -205,4 +205,24 @@ export const getProductsAndServices = (business_id:string | null | undefined) : 
 
         resolve(combinedData)
     })
+}
+
+export const createProductAndService = async (product: ProductInsert): Promise<Product | null> => {
+    try {
+        const { data, error } = await supabase
+            .from('products')
+            .insert(product)
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Error creating product:", error.message);
+            return null;
+        }
+
+        return data;
+    } catch (err) {
+        console.error("Unexpected error creating product:", err);
+        return null;
+    }
 }

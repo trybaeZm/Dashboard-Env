@@ -42,7 +42,7 @@ export async function getBusinessById(id: string): Promise<BusinessType | null> 
 }
 
 // Create a new business
-export async function createBusiness(newData: BusinessType, userData: any): Promise<any | null> {
+export async function createBusiness(newData:Partial<BusinessType>, userData: any): Promise<any | null> {
     let dataFromBusiness: any = {};
 
     try {
