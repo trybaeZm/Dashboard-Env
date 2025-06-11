@@ -9,32 +9,71 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ApiDatatype } from "@/services/token";
 import image5 from '@/components/Sidebar/icons/trybae.png'
 import { PowerIcon, User2Icon } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { getOrgData, removeData, removeOrgData } from "@/lib/createCookie";
 import { BusinessType, businessType } from "@/types/businesses";
 
-
-const Header = ({ sidebarOpen,isOrgSelected, setUserData, userDataLoader, setSidebarOpen, userData }: {
+const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSidebarOpen, userData }: {
   setUserData: any,
-  isOrgSelected:any,
+  isOrgSelected: any,
   sidebarOpen: string | boolean | undefined,
   setSidebarOpen: (arg0: boolean) => void,
   userData: undefined | null | ApiDatatype;
   userDataLoader: boolean
 }) => {
 
+
   const [openOptions, setOpenOptions] = useState(false)
-  const businessData : BusinessType | null = getOrgData()
+  const businessData: BusinessType | null = getOrgData()
+  const [text, setText] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [modal, setModal] = useState(false)
+
+
+  const handleCopy = () => {
+    if (inputRef.current) {
+      inputRef.current.select();
+      document.execCommand('copy'); // For older browsers
+      navigator.clipboard.writeText(text); // For modern browsers
+      alert('Copied to clipboard!');
+    }
+  };
+
+  const generateEncryptedCode = (id: string, companyAlias: string) => {
+    fetch('/api/createToken', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id, companyAlias })
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Server error: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Encrypted token:', data.token);
+        setText('http://localhost:3001/payment/' +data.token); // Set the token to the input field
+        // You can use `data.token` here
+      })
+      .catch((err) => {
+        console.error('Error generating token:', err);
+      });
+  };
+
 
   const LogoutUser = () => {
     removeData()
       .then((res) => {
-          console.log('user deleted successfully...')
-          setUserData(null)
-          removeOrgData()
-          // This will reload the current page
-          // window.location.reload();
-        
+        console.log('user deleted successfully...')
+        setUserData(null)
+        removeOrgData()
+        // This will reload the current page
+        // window.location.reload();
+
       })
       .catch((err) => {
         console.log(err)
@@ -91,8 +130,50 @@ const Header = ({ sidebarOpen,isOrgSelected, setUserData, userDataLoader, setSid
               alt="Logo"
               priority
             />
-            <p className="font-bold text-white ">Inxource</p> <span className="text-gray-500 hover:text-gray-400 duration-500 text-sm">{businessData && ' | ' + businessData.business_name}</span> 
+            <p className="font-bold text-white ">Inxource</p> <span className="text-gray-500 hover:text-gray-400 duration-500 text-sm">{businessData && ' | ' + businessData.business_name}</span>
           </Link>
+          <button onClick={() => setModal(true)} className="bg-gray-300 text-black px-2 ms-5 py-1  rounded-md hover:bg-gray-400 duration-300">
+            generate code
+          </button>
+
+          <div className={`fixed top-0 bottom-0 flex z-[999] transition-all duration-300 left-0 right-0 flex justify-center items-center  ${modal ? "translate-y-0" : " translate-y-full"}`}>
+            <div className='absolute  z-0 top-0 bottom-0 left-0 right-0 flex justify-center items-center' onClick={() => setModal(false)}></div>
+            <div className='bg-white text-white dark:bg-boxdark z-4 space-y-2 shadow-lg shadow-black  absolute overflow-y-auto p-4 rounded-lg '>
+              <div className="text-lg">
+                {businessData && businessData.business_name}
+              </div>
+              <div>
+                <p
+                  onClick={() => {
+                    if (businessData?.id && businessData?.company_alias) {
+                      generateEncryptedCode(businessData.id, businessData.company_alias);
+                    } else {
+                      alert("Business data is incomplete.");
+                    }
+                  }}
+                  className="text-sm text-gray-500 hover:opacity-[0.5] duration-500 cursor-pointer"
+                >
+                  Generate code for your business
+                </p>
+                <div className="p-4 flex items-center gap-3 max-w-md mx-auto">
+                  <input
+                    type="text"
+                    ref={inputRef}
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Enter text here"
+                    className="border text-black p-2 w-full  rounded"
+                  />
+                  <button
+                    onClick={handleCopy}
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="flex items-center gap-2 text-white 2xsm:gap-4">
           {userData ?

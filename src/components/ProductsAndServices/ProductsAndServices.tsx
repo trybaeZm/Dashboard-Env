@@ -97,7 +97,7 @@ export const ProductsAndServices = () => {
                                 <PhotoIcon className='w-[40px] dark:text-gray-200' />
                             </div>
                             <div className='p-4 flex flex-col gap-1'>
-                                <div clas9sName='font-bold dark:text-gray-200'>Product/Service Name Card</div>
+                                <div className='font-bold dark:text-gray-200'>Product/Service Name Card</div>
                                 <div className='text-sm text-[#717D96] dark:text-gray-400'>ZMW XXXX</div>
                                 <div className='text-[#717D96] dark:text-gray-400'>product description</div>
                             </div>
