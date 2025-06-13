@@ -25,6 +25,11 @@ export type RevenueData = {
 }
 
 
+export interface ImagePreview {
+    name: string;
+    url: string;
+    file: File;
+}
 export type ProductWithSales = Product & { sales: Sale[] };
 
 
@@ -107,35 +112,35 @@ export const getDataforsalseAnalytics = async (business_id: any): Promise<null |
         const locations: string[] = foundcustomer.map(customer => customer.location);
 
         let LocationAmount = []
-        
-        
-        for(let i = 0; i < locations.length; i++){
+
+
+        for (let i = 0; i < locations.length; i++) {
 
             // gets all customers and adds them to this based on location
             let foundCustomers = []
-            for(let j = 0; j < foundcustomer.length; j++){
-                if(foundcustomer[j].location == locations[i]){
+            for (let j = 0; j < foundcustomer.length; j++) {
+                if (foundcustomer[j].location == locations[i]) {
                     foundCustomers.push(...Array(foundcustomer[j]))
                 }
             }
 
 
             // using the location we are getting all the sales
-            let scrappedSales  = []
+            let scrappedSales = []
 
-            for(let j = 0; j < foundCustomers.length; j++){
-                for(let k = 0; k < salesByBusiness.length; k++){
-                    if(String(salesByBusiness[k].customer_id) == String(foundCustomers[j].id)){
+            for (let j = 0; j < foundCustomers.length; j++) {
+                for (let k = 0; k < salesByBusiness.length; k++) {
+                    if (String(salesByBusiness[k].customer_id) == String(foundCustomers[j].id)) {
                         scrappedSales.push(...Array(salesByBusiness[k]))
                     }
                 }
             }
 
-            let totalAmount =  scrappedSales.reduce((prev, curr) => Number(prev) + Number(curr.amount), 0)
-            LocationAmount.push({scrappedSales:totalAmount, locations: locations[i]})
+            let totalAmount = scrappedSales.reduce((prev, curr) => Number(prev) + Number(curr.amount), 0)
+            LocationAmount.push({ scrappedSales: totalAmount, locations: locations[i] })
 
         }
-        
+
         let productstoTotalSales = []
 
         for (let i = 0; i < products.length; i++) {
@@ -147,29 +152,29 @@ export const getDataforsalseAnalytics = async (business_id: any): Promise<null |
 
         }
 
-        resolve({ products: products, amountDist: productstoTotalSales, revenueData: LocationAmount, sales : salesByBusiness })
+        resolve({ products: products, amountDist: productstoTotalSales, revenueData: LocationAmount, sales: salesByBusiness })
     })
 }
 
 
-export const getProductsAndServices = (business_id:string | null | undefined) : Promise<any|null> => {
-    return new Promise(async (resolve, reject)=> {
+export const getProductsAndServices = (business_id: string | null | undefined): Promise<any | null> => {
+    return new Promise(async (resolve, reject) => {
         const products: Product[] = []
-        const sales:Sale[] = []
+        const sales: Sale[] = []
 
         const combinedData = []
 
-        try{
-            const{data, error} = await supabase
-            .from('products')
-            .select('*')
-            .eq('business_id', business_id)
+        try {
+            const { data, error } = await supabase
+                .from('products')
+                .select('*')
+                .eq('business_id', business_id)
 
-            if(data){
+            if (data) {
                 products.push(...data)
             }
 
-            if(error){
+            if (error) {
                 reject(error)
             }
 
@@ -178,17 +183,17 @@ export const getProductsAndServices = (business_id:string | null | undefined) : 
         }
 
 
-        try{
-            const{data, error} = await supabase
-            .from('sales')
-            .select('*')
-            .eq('business_id', business_id)
+        try {
+            const { data, error } = await supabase
+                .from('sales')
+                .select('*')
+                .eq('business_id', business_id)
 
-            if(data){
+            if (data) {
                 sales.push(...data)
             }
 
-            if(error){
+            if (error) {
                 reject(error)
             }
 
@@ -197,32 +202,104 @@ export const getProductsAndServices = (business_id:string | null | undefined) : 
         }
 
 
-        for(let i = 0; i < products.length; i++){
-             const product = products[i];
-            const collectedSales  = sales.filter((e)=> e.product_id == product.id)
-            combinedData.push({...product,sales:collectedSales })
+        for (let i = 0; i < products.length; i++) {
+            const product = products[i];
+            const collectedSales = sales.filter((e) => e.product_id == product.id)
+            combinedData.push({ ...product, sales: collectedSales })
         }
 
         resolve(combinedData)
     })
 }
 
-export const createProductAndService = async (product: ProductInsert): Promise<Product | null> => {
-    try {
-        const { data, error } = await supabase
-            .from('products')
-            .insert(product)
-            .select()
-            .single();
+export const createProductAndService = async (product: ProductInsert, imageData: ImagePreview[]): Promise<Product | null> => {
 
-        if (error) {
-            console.error("Error creating product:", error.message);
-            return null;
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { data, error } = await supabase
+                .from('products')
+                .insert(product)
+                .select()
+                .single();
+
+            if (error) {
+                console.error("Error creating product:", error.message);
+                reject(error);
+            }
+            let productData = data
+
+            if (productData) {
+                try {
+                    // If imageData is provided, insert images into the 'product_images' table
+                    for (const image of imageData) {
+
+                        const { data, error } = await supabase.storage
+                            .from('uploaded-files')
+                            .upload(
+                                `products/${productData.id}/${image.name}`,
+                                image.file
+                            )
+
+                        if (data) {
+                            console.log(data)
+                        }
+                        if (error) {
+                            console.log(error)
+                            reject(error);
+                            break;
+                        }
+                    }
+
+                    resolve(productData);
+
+
+                } catch (error) {
+                    console.error("Error inserting product images:", error);
+                    reject(error);
+                }
+            }
+
+        } catch (err) {
+            console.error("Unexpected error creating product:", err);
+            reject(err);
         }
+    })
+}
 
-        return data;
-    } catch (err) {
-        console.error("Unexpected error creating product:", err);
-        return null;
-    }
+export const getProductImages = async (productId: string): Promise<string[] | null> => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { data, error } = await supabase
+                .storage
+                .from('uploaded-files')
+                .list(`products/${productId}`, {
+                    limit: 100,
+                    offset: 0,
+                    sortBy: { column: 'name', order: 'asc' }
+                });
+
+            if (error) {
+                console.error("Error fetching product images:", error);
+                reject(error);
+            }
+
+            if (data) {
+                const imageUrls = data.map(file =>
+                    supabase.storage
+                        .from('uploaded-files')
+                        .getPublicUrl(`products/${productId}/${file.name}`)
+                        .data.publicUrl
+                );
+                resolve(imageUrls);
+            }
+            
+            else {
+                console.warn("No images found for product:", productId);
+                resolve([]);
+            }
+            } catch (error) {
+                console.error("Error fetching product images:", error);
+                reject(error);
+            }
+        })
 }

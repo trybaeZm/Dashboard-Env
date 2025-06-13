@@ -1,7 +1,7 @@
 'use client'
 import { CopyIcon, EditIcon, ImageIcon, PlusIcon, TrashIcon } from 'lucide-react'
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -9,6 +9,8 @@ import { PhotoIcon } from '@heroicons/react/24/outline';
 import { getData, getOrgData } from '@/lib/createCookie';
 import { createProductAndService, getProductsAndServices, ProductWithSales } from '@/services/api/products';
 import { BusinessType } from '@/types/businesses';
+import { supabase } from '@/services/SupabaseConfig';
+import { ProductCard } from './components/ProductCard';
 
 export const ProductsAndServices = () => {
 
@@ -20,64 +22,136 @@ export const ProductsAndServices = () => {
     const [productData, setProductData] = useState<ProductWithSales[] | null | undefined>(null)
     const businessData: BusinessType | null | undefined = getOrgData()
     const user = getData()
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [selectedImages, setSelectedImages] = useState<ImagePreview[]>([]);
+
+async function uploadImagesToSupabase(files: File[], businessId: string): Promise<string[]> {
+    // Example implementation: upload each file and return their URLs
+    const uploadedUrls: string[] = [];
+    for (const file of files) {
+        const { data, error } = await supabase
+            .storage
+            .from('products')
+            .upload(`${businessId}/${Date.now()}_${file.name}`, file, { upsert: true });
+        if (error) {
+            console.error('Upload error:', error);
+            continue;
+        }
+        // Construct the public URL (adjust as needed for your Supabase setup)
+        const url = supabase.storage.from('products').getPublicUrl(data.path).data.publicUrl;
+        uploadedUrls.push(url);
+    }
+    return uploadedUrls;
+}
+
+    interface ImagePreview {
+        name: string;
+        url: string;
+        file: File; // include actual file reference
+    }
+
+    // Fetch products for the current business and update state
+    async function getProducts() {
+        if (!businessData?.id) return;
+        setLoading(true);
+        try {
+            const products = await getProductsAndServices(businessData.id);
+            setProductData(products);
+        } catch (error) {
+            setProductData([]);
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleDivClick = () => {
+        if (selectedImages.length >= 3) {
+            alert("You can only upload a maximum of 3 images.");
+            return;
+        }
+
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    interface HandleFilesChangeEvent extends React.ChangeEvent<HTMLInputElement> {
+        target: HTMLInputElement & {
+            files: FileList | null;
+        };
+    }
+
+    interface ImagePreview {
+        name: string;
+        url: string;
+    }
+
+    const handleFilesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files: File[] = Array.from(event.target.files ?? []);
+        const remainingSlots = 3 - selectedImages.length;
+
+        const newImages: ImagePreview[] = files
+            .filter(file => file.type.startsWith('image/'))
+            .slice(0, remainingSlots)
+            .map(file => ({
+                name: file.name,
+                url: URL.createObjectURL(file),
+                file: file,
+            }));
+
+        setSelectedImages(prev => [...prev, ...newImages]);
+        console.log("Selected images:", newImages);
+        event.target.value = ''; // clear input
+    };
 
     const options = ["Phones", "Cakes", "Loans"];
 
 
 
-    const getProducts = () => {
-        setLoading(true)
-        getProductsAndServices(businessData?.id)
-            .then((res) => {
-                if (res) {
-                    // console.log(res)
-                    setProductData(res)
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-            .finally(() => {
-                setLoading(false)
-            })
-    }
-
-    const addProduct = (e: React.FormEvent<HTMLFormElement>) => {
-        setLoading2(true)
-        e.preventDefault()
+    const addProduct = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading2(true);
 
         const form = e.currentTarget;
         const formData = new FormData(form);
+
         const category = formData.get('category') as string;
         const name = formData.get('name') as string;
         const price = parseFloat(formData.get('price') as string);
         const description = formData.get('description') as string;
 
-       
-        createProductAndService(
-            {
-                price: price,
-                name: name,
-                category: category,
-                description: description,
-                business_id: businessData?.id || "",
-                int_business_id: businessData?.business_id || 0,
+        const staticData = {
+            price,
+            name,
+            category,
+            description,
+            business_id: businessData?.id || "",
+            int_business_id: businessData?.business_id || 0,
+        };
+
+        try {
+            const createdProduct = await createProductAndService(staticData, selectedImages);
+
+            if (createdProduct) {
+                // If images were uploaded successfully, reset the selected images
+                setSelectedImages([]);
+                alert("Product/Service added successfully!");
+            } else {
+                alert("Failed to add product/service. Please try again.");
             }
-        )
-            .then((res) => {
-                if (res) {
-                    console.log(res)
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-            .finally(() => {
-                setModal2(false)
-                getProducts()
-                setLoading2(false)
-            })
-    }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setModal2(false);
+            getProducts();
+            setLoading2(false);
+        }
+    };
+
+
+    
+
 
 
     useEffect(() => {
@@ -104,8 +178,12 @@ export const ProductsAndServices = () => {
                         </div>
                         <hr className='dark:border-gray-700' />
                         <div className='flex flex-col gap-4'>
-                            <div className='p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center'>
-                                <PhotoIcon className='w-[30px] dark:text-gray-200' />
+
+
+                            <div
+                                className="p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                            >
+                                <PhotoIcon className="w-[30px] dark:text-gray-200" />
                             </div>
                             <div className='flex flex-col gap-3'>
                                 <div className='flex flex-col gap-1'>
@@ -148,26 +226,42 @@ export const ProductsAndServices = () => {
                         <div className='text-4xl font-bold dark:text-gray-200'>
                             Add Product/Service
                         </div>
-                        {/*                         
-                        {productData?.map((e, key)=>
-                    <>
-                        <div className='flex max-w-[500px] border border-black dark:border-gray-700 rounded-lg'>
-                            <div className='px-6 flex items-center bg-[#EDF0F7] dark:bg-gray-700'>
-                                <PhotoIcon className='w-[40px] dark:text-gray-200' />
-                            </div>
-                            <div className='p-4 flex flex-col gap-1'>
-                                <div className='font-bold dark:text-gray-200'>Product/Service Name Card</div>
-                                <div className='text-sm text-[#717D96] dark:text-gray-400'>ZMW XXXX</div>
-                                <div className='text-[#717D96] dark:text-gray-400'>product description</div>
-                            </div>
-                        </div>
-                        <hr className='dark:border-gray-700' />
-                    </>    
-                    )
-                        } */}
+
                         <form onSubmit={addProduct} className='flex flex-col gap-4'>
-                            <div className='p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center'>
-                                <PhotoIcon className='w-[30px] dark:text-gray-200' />
+                            <div className="space-y-4">
+                                {/* Hidden multi-file input */}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    ref={fileInputRef}
+                                    onChange={handleFilesChange}
+                                    className="hidden"
+                                />
+
+                                {/* Upload trigger div */}
+                                <div
+                                    onClick={handleDivClick}
+                                    className="p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                                >
+                                    <PhotoIcon className="w-[30px] dark:text-gray-200" />
+                                </div>
+
+                                {/* Image previews */}
+                                {selectedImages.length > 0 && (
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                        {selectedImages.map((img, index) => (
+                                            <div key={index} className="relative border rounded overflow-hidden">
+                                                <img
+                                                    src={img.url}
+                                                    alt={img.name}
+                                                    className="w-[100px] h-32 object-cover"
+                                                />
+                                                <p className="text-xs text-center p-1 truncate">{img.name}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                             <div className='flex flex-col gap-3'>
                                 <div className='flex flex-col gap-1'>
@@ -210,10 +304,10 @@ export const ProductsAndServices = () => {
                             <div className='flex gap-3 justify-end'>
                                 <button type='button' onClick={() => setModal(false)} className='border py-2 rounded-[100px] border-[#B9B9B9] text-[#B9B9B9] dark:border-gray-600 dark:text-gray-400 px-4'>Cancel</button>
                                 <button disabled={loading2} type='submit' className='bg-[#1C0F86] py-2 rounded-[100px] text-white px-4'>
-                                {
-                                    loading2 ? <span className='animate-spin'>Loading...</span> : 
-                                    <span>Finish</span>
-                                }
+                                    {
+                                        loading2 ? <span className='animate-spin'>Loading...</span> :
+                                            <span>Finish</span>
+                                    }
                                 </button>
                             </div>
                         </form>
@@ -234,42 +328,28 @@ export const ProductsAndServices = () => {
                 <div className='max-w-[800px] flex flex-col gap-5 w-full'>
                     {
                         loading ?
-                        <div className=' grow space-y-3 gap-3'>
-                            <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                            <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                            <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                        </div>
-                        :
-                        <>
-                        {
-                            productData?.map((e) =>
-                                <div className='border relative flex gap-4 items-center border-black dark:border-gray-700 rounded-md'>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger className='flex absolute top-3 right-3 text-lg items-center'>
-                                            <PiDotsThreeOutlineFill className='size-6 dark:text-gray-200' />
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="bg-white dark:bg-boxdark">
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200" onClick={() => setModal(true)}> <EditIcon /> Edit</DropdownMenuItem>
-                                            <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"> <CopyIcon /> Duplicate</DropdownMenuItem>
-                                            <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"> <TrashIcon /> Delete</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                    <div className='p-9 bg-[#EDF0F7] dark:bg-gray-700'>
-                                        <ImageIcon className='size-[50px] dark:text-gray-200' />
-                                    </div>
-                                    <div className='p-4'>
-                                        <div className='text-lg font-bold dark:text-gray-200'>{e.name}</div>
-                                        <div className='text-[#1C0F86] dark:text-blue-400 font-bold text-md'>{'ZMK ' + e.price.toFixed(2)}</div>
-                                        <div className='font-light text-sm dark:text-gray-400'>{e.sales.length} {e.sales.length > 0 ? 'Units' : 'Unit'} Sold</div>
-                                    </div>
-                                </div>
-                            )
-                        }
-                        </>
+                            <div className=' grow space-y-3 gap-3'>
+                                <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+                                <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+                                <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+                            </div>
+                            :
+                            <>
+                                {
+                                    productData?.map((e) =>
+                                        <ProductCard e={e} setModal={setModal} />
+                                    )
+                                }
+                            </>
                     }
                 </div>
             </div>
         </div>
     )
 }
+function getProducts() {
+    throw new Error('Function not implemented.');
+}
+
+
+
