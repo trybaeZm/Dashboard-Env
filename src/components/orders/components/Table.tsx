@@ -1,17 +1,86 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '@/css/Table.css'
 import { CheckCircleIcon, ChevronLeftIcon, ChevronRightIcon, ClockIcon } from "@heroicons/react/16/solid";
 import { Check, DotIcon, ImageIcon } from 'lucide-react';
 import { MdArrowBack } from 'react-icons/md';
 import { OrderData } from '@/types/Orders';
+import { getOrderImages, getOrdersByBusinessId, marckSettled } from '@/services/api/apiOrder';
+import { getOrgData } from '@/lib/createCookie';
 
-export const Table = ({ open, filter, data }: { open: any, filter: string, data: OrderData[] | undefined | null }) => {
+export const Table = ({ open, filter, data, setData }: { open: any, filter: string, data: OrderData[] | undefined | null, setData: any }) => {
     // api for getting orders data can be pkaced here
     const [show, setShow] = useState(false)
     const [option, setOption] = useState<number | null>(null)
+    const [loading, setLoading] = useState(false)
+    const businessData = getOrgData() // Assuming this function returns the business data
+
+    const HundelSetteld = (data: string) => {
+        setLoading(true)
+        console.log(data)
+        marckSettled(data)
+            .then((res) => {
+                console.log("res:", res)
+                getOrdersByBusinessId(businessData?.id)
+                    .then((response) => {
+                        setData()
+                    })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
+
+    const ImageComp = ({ data }: { data: string }) => {
+        const [loading, setLoading] = useState(true)
+        const [image, setImage] = useState<string[] | null>(null)
+
+        const getOrderImage = () => {
+            setLoading(true)
+            getOrderImages(data)
+                .then((response) => {
+                    console.log(response)
+                    setImage(response)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
+        }
 
 
 
+        useEffect(() => {
+            getOrderImage()
+        }, [])
+        return (
+            <div className='border w-full justify-center flex border-black dark:border-gray-200 rounded-md p-1'>
+                {
+                    loading ?
+                        <div className='text-gray-500 dark:text-gray-400'>Loading images...</div>
+                        :
+                        <>
+                            {image && image.length > 0 ? (
+                                image.map((img, index) => (
+                                    <img
+                                        key={index}
+                                        src={img}
+                                        alt={`Order Image ${index + 1}`}
+                                        className='max-w-40 grow object-cover rounded-md'
+                                    />
+                                ))
+                            ) : (
+                                <div className='text-gray-500 dark:text-gray-400'>No images available</div>
+                            )}
+                        </>
+                }
+            </div>
+        )
+    }
 
     return (
         <>
@@ -45,19 +114,13 @@ export const Table = ({ open, filter, data }: { open: any, filter: string, data:
                                                 Summarized Notes from Customer
                                             </div>
                                             <div className='pl-5'>
-                                               -
+                                                -
                                             </div>
                                             <hr className='border my-3 border-gray-600' />
                                             <div className='flex flex-col gap-3'>
                                                 <div className='text-lg font-bold'>Images from the customer</div>
                                                 <div className='flex overflow-y-auto  gap-4'>
-                                                    {
-                                                        [1, 2, 3, 4, 5].map((e) =>
-                                                            <div className='border border-black dark:border-gray-200 rounded-md p-10'>
-                                                                <ImageIcon size={50} />
-                                                            </div>
-                                                        )
-                                                    }
+                                                    <ImageComp data={e.id} />
                                                 </div>
                                             </div>
                                         </div>
@@ -98,7 +161,7 @@ export const Table = ({ open, filter, data }: { open: any, filter: string, data:
                                             <div className='grow flex flex-col gap-3'>
                                                 <div className="">
                                                     <div className="text-sm font-bold">Transaction Amount</div>
-                                                    <div className="">{e.total_amount ? "KMW "+ e.total_amount.toFixed(2) : "ZMW"+0}</div>
+                                                    <div className="">{e.total_amount ? "KMW " + e.total_amount.toFixed(2) : "ZMW" + 0}</div>
                                                 </div>
                                                 <div className="">
                                                     <div className="text-sm font-bold">Email:</div>
@@ -119,10 +182,36 @@ export const Table = ({ open, filter, data }: { open: any, filter: string, data:
                                     <button onClick={() => { setOption(null); setShow(false) }} className='border-gray-500 text-white border px-4 py-2 rounded-md flex items-center gap-2'>
                                         cancel
                                     </button>
-                                    <button onClick={() => { setOption(null); setShow(false) }} className='bg-[#1A0670] text-white px-4 py-2 rounded-md flex items-center gap-2'>
-                                        <Check />
-                                        Mark as Setteled
-                                    </button>
+
+                                    {
+                                        loading ?
+                                            <>
+                                                Loading...
+                                            </>
+                                            :
+                                            <>
+                                                {
+                                                    e.order_status === 'completed' ?
+                                                        <>
+                                                            <button disabled={loading} className='bg-[#1A0670] opacity-[0.5] text-white px-4 py-2 rounded-md flex items-center gap-2'>
+                                                                completed
+                                                            </button>
+                                                        </>
+                                                        :
+                                                        <>
+                                                            <button disabled={loading}
+                                                                onClick={() => {
+                                                                    HundelSetteld(e.id)
+                                                                }} className='bg-[#1A0670] text-white px-4 py-2 rounded-md flex items-center gap-2'>
+                                                                <CheckCircleIcon className='size-4' />
+                                                                Marck Settled
+                                                            </button>
+                                                        </>
+                                                }
+                                            </>
+
+                                    }
+
                                 </div>
                             </div>
 

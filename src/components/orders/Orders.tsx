@@ -31,7 +31,7 @@ export const Orders = () => {
         setLoading(true)
         getOrdersByBusinessId(businessData?.id)
             .then((res) => {
-                // console.log(res)
+                console.log(res)
                 setOrderData(res)
             })
             .catch((error) => {
@@ -70,7 +70,7 @@ export const Orders = () => {
                 </div>
                 <div className='mt-5'>
                     <Container>
-                        <Table data={orderData} filter={filterValue} open={setOpen} />
+                        <Table setData={getBusinessData} data={orderData} filter={filterValue} open={setOpen} />
                     </Container>
                 </div>
             </div>

@@ -82,11 +82,6 @@ async function uploadImagesToSupabase(files: File[], businessId: string): Promis
         };
     }
 
-    interface ImagePreview {
-        name: string;
-        url: string;
-    }
-
     const handleFilesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files: File[] = Array.from(event.target.files ?? []);
         const remainingSlots = 3 - selectedImages.length;

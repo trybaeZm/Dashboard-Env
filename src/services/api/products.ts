@@ -216,7 +216,7 @@ export const createProductAndService = async (product: ProductInsert, imageData:
 
     return new Promise(async (resolve, reject) => {
         try {
-            const { data, error } = await supabase
+            const { data : productData, error } = await supabase
                 .from('products')
                 .insert(product)
                 .select()
@@ -226,13 +226,11 @@ export const createProductAndService = async (product: ProductInsert, imageData:
                 console.error("Error creating product:", error.message);
                 reject(error);
             }
-            let productData = data
 
             if (productData) {
                 try {
                     // If imageData is provided, insert images into the 'product_images' table
                     for (const image of imageData) {
-
                         const { data, error } = await supabase.storage
                             .from('uploaded-files')
                             .upload(
@@ -292,7 +290,7 @@ export const getProductImages = async (productId: string): Promise<string[] | nu
                 );
                 resolve(imageUrls);
             }
-            
+
             else {
                 console.warn("No images found for product:", productId);
                 resolve([]);
