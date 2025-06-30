@@ -94,13 +94,13 @@ export const Busenesses = () => {
     };
 
     useEffect(() => {
-        // getBusinessByUserID()
+        getBusinessByUserID()
     }, [])
 
 
     return (
         <div className='pt-20 space-y-10 text-sm px-5'>
-            <div className="flex gap-3 items-center p-2 bg-white dark:bg-boxdark rounded-md">
+            <div className="flex gap-3 items-center p-2 bg-white dark:bg-boxdark dark:bg-boxdark rounded-md">
                 {/* New Business Button */}
                 <button
                     onClick={() => setOpenBusinessModel(true)}
@@ -131,126 +131,162 @@ export const Busenesses = () => {
                     <PiFunnel size={18} />
                 </button>
             </div>
-            {
-                openBusinessModel ?
-                    <div className='fixed top-0 bottom-0  left-0 right-0  z-[9999] justify-center flex items-center'>
-                        <form onSubmit={addBusiness} className="flex md:col-span-8 col-span-12  dark:bg-gray-700 bg-gray-300 rounded-lg shadow-md p-5 flex-col gap-3">
-                            {/* Business Name */}
-                            <div className='grow space-y-2'>
+            {openBusinessModel && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 px-4">
+                    <form
+                        onSubmit={addBusiness}
+                        className="w-full max-w-2xl bg-gray-300 dark:bg-gray-700 rounded-lg shadow-lg p-6 space-y-5"
+                    >
+                        {/* Header */}
+                        <h2 className="text-xl font-semibold text-black dark:text-white text-center">Create New Business</h2>
+
+                        {/* Business Name */}
+                        <div className="space-y-1">
+                            <label className="text-black dark:text-white">Business Name</label>
+                            <Input
+                                required
+                                onChange={(e) =>
+                                    setCompanyAlias(getFirstTwoInitials(e.target.value).toUpperCase())
+                                }
+                                type="text"
+                                name="business_name"
+                                autoFocus
+                                placeholder="Enter business name"
+                                className="bg-white text-white dark:bg-gray-800"
+                            />
+                        </div>
+
+                        {/* Company Alias Display */}
+                        <div className="space-y-1">
+                            <label className="text-black dark:text-white">Company Alias</label>
+                            <div className="p-3 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded">
+                                {company_alias
+                                    ? company_alias
+                                    : "This will be used to identify your business in the system."}
+                            </div>
+                        </div>
+
+                        {/* Industry */}
+                        <div className="space-y-1">
+                            <label className="text-black dark:text-white" htmlFor="industry">
+                                Industry
+                            </label>
+                            <select
+                                id="industry"
+                                name="industry"
+                                required
+                                className="w-full bg-white text-black dark:bg-gray-800 dark:text-white p-2 rounded"
+                                defaultValue=""
+                            >
+                                <option value="" disabled>
+                                    Select industry (optional)
+                                </option>
+                                <option value="loans">Loans</option>
+                                <option value="phones">Phones</option>
+                                <option value="cakes">Cakes</option>
+                                {/* Add more as needed */}
+                            </select>
+                        </div>
+
+                        {/* Registration & Phone */}
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="flex-1 space-y-1">
                                 <label className="text-black dark:text-white">
-                                    Business Name
+                                    Registration Number <span className="text-sm text-gray-400">(optional)</span>
                                 </label>
                                 <Input
-                                    required
-                                    onChange={(e) => setCompanyAlias(getFirstTwoInitials(e.target.value).toUpperCase())}
                                     type="text"
-                                    name="business_name"
-                                    autoFocus
-                                    placeholder="Enter business name"
+                                    name="registration_number"
+                                    placeholder="REG-1234"
                                     className="bg-white text-white dark:bg-gray-800"
                                 />
                             </div>
 
-                            {/* Company Alias */}
-                            <div className='grow space-y-2'>
+                            <div className="flex-1 space-y-1">
                                 <label className="text-black dark:text-white">
-                                    Company Alias
+                                    Phone Number <span className="text-sm text-gray-400">(optional)</span>
                                 </label>
-                                <div className='p-3 text-gray-400'>
-                                    {company_alias ? company_alias : 'This will be used to identify your business in the system'}
-                                </div>
+                                <Input
+                                    type="text"
+                                    name="phone_number"
+                                    placeholder="Enter business phone number"
+                                    className="bg-white text-white dark:bg-gray-800"
+                                />
                             </div>
-                            {/* Industry */}
-                            <div className="grow   space-y-2">
-                                <label className="text-black dark:text-white" htmlFor="industry">
-                                    Industry
-                                </label>
-                                <br />
-                                <select
-                                    id="industry"
-                                    name="industry"
-                                    required
-                                    className="bg-white text-black w-full dark:bg-gray-800 dark:text-white p-2 rounded"
-                                    defaultValue=""
-                                >
-                                    <option value="" disabled>
-                                        Select industry (optional)
-                                    </option>
-                                    <option value="loans">Loans</option>
-                                    <option value="phones">Phones</option>
-                                    <option value="Cakes">Cakes</option>
-                                    {/* Add more options as needed */}
-                                </select>
-                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex justify-end gap-3 pt-4">
+                            <button
+                                disabled={loading}
+                                type="button"
+                                onClick={() => setOpenBusinessModel(false)}
+                                className="bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-white py-2 px-5 rounded-full hover:bg-gray-400 dark:hover:bg-gray-500 transition"
+                            >
+                                Close
+                            </button>
+
+                            <button
+                                disabled={loading}
+                                type="submit"
+                                className="bg-[#1C0F86] text-white py-2 px-5 rounded-full hover:bg-[#2a1ba8] dark:hover:bg-[#150b66] transition"
+                            >
+                                {loadings ? "Creating..." : "Create Business"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
 
 
-                            <div className='flex gap-4'>
-                                {/* Registration Number */}
-                                <div className='grow space-y-2'>
-                                    <label className="text-black dark:text-white">
-                                        Registration Number (optional)
-                                    </label>
-                                    <Input
-                                        type="text"
-                                        name="registration_number"
-                                        autoFocus
-                                        placeholder="REG-1234"
-                                        className="bg-white text-white dark:bg-gray-800"
-                                    />
-                                </div>
-                                {/* Registration Number */}
-                                <div className='grow space-y-2'>
-                                    <label className="text-black dark:text-white">
-                                        Phone Number(optional)
-                                    </label>
-                                    <Input
-                                        type="text"
-                                        name="phone_number"
-                                        autoFocus
-                                        placeholder="Enter registration number (optional)"
-                                        className="bg-white text-white dark:bg-gray-800"
-                                    />
-                                </div>
 
-                            </div>
-                            <div className='flex gap-3 justify-end'>
-                                <button disabled={loading} onClick={() => setOpenBusinessModel(false)} type='button' className='bg-gray-300 text-gray-600 py-2 px-4 rounded-[100px] flex items-center gap-2 hover:bg-[#2a1ba8] dark:hover:bg-[#150b66]'>
-                                    Close
-                                </button>
-                                <button disabled={loading} type='submit' className='bg-[#1C0F86] text-white py-2 px-4 rounded-[100px] flex items-center gap-2 hover:bg-[#2a1ba8] dark:hover:bg-[#150b66]'>
-                                    {loadings ? 'Creating...' : 'Create Business'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    :
-                    <></>
-            }
-
-
-            <div className='flex flex-wrap gap-3'>
+            <div className=''>
                 {
                     loading ?
-                        <div className=' grow space-y-3 gap-3'>
-                            <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                            <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                            <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+                        <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
+                            {[...Array(4)].map((_, index) => (
+                                <div
+                                    key={index}
+                                    className="rounded-xl p-4 bg-gray-100 dark:bg-gray-600 space-y-4 shadow-sm transition hover:shadow-md"
+                                >
+                                    <div className="h-4 w-2/5 bg-gray-300 dark:bg-gray-700 rounded" />
+                                    <div className="h-6 w-3/4 bg-gray-300 dark:bg-gray-700 rounded" />
+                                    <div className="h-3 w-full bg-gray-200 dark:bg-gray-600 rounded" />
+                                    <div className="h-3 w-5/6 bg-gray-200 dark:bg-gray-600 rounded" />
+                                </div>
+                            ))}
                         </div>
                         :
                         <>
+                        <div className='grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-3'>
+
                             {
                                 organisationData ?
                                     <>
                                         {organisationData.map((data, key) =>
-                                            <div onClick={() => storeDatatoCookies(data)} key={key} className='min-h-[150px] cursor-pointer group min-w-[300px] bg-gray-700 hover:bg-gray-600 duration-500  text-gray-300 border border-gray-600 flex justify-between p-3 text-start text-sm rounded-md'>
-                                                <div>
-                                                    <div className=' text-lg text-white'>{data.business_name}</div>
-                                                    <div className='text-[12px]'>{data.company_alias} | {data.industry}</div>
+                                            <div
+                                                onClick={() => storeDatatoCookies(data)}
+                                                key={key}
+                                                className="min-h-[150px]  cursor-pointer group 
+             bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 
+             transition duration-300 text-gray-700 dark:text-gray-300 
+             border border-gray-300 dark:border-gray-600 
+             flex justify-between items-start p-4 rounded-md shadow-md"
+                                            >
+                                                <div className="flex flex-col gap-1">
+                                                    <h3 className="text-lg font-semibold text-black dark:text-white">
+                                                        {data.business_name}
+                                                    </h3>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                        {data.company_alias} &bull; {data.industry}
+                                                    </p>
                                                 </div>
-                                                <div className='group-hover:translate-x-1 group-hover:text-white text-gray-400 duration-500'>
+
+                                                <div className="self-center group-hover:translate-x-1 group-hover:text-black dark:group-hover:text-white text-gray-500 dark:text-gray-400 transition duration-300">
                                                     <ArrowRight size={20} />
                                                 </div>
                                             </div>
+
                                         )}
                                     </>
 
@@ -262,6 +298,7 @@ export const Busenesses = () => {
                                     </>
 
                             }
+                        </div>
                         </>
 
                 }

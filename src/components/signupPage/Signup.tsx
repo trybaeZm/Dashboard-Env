@@ -95,160 +95,272 @@ const Signup = () => {
                     <div className=' z-4 flex items-center shadow-black  px-10 py-5 '>
                         {
                             newUser ?
-                                <form onSubmit={handleSubmit2} className='flex bg-white dark:bg-boxdark rounded-md w-full text-white md:p-4 shadow-lg items-center flex-col gap-3 p-4' >
-                                    <div className='flex flex-col items-center gap-3'>
-                                        <div className='flex font-bold flex-col gap-2 items-center'>
-                                            {/* <label className='text-2xl'>Zitfuse</label> */}
-                                            <label className=" font-bold text-3xl">Sign up</label>
-                                            <label className=" font-md text-sm">Welcome back! Please enter your details</label>
-                                            {
-                                                error2 == 401 ?
-                                                    <label className="text-red-500 bg-red-100 py-1 px-4 duration-500 transition-all font-md  text-sm">
-                                                        Incorect Credentials
-                                                    </label>
-                                                    :
-                                                    ''
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className="rounded-lg max-w-[400px] grow w-full grow flex flex-col gap-4 ">
-                                        <div className='flex gap-2 flex-col'>
-                                            <TextField color='secondary' error={error2} onChangeCapture={() => setError(false)} disabled={loading || logsuccess} name='name' onChange={(e) => setFirstName(e.target.value)} type='text' required id="email" autoComplete="" label="User Name" variant="outlined"
-                                                sx={{
-                                                    input: { color: 'white' }, // Input text
-                                                    label: { color: 'white' }, // Label text
-                                                    '.MuiOutlinedInput-root': {
-                                                        '& fieldset': { borderColor: 'white' }, // Default border
-                                                        '&:hover fieldset': { borderColor: 'white' }, // Hover border
-                                                        '&.Mui-focused fieldset': { borderColor: 'white' } // Focused border
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div className='flex gap-2 flex-col'>
-                                            <TextField color='secondary' error={error2} onChangeCapture={() => setError(false)} disabled={loading || logsuccess} name='email' type='Email' required id="password" autoComplete="" label="Email" variant="outlined"
-                                                sx={{
-                                                    input: { color: 'white' }, // Input text
-                                                    label: { color: 'white' }, // Label text
-                                                    '.MuiOutlinedInput-root': {
-                                                        '& fieldset': { borderColor: 'white' }, // Default border
-                                                        '&:hover fieldset': { borderColor: 'white' }, // Hover border
-                                                        '&.Mui-focused fieldset': { borderColor: 'white' } // Focused border
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div className='flex gap-2 flex-col'>
-                                            <TextField color='secondary' error={error2} onChangeCapture={() => setError(false)} disabled={loading || logsuccess} name='password' type='password' required id="password" autoComplete="" label="Password" variant="outlined"
-                                                sx={{
-                                                    input: { color: 'white' }, // Input text
-                                                    label: { color: 'white' }, // Label text
-                                                    '.MuiOutlinedInput-root': {
-                                                        '& fieldset': { borderColor: 'white' }, // Default border
-                                                        '&:hover fieldset': { borderColor: 'white' }, // Hover border
-                                                        '&.Mui-focused fieldset': { borderColor: 'white' } // Focused border
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div className='flex items-center justify-between'>
-                                            <div className='flex items-center'>
-                                                <Checkbox
-                                                    value={rememberMe}
-                                                    checked={rememberMe}
-                                                    onChange={() => setRememberMe(!rememberMe)}
-                                                    sx={{
-                                                        color: 'white', // Unchecked color
-                                                        '&.Mui-checked': {
-                                                            color: 'white', // Checked color
-                                                        },
-                                                    }}
-                                                />
-                                                <label className='text-sm' htmlFor='rememberMe'>Remember me</label>
-                                            </div>
-                                            <div>
-                                                <label className='text-blue-700'>Forgot Password?</label>
-                                            </div>
-                                        </div>
-                                        <button disabled={(loading || success) && (firstName == '' || password == '' || lastName == '' || email == '')} type='submit' className='py-3 rounded-md outline-none text-white border-none bg-blue-700 w-[100%]'>
-                                            {loading || success ? <div className='flex items-end justify-center'>Loading... </div> : 'Sign up'}
-                                        </button>
-                                        <label className='text-sm text-center'>First time? <span className='hover:opacity-[0.5] cursor-pointer duration-500' onClick={()=>setNewUser(false)}>sign up</span></label>
+                                <form
+                                    onSubmit={handleSubmit2}
+                                    className="flex flex-col items-center gap-6 bg-white dark:bg-boxdark rounded-md w-full md:p-6 p-4 shadow-lg text-white max-w-[500px]"
+                                >
+                                    {/* Header */}
+                                    <div className="text-center space-y-1">
+                                        <h2 className="text-3xl font-bold">Sign up</h2>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                            Welcome! Please enter your details to create an account.
+                                        </p>
 
+                                        {error2 === 401 && (
+                                            <p className="text-sm text-red-500 bg-red-100 dark:bg-red-800/30 px-4 py-1 rounded-md transition-all duration-300">
+                                                Incorrect credentials. Please try again.
+                                            </p>
+                                        )}
                                     </div>
+
+                                    {/* Input Fields */}
+                                    <div className="flex flex-col gap-4 w-full max-w-[400px]">
+                                        <TextField
+                                            color="secondary"
+                                            error={!!error2}
+                                            disabled={loading || logsuccess}
+                                            name="name"
+                                            type="text"
+                                            required
+                                            id="name"
+                                            label="User Name"
+                                            onChange={(e) => {
+                                                setError(false);
+                                                setFirstName(e.target.value);
+                                            }}
+                                            sx={{
+                                                input: { color: 'white' },
+                                                label: { color: 'white' },
+                                                '.MuiOutlinedInput-root': {
+                                                    '& fieldset': { borderColor: 'white' },
+                                                    '&:hover fieldset': { borderColor: 'white' },
+                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                },
+                                            }}
+                                        />
+
+                                        <TextField
+                                            color="secondary"
+                                            error={!!error2}
+                                            disabled={loading || logsuccess}
+                                            name="email"
+                                            type="email"
+                                            required
+                                            id="email"
+                                            label="Email"
+                                            onChange={(e) => {
+                                                setError(false);
+                                                setEmail(e.target.value);
+                                            }}
+                                            sx={{
+                                                input: { color: 'white' },
+                                                label: { color: 'white' },
+                                                '.MuiOutlinedInput-root': {
+                                                    '& fieldset': { borderColor: 'white' },
+                                                    '&:hover fieldset': { borderColor: 'white' },
+                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                },
+                                            }}
+                                        />
+
+                                        <TextField
+                                            color="secondary"
+                                            error={!!error2}
+                                            disabled={loading || logsuccess}
+                                            name="password"
+                                            type="password"
+                                            required
+                                            id="password"
+                                            label="Password"
+                                            onChange={(e) => {
+                                                setError(false);
+                                                setPassword(e.target.value);
+                                            }}
+                                            sx={{
+                                                input: { color: 'white' },
+                                                label: { color: 'white' },
+                                                '.MuiOutlinedInput-root': {
+                                                    '& fieldset': { borderColor: 'white' },
+                                                    '&:hover fieldset': { borderColor: 'white' },
+                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                },
+                                            }}
+                                        />
+                                    </div>
+
+                                    {/* Remember Me & Forgot */}
+                                    <div className="flex justify-between items-center w-full max-w-[400px] text-sm text-gray-300">
+                                        <div className="flex items-center gap-1">
+                                            <Checkbox
+                                                value={rememberMe}
+                                                checked={rememberMe}
+                                                onChange={() => setRememberMe(!rememberMe)}
+                                                sx={{
+                                                    color: 'white',
+                                                    '&.Mui-checked': {
+                                                        color: 'white',
+                                                    },
+                                                }}
+                                            />
+                                            <label htmlFor="rememberMe">Remember me</label>
+                                        </div>
+                                        <button type="button" className="text-blue-500 hover:underline">
+                                            Forgot Password?
+                                        </button>
+                                    </div>
+
+                                    {/* Submit Button */}
+                                    <button
+                                        disabled={
+                                            (loading || success) ||
+                                            firstName.trim() === '' ||
+                                            password.trim() === '' ||
+                                            email.trim() === ''
+                                        }
+                                        type="submit"
+                                        className="w-full max-w-[400px] py-3 rounded-md bg-blue-700 hover:bg-blue-800 transition disabled:opacity-50"
+                                    >
+                                        {loading || success ? (
+                                            <div className="flex justify-center items-center gap-2">
+                                                <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+                                                Loading...
+                                            </div>
+                                        ) : (
+                                            'Sign up'
+                                        )}
+                                    </button>
+
+                                    {/* Switch to Login */}
+                                    <p className="text-sm text-center text-gray-600 dark:text-gray-300">
+                                        Already have an account?{' '}
+                                        <span
+                                            onClick={() => setNewUser(false)}
+                                            className="text-blue-600 dark:text-blue-400 hover:opacity-70 cursor-pointer transition"
+                                        >
+                                            Login
+                                        </span>
+                                    </p>
                                 </form>
+
                                 :
-                                <form onSubmit={handleSubmit} className='flex bg-white dark:bg-boxdark rounded-md w-full text-white md:p-4 shadow-lg items-center flex-col gap-3 p-4' >
-                                    <div className='flex flex-col items-center gap-3'>
-                                        <div className='flex font-bold flex-col gap-2 items-center'>
-                                            {/* <label className='text-2xl'>Zitfuse</label> */}
-                                            <label className=" font-bold text-3xl">Sign in</label>
-                                            <label className=" font-md text-sm">Welcome back! Please enter your details</label>
-                                            {
-                                                error ?
-                                                    <label className="text-red-500 bg-red-100 py-1 px-4 duration-500 transition-all font-md  text-sm">
-                                                        Incorect Credentials
-                                                    </label>
-                                                    :
-                                                    ''
-                                            }
-                                        </div>
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="flex flex-col items-center gap-6 bg-white dark:bg-boxdark rounded-md w-full md:p-6 p-4 shadow-lg text-white max-w-[500px]"
+                                >
+                                    {/* Header */}
+                                    <div className="text-center space-y-1">
+                                        <h2 className="text-3xl font-bold">Sign in</h2>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                            Welcome back! Please enter your details.
+                                        </p>
+
+                                        {error && (
+                                            <p className="text-sm text-red-500 bg-red-100 dark:bg-red-800/30 px-4 py-1 rounded-md transition-all duration-300">
+                                                Incorrect credentials. Please try again.
+                                            </p>
+                                        )}
                                     </div>
-                                    <div className="rounded-lg max-w-[400px] grow w-full grow flex flex-col gap-4 ">
-                                        <div className='flex gap-2 flex-col'>
-                                            <TextField color='secondary' error={error} onChangeCapture={() => setError(false)} disabled={loading || logsuccess} name='email' onChange={(e) => setEmail(e.target.value)} type='email' required id="email" autoComplete="" label="Email" variant="outlined"
+
+                                    {/* Inputs */}
+                                    <div className="flex flex-col gap-4 w-full max-w-[400px]">
+                                        <TextField
+                                            color="secondary"
+                                            error={error}
+                                            disabled={loading || logsuccess}
+                                            name="email"
+                                            type="email"
+                                            required
+                                            id="email"
+                                            label="Email"
+                                            autoComplete="email"
+                                            onChange={(e) => {
+                                                setError(false);
+                                                setEmail(e.target.value);
+                                            }}
+                                            sx={{
+                                                input: { color: 'white' },
+                                                label: { color: 'white' },
+                                                '.MuiOutlinedInput-root': {
+                                                    '& fieldset': { borderColor: 'white' },
+                                                    '&:hover fieldset': { borderColor: 'white' },
+                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                },
+                                            }}
+                                        />
+
+                                        <TextField
+                                            color="secondary"
+                                            error={error}
+                                            disabled={loading || logsuccess}
+                                            name="password"
+                                            type="password"
+                                            required
+                                            id="password"
+                                            label="Password"
+                                            autoComplete="current-password"
+                                            onChange={(e) => {
+                                                setError(false);
+                                                setPassword(e.target.value);
+                                            }}
+                                            sx={{
+                                                input: { color: 'white' },
+                                                label: { color: 'white' },
+                                                '.MuiOutlinedInput-root': {
+                                                    '& fieldset': { borderColor: 'white' },
+                                                    '&:hover fieldset': { borderColor: 'white' },
+                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                },
+                                            }}
+                                        />
+                                    </div>
+
+                                    {/* Options */}
+                                    <div className="flex justify-between items-center w-full max-w-[400px] text-sm text-gray-300">
+                                        <div className="flex items-center gap-1">
+                                            <Checkbox
+                                                value={rememberMe}
+                                                checked={rememberMe}
+                                                onChange={() => setRememberMe(!rememberMe)}
                                                 sx={{
-                                                    input: { color: 'white' }, // Input text
-                                                    label: { color: 'white' }, // Label text
-                                                    '.MuiOutlinedInput-root': {
-                                                        '& fieldset': { borderColor: 'white' }, // Default border
-                                                        '&:hover fieldset': { borderColor: 'white' }, // Hover border
-                                                        '&.Mui-focused fieldset': { borderColor: 'white' } // Focused border
-                                                    }
+                                                    color: 'white',
+                                                    '&.Mui-checked': {
+                                                        color: 'white',
+                                                    },
                                                 }}
                                             />
-
+                                            <label htmlFor="rememberMe">Remember me</label>
                                         </div>
-                                        <div className='flex gap-2 flex-col'>
-                                            <TextField color='secondary' error={error} onChangeCapture={() => setError(false)} disabled={loading || logsuccess} name='password' type='password' required id="password" autoComplete="" label="Password" variant="outlined"
-                                                sx={{
-                                                    input: { color: 'white' }, // Input text
-                                                    label: { color: 'white' }, // Label text
-                                                    '.MuiOutlinedInput-root': {
-                                                        '& fieldset': { borderColor: 'white' }, // Default border
-                                                        '&:hover fieldset': { borderColor: 'white' }, // Hover border
-                                                        '&.Mui-focused fieldset': { borderColor: 'white' } // Focused border
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-
-                                        <div className='flex items-center justify-between'>
-                                            <div className='flex items-center'>
-                                                <Checkbox
-                                                    value={rememberMe}
-                                                    checked={rememberMe}
-                                                    onChange={() => setRememberMe(!rememberMe)}
-                                                    sx={{
-                                                        color: 'white', // Unchecked color
-                                                        '&.Mui-checked': {
-                                                            color: 'white', // Checked color
-                                                        },
-                                                    }}
-                                                />
-
-                                                <label className='text-sm' htmlFor='rememberMe'>Remember me</label>
-                                            </div>
-                                            <div>
-                                                <label className='text-blue-700'>Forgot Password?</label>
-                                            </div>
-                                        </div>
-                                        <button disabled={(loading || success) && (email == '' || password == '')} type='submit' className='py-3 rounded-md outline-none text-white border-none bg-blue-700 w-[100%]'>
-                                            {loading || success ? <div className='flex items-end justify-center'>Loading... </div> : 'Login'}
+                                        <button type="button" className="text-blue-500 hover:underline">
+                                            Forgot Password?
                                         </button>
-                                        
-                                        <label className='text-sm text-center'>First time? <span className='hover:opacity-[0.5] cursor-pointer duration-500' onClick={()=>setNewUser(true)}>login</span></label>
                                     </div>
+
+                                    {/* Submit Button */}
+                                    <button
+                                        disabled={(loading || success) || email === '' || password === ''}
+                                        type="submit"
+                                        className="w-full max-w-[400px] py-3 rounded-md bg-blue-700 hover:bg-blue-800 transition disabled:opacity-50"
+                                    >
+                                        {loading || success ? (
+                                            <div className="flex justify-center items-center gap-2">
+                                                <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+                                                Loading...
+                                            </div>
+                                        ) : (
+                                            'Login'
+                                        )}
+                                    </button>
+
+                                    {/* Switch to Register */}
+                                    <p className="text-sm text-center text-gray-600 dark:text-gray-300">
+                                        First time?{' '}
+                                        <span
+                                            onClick={() => setNewUser(true)}
+                                            className="text-blue-600 dark:text-blue-400 hover:opacity-70 cursor-pointer transition"
+                                        >
+                                            Create an account
+                                        </span>
+                                    </p>
                                 </form>
                         }
                     </div>
