@@ -5,25 +5,29 @@ import { verifyToken } from './services/token'
 export function middleware(req: NextRequest) {
   const firstTime = req.cookies.get('didVisit')?.value
   const token = req.nextUrl.searchParams.get('token')
-  const localToken =  req.cookies.get('userToken')?.value
+  const localToken = req.cookies.get('userToken')?.value
   const business_id = req.cookies.get('BusinessID')?.value;
 
   console.log('getting local token...')
 
   if (localToken) {
     console.log('Verifying local token:', verifyToken(localToken))
-  }
-  // Handle token from query param - set cookie and redirect to root
-  if (token) {
-    console.log('token exists')
-    const res = NextResponse.next()
-    res.cookies.set('userToken', token, {
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
-      path: '/',
-    })
-    return res
+    return NextResponse.redirect(new URL('/', req.url))
+  } else {
+    // Handle token from query param - set cookie and redirect to root
+    if (token) {
+      console.log('token exists')
+      const res = NextResponse.next()
+
+      res.cookies.set('userToken', token, {
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
+        path: '/',
+      })
+
+      return res
+    }
   }
 
   // Redirect to root if no token in query and no local token cookie
@@ -38,7 +42,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/', req.url))
   }
 
-   if (!firstTime) {
+  if (!firstTime) {
     const res = NextResponse.redirect(new URL('/welcome', req.url));
     res.cookies.set('didVisit', 'true', {
       httpOnly: true,
@@ -49,7 +53,8 @@ export function middleware(req: NextRequest) {
     });
     return res;
   }
-    
+
+
 
   // If none of the above conditions match, continue normally
   return NextResponse.next()
@@ -62,8 +67,7 @@ export const config = {
     '/sales-analytics/:path*',
     '/orders/:path*',
     '/lennyAi/:path*',
-    '/orders/:path*'
-    
+    '/orders/:path*',
+    '/products_and_services/:path*'
   ],
-
 }

@@ -1,9 +1,7 @@
 import { supabase } from "@/services/SupabaseConfig";
 import { generateToken } from "@/services/token";
+import { allowedOrigins } from "@/utils/routesfunc";
 import bcrypt from 'bcrypt';
-
-// ✅ Allowed frontend origins
-const allowedOrigins = ['http://localhost:5173', 'https://inxource.com'];
 
 // ✅ Function to get dynamic CORS headers
 function getCorsHeaders(request: Request): Record<string, string> {

@@ -1,4 +1,3 @@
-import { businessesType, businessType } from '@/types/businesses';
 import { supabase } from './SupabaseConfig';
 import { Customers } from '@/types/Customers';
 import { Sale } from '@/types/Sales';

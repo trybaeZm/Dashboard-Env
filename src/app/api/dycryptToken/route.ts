@@ -1,8 +1,7 @@
 import { decodeToken, verifyToken } from "@/services/token";
+import { allowedOrigins } from "@/utils/routesfunc";
 import ncrypt from "ncrypt-js";
 
-// ✅ Allowed frontend origins
-const allowedOrigins = ['http://localhost:5173', 'https://inxource.com', 'http://localhost:3001'];
 
 // ✅ Dynamic CORS header generator
 function getCorsHeaders(request: Request): Record<string, string> {

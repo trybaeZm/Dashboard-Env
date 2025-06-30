@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getCustomers, deleteCustomer, getCustomer, updateCustomer} from "@/services/apiCustomers";
+import { getCustomers, deleteCustomer,  updateCustomer} from "@/services/apiCustomers";
 import Swal from 'sweetalert2';
 import { Customers } from "@/types/Customers";
 import {

@@ -5,7 +5,8 @@ import { BusinessType } from '@/types/businesses'
 import { ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import { PiFunnel } from 'react-icons/pi'
+import { PiFunnel, PiPlusBold } from "react-icons/pi";
+import { FiSearch } from "react-icons/fi"
 import { Input } from '@/components/ui/input'
 
 export const Busenesses = () => {
@@ -93,24 +94,47 @@ export const Busenesses = () => {
     };
 
     useEffect(() => {
-        getBusinessByUserID()
+        // getBusinessByUserID()
     }, [])
 
 
     return (
         <div className='pt-20 space-y-10 text-sm px-5'>
-            <div className='flex gap-2'>
-                <button onClick={() => setOpenBusinessModel(true)} className='bg-gray-300  bg-gray-500 hover:bg-gray-600 duration-500 text-gray-300 border border-gray-400 p-1 px-2 rounded-md'>new Business</button>
-                <input className='rounded-md p-1 bg-gray-600 border border-gray-400 text-gray-400 px-2 outline-none' />
-                <button className='text-gray-300 border border-gray-400 rounded-md p-1 opacity-[0.5]'>
-                    <PiFunnel size={20} />
+            <div className="flex gap-3 items-center p-2 bg-white dark:bg-boxdark rounded-md">
+                {/* New Business Button */}
+                <button
+                    onClick={() => setOpenBusinessModel(true)}
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md transition duration-300"
+                >
+                    <PiPlusBold size={18} />
+                    New Business
+                </button>
+
+                {/* Search Input */}
+                <div className="relative">
+                    <FiSearch
+                        size={16}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
+                    />
+                    <input
+                        type="text"
+                        placeholder="Search business..."
+                        className="pl-8 pr-3 py-1.5 rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm text-gray-800 dark:text-gray-200 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
+
+                {/* Filter Button */}
+                <button
+                    className="flex items-center justify-center text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                    title="Filter"
+                >
+                    <PiFunnel size={18} />
                 </button>
             </div>
             {
                 openBusinessModel ?
-                    <div className='fixed top-0 bottom-0  left-0 grid grid-cols-12 right-0 bg-[#00000050] z-[999] justify-center flex items-center'>
-                        <div className='col-span-2'></div>
-                        <form onSubmit={addBusiness} className="flex md:col-span-8 col-span-12  bg-gray-700 rounded-lg shadow-md p-5 flex-col gap-3">
+                    <div className='fixed top-0 bottom-0  left-0 right-0  z-[9999] justify-center flex items-center'>
+                        <form onSubmit={addBusiness} className="flex md:col-span-8 col-span-12  dark:bg-gray-700 bg-gray-300 rounded-lg shadow-md p-5 flex-col gap-3">
                             {/* Business Name */}
                             <div className='grow space-y-2'>
                                 <label className="text-black dark:text-white">
@@ -198,7 +222,6 @@ export const Busenesses = () => {
                                 </button>
                             </div>
                         </form>
-                        <div className='col-span-2'></div>
                     </div>
                     :
                     <></>
@@ -233,8 +256,8 @@ export const Busenesses = () => {
 
                                     :
                                     <>
-                                        <div className='text-gray-300'>
-                                            no businesses found...create one?
+                                        <div className='text-sm text-gray-600 dark:text-gray-300'>
+                                            No businesses have been added yet. To get started, create your first business profile so you can begin managing sales, inventory, and performance insights.
                                         </div>
                                     </>
 
@@ -243,7 +266,6 @@ export const Busenesses = () => {
 
                 }
             </div>
-
         </div>
     )
 }

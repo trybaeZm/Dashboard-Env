@@ -56,7 +56,7 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
       })
       .then((data) => {
         console.log('Encrypted token:', data.token);
-        setText('http://localhost:3001/payment/' +data.token); // Set the token to the input field
+        setText('https://payment.inxource.com/payment/' + data.token); // Set the token to the input field
         // You can use `data.token` here
       })
       .catch((err) => {
@@ -84,7 +84,7 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
   }
 
   return (
-    <header className="fixed w-full top-0 z-999 shadow-md flex bg-white dark:bg-boxdark">
+    <header className="fixed dark:text-gray-300 text-gray-800 w-full top-0 z-999 shadow-md flex bg-white dark:bg-boxdark">
       <div className="flex flex-grow items-center text-sm justify-between px-4 py-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2">
           {
@@ -130,19 +130,24 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
               alt="Logo"
               priority
             />
-            <p className="font-bold text-white ">Inxource</p> <span className="text-gray-500 hover:text-gray-400 duration-500 text-sm">{businessData && ' | ' + businessData.business_name}</span>
+            <p className="font-bold">Inxource</p> <span className="text-gray-500 hover:text-gray-400 duration-500 text-sm">{businessData && ' | ' + businessData.business_name}</span>
           </Link>
-          <button onClick={() => setModal(true)} className="bg-gray-300 text-black px-2 ms-5 py-1  rounded-md hover:bg-gray-400 duration-300">
-            generate code
-          </button>
+          {
+            userData && businessData ?
+              <button onClick={() => setModal(true)} className="bg-gray-300 text-black px-2 ms-5 py-1  rounded-md hover:bg-gray-400 duration-300">
+                generate code
+              </button>
+              :
+              <></>
+          }
 
           <div className={`fixed top-0 bottom-0 flex z-[999] transition-all duration-300 left-0 right-0 flex justify-center items-center  ${modal ? "translate-y-0" : " translate-y-full"}`}>
             <div className='absolute  z-0 top-0 bottom-0 left-0 right-0 flex justify-center items-center' onClick={() => setModal(false)}></div>
-            <div className='bg-white text-white dark:bg-boxdark z-4 space-y-2 shadow-lg shadow-black  absolute overflow-y-auto p-4 rounded-lg '>
+            <div className='bg-white text-center text-white dark:bg-boxdark z-4 space-y-2 shadow-lg shadow-black absolute overflow-y-auto p-4 rounded-lg'>
               <div className="text-lg">
                 {businessData && businessData.business_name}
               </div>
-              <div>
+              <div className="text-center">
                 <p
                   onClick={() => {
                     if (businessData?.id && businessData?.company_alias) {
@@ -151,28 +156,24 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
                       alert("Business data is incomplete.");
                     }
                   }}
-                  className="text-sm text-gray-500 hover:opacity-[0.5] duration-500 cursor-pointer"
+                  className="text-sm text-center text-gray-500 hover:opacity-[0.5] duration-500 cursor-pointer"
                 >
                   Generate code for your business
                 </p>
-                <div className="p-4 flex items-center gap-3 max-w-md mx-auto">
-                  <input
-                    type="text"
-                    ref={inputRef}
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Enter text here"
-                    className="border text-black p-2 w-full  rounded"
-                  />
-                  <button
-                    onClick={handleCopy}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                  >
-                    Copy
-                  </button>
+                <div className="p-4 flex flex-wrap gap-3 max-w-md w-full">
+                  <div className="text-sm text-left text-gray-800 dark:text-gray-300 whitespace-normal break-words flex-1 min-w-[200px]">
+                    {text}
+                  </div>
                 </div>
+                <button
+                  onClick={handleCopy}
+                  className="bg-blue-600 w-full px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Copy
+                </button>
               </div>
             </div>
+
           </div>
         </div>
         <div className="flex items-center gap-2 text-white 2xsm:gap-4">
@@ -192,33 +193,47 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
           }
           {/* <!-- User Area --> */}
           {/* <DropdownUser /> */}
-
           {
             userData ?
               <>
                 <div className="relative">
-                  <button onClick={() => setOpenOptions(true)} className="text-sm rounded-md bg-gray-600 text-gray-300  p-1">
-                    {userData?.name[0].toUpperCase()}
+                  {/* User Initial Button */}
+                  <button
+                    onClick={() => setOpenOptions(true)}
+                    className="text-sm font-medium rounded-full bg-gray-600 text-gray-200 px-3 py-2 hover:bg-gray-500 transition duration-300"
+                  >
+                    {userData?.name?.[0]?.toUpperCase() || "U"}
                   </button>
-                  {
-                    openOptions ?
-                      <>
-                        <div onClick={() => setOpenOptions(false)} className="fixed w-full h-full left-0 z-[999] top-0"></div>
-                        <div className="absolute z-[999] p-1 right-0">
-                          <div className="bg-gray-700  space-y-2 p-1 shadow-md rounded-md ">
-                            <button className=" flex w-full duration-300  hover:bg-gray-600 p-1 rounded-md gap-2 items-center">
-                              <User2Icon size={15} />
-                              Profile
-                            </button>
-                            <button onClick={() => LogoutUser()} className=" flex duration-300 hover:bg-gray-600 p-1 w-full rounded-md gap-2 items-center">
-                              <PowerIcon size={15} />
-                              Logout
-                            </button>
-                          </div>
+
+                  {/* Dropdown */}
+                  {openOptions && (
+                    <>
+                      {/* Backdrop to close on outside click */}
+                      <div
+                        onClick={() => setOpenOptions(false)}
+                        className="fixed inset-0 z-[998]"
+                      ></div>
+
+                      {/* Dropdown Menu */}
+                      <div className="absolute z-[999] right-0 mt-2 w-40">
+                        <div className="bg-gray-700 text-gray-100 rounded-md shadow-lg py-2 space-y-1">
+                          <button
+                            className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-600 transition"
+                          >
+                            <User2Icon size={16} />
+                            Profile
+                          </button>
+                          <button
+                            onClick={LogoutUser}
+                            className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-600 transition"
+                          >
+                            <PowerIcon size={16} />
+                            Logout
+                          </button>
                         </div>
-                      </>
-                      :
-                      ''}
+                      </div>
+                    </>
+                  )}
                 </div>
 
               </>

@@ -15,7 +15,7 @@ export default function DefaultLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState<ApiDatatype | null | undefined | any>(null)
   const [userDataLoader, setUserDataLoader] = useState(false)
-  const isOrgSelected= getOrgData() 
+  const isOrgSelected = getOrgData()
 
   const searchParams = useSearchParams();
   let token: string | null = searchParams.get('token');
@@ -61,7 +61,7 @@ export default function DefaultLayout({
     } else {
       setUserData(getData())
     }
-  }, []);
+  }, [token]);
 
 
   return (
@@ -71,21 +71,26 @@ export default function DefaultLayout({
         {/* <!-- ===== Sidebar Start ===== --> */}
         {
           isOrgSelected ?
-          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-          :
-          <></>
+            <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            :
+            <></>
         }
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
         <div className="dark:bg-gray-800">
           {/* <!-- ===== Header Start ===== --> */}
-          <Header isOrgSelected={isOrgSelected} setUserData={setUserData} userDataLoader={userDataLoader} userData={userData} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          {
+            userData ?
+              <Header isOrgSelected={isOrgSelected} setUserData={setUserData} userDataLoader={userDataLoader} userData={userData} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              :
+              <></>
+          }
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main className="dark:bg-gray-800">
-            <div className="mx-auto p-3 min-h-screen dark:bg-gray-800">
+            <div className="mx-auto p-3 min-h-screen dark:text-gray-300 text-gray-800 dark:bg-gray-800">
               {
                 userData ?
                   <Suspense fallback={<div>Loading...</div>}>

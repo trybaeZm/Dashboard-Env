@@ -1,9 +1,8 @@
 import { supabase } from "@/services/SupabaseConfig";
 import { generateToken } from "@/services/token";
+import { allowedOrigins } from "@/utils/routesfunc";
 import bcrypt from 'bcrypt';
 
-// ✅ Allowed frontend origins
-const allowedOrigins = ['http://localhost:5173', 'https://inxource.com'];
 
 // ✅ Dynamic CORS handler
 function getCorsHeaders(request: Request): Record<string, string> {
@@ -32,65 +31,77 @@ export async function OPTIONS(request: Request) {
 }
 
 export async function POST(request: Request) {
+    interface RegisterPayload {
+        name: string;
+        email: string;
+        password: string;
+    }
     const headers = getCorsHeaders(request);
 
-    const { name, email, password } = await request.json();
+    const { name, email, password } = await request.json() as RegisterPayload;;
     console.log(name, email, password);
+    if (email) {
+        try {
+            const lowerCaseEmail = email;
 
-    try {
-        const lowerCaseEmail = email.toLowerCase();
+            // Check if user already exists
+            const { data: existingUser } = await supabase
+                .from('users')
+                .select('*')
+                .eq('email', lowerCaseEmail)
+                .single();
 
-        // Check if user already exists
-        const { data: existingUser } = await supabase
-            .from('users')
-            .select('*')
-            .eq('email', lowerCaseEmail)
-            .single();
+            if (existingUser) {
+                return new Response(JSON.stringify({ message: 'User already exists' }), {
+                    status: 409,
+                    headers,
+                });
+            }
 
-        if (existingUser) {
-            return new Response(JSON.stringify({ message: 'User already exists' }), {
-                status: 409,
+            // Hash the password
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Insert new user
+            const { data: insertData, error: insertError } = await supabase
+                .from('users')
+                .insert([
+                    {
+                        name,
+                        email: lowerCaseEmail,
+                        password_hash: hashedPassword,
+                        role: "business_owner",
+                    }
+                ])
+                .select()
+                .single(); // so we get the inserted user back
+
+            if (insertError) {
+                console.error('Insert error:', insertError.message);
+                return new Response(JSON.stringify({ message: 'Error inserting user' }), {
+                    status: 500,
+                    headers,
+                });
+            }
+
+            const Token = generateToken(insertData, '24h');
+
+            return new Response(JSON.stringify({ message: 'User created successfully', Token, userdata: insertData }), {
+                status: 201,
                 headers,
             });
-        }
 
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Insert new user
-        const { data: insertData, error: insertError } = await supabase
-            .from('users')
-            .insert([
-                {
-                    name,
-                    email: lowerCaseEmail,
-                    password_hash: hashedPassword,
-                    role: "business_owner",
-                }
-            ])
-            .select()
-            .single(); // so we get the inserted user back
-
-        if (insertError) {
-            console.error('Insert error:', insertError.message);
-            return new Response(JSON.stringify({ message: 'Error inserting user' }), {
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            return new Response(JSON.stringify({ message: 'Unexpected error' }), {
                 status: 500,
                 headers,
             });
         }
-
-        const Token = generateToken(insertData, '24h');
-
-        return new Response(JSON.stringify({ message: 'User created successfully', Token }), {
-            status: 201,
-            headers,
-        });
-
-    } catch (err) {
-        console.error("Unexpected error:", err);
-        return new Response(JSON.stringify({ message: 'Unexpected error' }), {
-            status: 500,
+    } else {
+        return new Response(JSON.stringify({ message: 'email npt valid or null' }), {
+            status: 404,
             headers,
         });
     }
+
 }

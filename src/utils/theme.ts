@@ -20,7 +20,7 @@ export const initializeTheme = () => {
   if (!isClient) return;
 
   const isDark = getInitialTheme();
-  
+
   // Apply the theme
   if (isDark) {
     document.documentElement.classList.add('dark');

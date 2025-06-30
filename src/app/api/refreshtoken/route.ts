@@ -1,7 +1,6 @@
 import { decodeToken, verifyToken } from "@/services/token";
+import { allowedOrigins } from "@/utils/routesfunc";
 
-// ✅ Allowed frontend origins
-const allowedOrigins = ['http://localhost:5173', 'https://inxource.com'];
 
 // ✅ Dynamic CORS header generator
 function getCorsHeaders(request: Request): Record<string, string> {
