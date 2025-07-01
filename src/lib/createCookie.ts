@@ -92,6 +92,8 @@ export const removeData = (): Promise<boolean | null> => {
   return new Promise((resolve, reject) => {
     try {
       localStorage.removeItem('userData');
+      removeToken();
+      removeOrgData()
       console.log("User data removed successfully");
       resolve(true)
     } catch (error) {

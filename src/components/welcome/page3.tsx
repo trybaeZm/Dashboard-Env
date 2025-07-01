@@ -14,7 +14,7 @@ export const Page3 = ({ setPageNumber, pageNumber }: { setPageNumber: any, pageN
                 </div>
                 <div className='text-center text-sm text-black dark:text-white'>
                     Welcome to InXource,<br />
-                    Let's get started
+                    Let&#39;s get started
                 </div>
                 <div className='flex justify-center'>
                     <button onClick={()=> setPageNumber(pageNumber+1)} className='flex gap-2 items-center bg-gradient-to-r from-[#1C0F86] to-[#5E53F0BF] py-3 px-5 rounded-[100px] text-white hover:bg-opacity-90'>

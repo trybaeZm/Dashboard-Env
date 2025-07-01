@@ -129,7 +129,7 @@ export async function getWithdrawalsByBusinessId(business_id: string | null | un
     }
 }
 
-export async function getWalletBalance(businessId: string| undefined | null): Promise<number | null> {
+export async function getWalletBalance(businessId: string| undefined | null | number): Promise<number | null> {
   try {
     const { data, error } = await supabase
       .from('businesses')

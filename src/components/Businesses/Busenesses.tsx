@@ -22,7 +22,6 @@ export const Busenesses = () => {
     const storeDatatoCookies = (data: BusinessType) => {
         storeOrgData(data)
         navigation.push('/overview')
-
     }
 
     function getFirstTwoInitials(name: string): string {
@@ -32,7 +31,7 @@ export const Busenesses = () => {
             .join('');
     }
 
-    const getBusinessByUserID = async () => {
+    const getBusinessByUserID = React.useCallback(async () => {
         setLoading(true);
         getBusinessByOwnerID(userData.id)
             .then((res) => {
@@ -45,7 +44,7 @@ export const Busenesses = () => {
             .finally(() => {
                 setLoading(false)
             })
-    };
+    }, [userData.id]);
 
     const addBusiness = async (e: React.FormEvent<HTMLFormElement>) => {
         setLoadings(true)
@@ -95,7 +94,7 @@ export const Busenesses = () => {
 
     useEffect(() => {
         getBusinessByUserID()
-    }, [])
+    }, [getBusinessByUserID])
 
 
     return (
@@ -258,47 +257,49 @@ export const Busenesses = () => {
                         </div>
                         :
                         <>
-                        <div className='grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-3'>
+                            <div className=''>
 
-                            {
-                                organisationData ?
-                                    <>
-                                        {organisationData.map((data, key) =>
-                                            <div
-                                                onClick={() => storeDatatoCookies(data)}
-                                                key={key}
-                                                className="min-h-[150px]  cursor-pointer group 
+                                {
+                                    organisationData ?
+                                        <>
+                                            <div className='grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-3'>
+                                                {organisationData.map((data, key) =>
+                                                    <div
+                                                        onClick={() => storeDatatoCookies(data)}
+                                                        key={key}
+                                                        className="min-h-[150px]  cursor-pointer group 
              bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 
              transition duration-300 text-gray-700 dark:text-gray-300 
              border border-gray-300 dark:border-gray-600 
              flex justify-between items-start p-4 rounded-md shadow-md"
-                                            >
-                                                <div className="flex flex-col gap-1">
-                                                    <h3 className="text-lg font-semibold text-black dark:text-white">
-                                                        {data.business_name}
-                                                    </h3>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {data.company_alias} &bull; {data.industry}
-                                                    </p>
-                                                </div>
+                                                    >
+                                                        <div className="flex flex-col gap-1">
+                                                            <h3 className="text-lg font-semibold text-black dark:text-white">
+                                                                {data.business_name}
+                                                            </h3>
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                                {data.company_alias} &bull; {data.industry}
+                                                            </p>
+                                                        </div>
 
-                                                <div className="self-center group-hover:translate-x-1 group-hover:text-black dark:group-hover:text-white text-gray-500 dark:text-gray-400 transition duration-300">
-                                                    <ArrowRight size={20} />
-                                                </div>
+                                                        <div className="self-center group-hover:translate-x-1 group-hover:text-black dark:group-hover:text-white text-gray-500 dark:text-gray-400 transition duration-300">
+                                                            <ArrowRight size={20} />
+                                                        </div>
+                                                    </div>
+
+                                                )}
                                             </div>
+                                        </>
 
-                                        )}
-                                    </>
+                                        :
+                                        <>
+                                            <div className='text-sm text-gray-600 dark:text-gray-300'>
+                                                No businesses have been added yet. To get started, create your first business profile so you can begin managing sales, inventory, and performance insights.
+                                            </div>
+                                        </>
 
-                                    :
-                                    <>
-                                        <div className='text-sm text-gray-600 dark:text-gray-300'>
-                                            No businesses have been added yet. To get started, create your first business profile so you can begin managing sales, inventory, and performance insights.
-                                        </div>
-                                    </>
-
-                            }
-                        </div>
+                                }
+                            </div>
                         </>
 
                 }

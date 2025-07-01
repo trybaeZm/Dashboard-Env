@@ -1,11 +1,9 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-import DropdownMessage from "./DropdownMessage";
+import { KeyRound } from "lucide-react";
 import DropdownNotification from "./DropdownNotification";
-import DropdownUser from "./DropdownUser";
 import Image from "next/image";
 import Search from "../Search/Search";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ApiDatatype } from "@/services/token";
 import image5 from '@/components/Sidebar/icons/trybae.png'
 import { PowerIcon, User2Icon } from "lucide-react";
@@ -134,47 +132,63 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
           </Link>
           {
             userData && businessData ?
-              <button onClick={() => setModal(true)} className="bg-gray-300 text-black px-2 ms-5 py-1  rounded-md hover:bg-gray-400 duration-300">
-                generate code
+              <button
+                onClick={() => setModal(true)}
+                className="ms-5 px-4 py-2 rounded-lg bg-gray-300 text-black dark:bg-gray-700 dark:text-white hover:bg-gray-400 dark:hover:bg-gray-600 transition duration-300 shadow-sm hover:shadow-md text-sm font-medium flex items-center gap-2"
+              >
+                <KeyRound size={16} />
+                Generate Code
               </button>
               :
               <></>
           }
 
-          <div className={`fixed top-0 bottom-0 flex z-[999] transition-all duration-300 left-0 right-0 flex justify-center items-center  ${modal ? "translate-y-0" : " translate-y-full"}`}>
-            <div className='absolute  z-0 top-0 bottom-0 left-0 right-0 flex justify-center items-center' onClick={() => setModal(false)}></div>
-            <div className='bg-white text-center text-white dark:bg-boxdark z-4 space-y-2 shadow-lg shadow-black absolute overflow-y-auto p-4 rounded-lg'>
-              <div className="text-lg">
-                {businessData && businessData.business_name}
-              </div>
-              <div className="text-center">
-                <p
-                  onClick={() => {
-                    if (businessData?.id && businessData?.company_alias) {
-                      generateEncryptedCode(businessData.id, businessData.company_alias);
-                    } else {
-                      alert("Business data is incomplete.");
-                    }
-                  }}
-                  className="text-sm text-center text-gray-500 hover:opacity-[0.5] duration-500 cursor-pointer"
-                >
-                  Generate code for your business
-                </p>
-                <div className="p-4 flex flex-wrap gap-3 max-w-md w-full">
-                  <div className="text-sm text-left text-gray-800 dark:text-gray-300 whitespace-normal break-words flex-1 min-w-[200px]">
-                    {text}
-                  </div>
-                </div>
-                <button
-                  onClick={handleCopy}
-                  className="bg-blue-600 w-full px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Copy
-                </button>
-              </div>
-            </div>
+          <div
+            className={`fixed inset-0 z-[999] flex justify-center items-center transition-transform duration-300 ${modal ? "translate-y-0" : "translate-y-full"
+              }`}
+          >
+            {/* Backdrop */}
+            <div
+              onClick={() => setModal(false)}
+              className="absolute inset-0 bg-black bg-opacity-50 cursor-pointer"
+            />
 
+            {/* Modal Box */}
+            <div className="relative z-10 w-[90%] max-w-md bg-white dark:bg-boxdark rounded-lg shadow-lg overflow-y-auto p-6 space-y-4 text-gray-800 dark:text-white">
+              {/* Business Name */}
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+                {businessData?.business_name || "Business Name"}
+              </h2>
+
+              {/* Description / Trigger */}
+              <p
+                onClick={() => {
+                  if (businessData?.id && businessData?.company_alias) {
+                    generateEncryptedCode(businessData.id, businessData.company_alias);
+                  } else {
+                    alert("Business data is incomplete.");
+                  }
+                }}
+                className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer transition"
+              >
+                Generate code for your business
+              </p>
+
+              {/* Code Display */}
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-md p-4 text-sm text-left break-words whitespace-pre-wrap text-gray-700 dark:text-gray-200">
+                {text}
+              </div>
+
+              {/* Copy Button */}
+              <button
+                onClick={handleCopy}
+                className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+              >
+                Copy
+              </button>
+            </div>
           </div>
+
         </div>
         <div className="flex items-center gap-2 text-white 2xsm:gap-4">
           {userData ?
@@ -200,7 +214,12 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
                   {/* User Initial Button */}
                   <button
                     onClick={() => setOpenOptions(true)}
-                    className="text-sm font-medium rounded-full bg-gray-600 text-gray-200 px-3 py-2 hover:bg-gray-500 transition duration-300"
+                    className="text-sm font-medium rounded-full 
+             bg-gray-200 text-gray-800 
+             dark:bg-gray-600 dark:text-gray-200 
+             px-3 py-2 
+             hover:bg-gray-300 dark:hover:bg-gray-500 
+             transition duration-300"
                   >
                     {userData?.name?.[0]?.toUpperCase() || "U"}
                   </button>
@@ -213,19 +232,18 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
                         onClick={() => setOpenOptions(false)}
                         className="fixed inset-0 z-[998]"
                       ></div>
-
                       {/* Dropdown Menu */}
                       <div className="absolute z-[999] right-0 mt-2 w-40">
-                        <div className="bg-gray-700 text-gray-100 rounded-md shadow-lg py-2 space-y-1">
+                        <div className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md shadow-lg py-2 space-y-1">
                           <button
-                            className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-600 transition"
+                            className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition"
                           >
                             <User2Icon size={16} />
                             Profile
                           </button>
                           <button
                             onClick={LogoutUser}
-                            className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-600 transition"
+                            className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition"
                           >
                             <PowerIcon size={16} />
                             Logout

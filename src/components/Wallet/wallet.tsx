@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import "./WalletPage.css";
 import { getWithdrawalsByBusinessId, getWalletBalance } from "../../services/api/apiWallet";
 import { getOrdersByBusinessId } from "../../services/api/apiOrder";
-import { Console } from "console";
 import { getOrgData } from "@/lib/createCookie";
 import { BusinessType } from "@/types/businesses";
 
@@ -16,10 +15,10 @@ const WalletPage = () => {
   const router = useRouter();
   const [balance, setBalance] = useState<any>(null);
   const [loading, setLoading] = useState(false)
-  const businessData : BusinessType | null | undefined = getOrgData() // Replace with actual business ID
+  const businessData: BusinessType | null | undefined = getOrgData() // Replace with actual business ID
 
 
-  const getBusinessData = () => {
+  const getBusinessData = React.useCallback(() => {
     setLoading(true)
     getWalletBalance(businessData?.id)
       .then((res) => setBalance(res))
@@ -29,7 +28,7 @@ const WalletPage = () => {
       .finally(() => {
         setLoading(false)
       });
-  }
+  }, [businessData?.id]);
 
   useEffect(() => {
     getBusinessData()
@@ -42,7 +41,7 @@ const WalletPage = () => {
     }
 
     fetchData();
-  }, []);
+  }, [businessData?.id, getBusinessData]);
 
 
   const openTab = (tab: any) => setActiveTab(tab);

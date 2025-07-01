@@ -6,6 +6,7 @@ import { MdArrowBack } from 'react-icons/md';
 import { OrderData } from '@/types/Orders';
 import { getOrderImages, getOrdersByBusinessId, marckSettled } from '@/services/api/apiOrder';
 import { getOrgData } from '@/lib/createCookie';
+import Image from 'next/image';
 
 export const Table = ({ open, filter, data, setData }: { open: any, filter: string, data: OrderData[] | undefined | null, setData: any }) => {
     // api for getting orders data can be pkaced here
@@ -55,8 +56,19 @@ export const Table = ({ open, filter, data, setData }: { open: any, filter: stri
 
 
         useEffect(() => {
-            getOrderImage()
-        }, [])
+            setLoading(true)
+            getOrderImages(data)
+                .then((response) => {
+                    console.log(response)
+                    setImage(response)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
+        }, [data])
         return (
             <div className='border w-full justify-center flex border-black dark:border-gray-200 rounded-md p-1'>
                 {
@@ -66,7 +78,7 @@ export const Table = ({ open, filter, data, setData }: { open: any, filter: stri
                         <>
                             {image && image.length > 0 ? (
                                 image.map((img, index) => (
-                                    <img
+                                    <Image
                                         key={index}
                                         src={img}
                                         alt={`Order Image ${index + 1}`}
@@ -88,7 +100,7 @@ export const Table = ({ open, filter, data, setData }: { open: any, filter: stri
                 <div onClick={() => setOption(null)} className='absolute h-full w-full bg-[#00000050] '></div>
                 {data?.filter(e => e.order_id === option).map(e => {
                     return (
-                        <div className=' rounded-md overflow-y-auto max-h-[90vh] absolute bg-white shadow-md dark:bg-gray-800'>
+                        <div key={e.id} className=' rounded-md overflow-y-auto max-h-[90vh] absolute bg-white shadow-md dark:bg-gray-800'>
                             <div className='flex p-5 gap-10 sticky top-0 bg-gray-200 dark:bg-gray-800 justify-between items-center'>
                                 <div className='flex gap-5'>
                                     {

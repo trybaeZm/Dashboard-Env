@@ -1,15 +1,13 @@
 'use client'
-import { CopyIcon, EditIcon, ImageIcon, PlusIcon, TrashIcon } from 'lucide-react'
-import { PiDotsThreeOutlineFill } from "react-icons/pi";
+import { PlusIcon } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import Image from 'next/image';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import { getData, getOrgData } from '@/lib/createCookie';
 import { createProductAndService, getProductsAndServices, ProductWithSales } from '@/services/api/products';
 import { BusinessType } from '@/types/businesses';
-import { supabase } from '@/services/SupabaseConfig';
 import { ProductCard } from './components/ProductCard';
 
 export const ProductsAndServices = () => {
@@ -25,25 +23,6 @@ export const ProductsAndServices = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedImages, setSelectedImages] = useState<ImagePreview[]>([]);
 
-async function uploadImagesToSupabase(files: File[], businessId: string): Promise<string[]> {
-    // Example implementation: upload each file and return their URLs
-    const uploadedUrls: string[] = [];
-    for (const file of files) {
-        const { data, error } = await supabase
-            .storage
-            .from('products')
-            .upload(`${businessId}/${Date.now()}_${file.name}`, file, { upsert: true });
-        if (error) {
-            console.error('Upload error:', error);
-            continue;
-        }
-        // Construct the public URL (adjust as needed for your Supabase setup)
-        const url = supabase.storage.from('products').getPublicUrl(data.path).data.publicUrl;
-        uploadedUrls.push(url);
-    }
-    return uploadedUrls;
-}
-
     interface ImagePreview {
         name: string;
         url: string;
@@ -51,7 +30,7 @@ async function uploadImagesToSupabase(files: File[], businessId: string): Promis
     }
 
     // Fetch products for the current business and update state
-    async function getProducts() {
+    const getProducts = React.useCallback(async () => {
         if (!businessData?.id) return;
         setLoading(true);
         try {
@@ -63,7 +42,7 @@ async function uploadImagesToSupabase(files: File[], businessId: string): Promis
         } finally {
             setLoading(false);
         }
-    }
+    }, [businessData?.id]);
 
     const handleDivClick = () => {
         if (selectedImages.length >= 3) {
@@ -145,13 +124,13 @@ async function uploadImagesToSupabase(files: File[], businessId: string): Promis
     };
 
 
-    
+
 
 
 
     useEffect(() => {
         getProducts()
-    }, [])
+    }, [getProducts])
     return (
         <div className='pt-20  dark:text-gray-200'>
             <div className={`fixed top-0 bottom-0 flex transition-all duration-300 left-0 right-0 flex justify-end z-999 ${modal ? "translate-x-0" : " translate-x-full"}`}>
@@ -246,14 +225,17 @@ async function uploadImagesToSupabase(files: File[], businessId: string): Promis
                                 {selectedImages.length > 0 && (
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                                         {selectedImages.map((img, index) => (
-                                            <div key={index} className="relative border rounded overflow-hidden">
-                                                <img
+                                            <>
+                                                <Image
                                                     src={img.url}
                                                     alt={img.name}
+                                                    width={100}
+                                                    height={128}
                                                     className="w-[100px] h-32 object-cover"
                                                 />
                                                 <p className="text-xs text-center p-1 truncate">{img.name}</p>
-                                            </div>
+
+                                            </>
                                         ))}
                                     </div>
                                 )}
@@ -308,7 +290,7 @@ async function uploadImagesToSupabase(files: File[], businessId: string): Promis
                         </form>
                     </div>
                 </div>
-            </div>
+            </div >
 
             <div className='flex justify-between z-1'>
                 <div className='text-2xl font-bold dark:text-gray-200'>Products and Services</div>
@@ -331,19 +313,16 @@ async function uploadImagesToSupabase(files: File[], businessId: string): Promis
                             :
                             <>
                                 {
-                                    productData?.map((e) =>
-                                        <ProductCard e={e} setModal={setModal} />
+                                    productData?.map((e, key) =>
+                                        <ProductCard e={e} key={key} setModal={setModal} />
                                     )
                                 }
                             </>
                     }
                 </div>
             </div>
-        </div>
+        </div >
     )
-}
-function getProducts() {
-    throw new Error('Function not implemented.');
 }
 
 

@@ -107,16 +107,18 @@ export const CustomerReturn = ({ data }: { data: DashboardSummary | null | undef
     ],
   };
   return (
-    <div className="rounded flex flex-wrap bg-gray-700 shadow-md p-4 rounded-md flex">
-      <div className='flex-col grow gap-4 flex'>
-        <div className="text-xl text-white">Customer Return</div>
-        <div className='font-thin text-sm text-gray-400'>last 7 days</div>
-        <div className="text-3xl font-bold text-white">{formatNumber(data?.allCustomers.length)}</div>
-        <div className="text-gray-400">
+    <div className="rounded flex flex-wrap bg-white dark:bg-gray-700 shadow-md p-4 rounded-md">
+      <div className="flex-col grow gap-4 flex">
+        <div className="text-xl text-gray-900 dark:text-white">Customer Return</div>
+        <div className="font-thin text-sm text-gray-500 dark:text-gray-400">last 7 days</div>
+        <div className="text-3xl font-bold text-gray-900 dark:text-white">
+          {formatNumber(data?.allCustomers.length)}
+        </div>
+        <div className="text-gray-500 dark:text-gray-400">
           {/* <FaArrowUp /> */}7% vs last 7 days
         </div>
       </div>
-      <div className='grow'>
+      <div className="grow">
         <ReactApexChart
           options={options}
           series={series}

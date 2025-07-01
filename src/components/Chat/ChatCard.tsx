@@ -1,5 +1,4 @@
 "use client"
-import Link from "next/link";
 import Image from "next/image";
 import { FaSearch } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
@@ -15,60 +14,8 @@ import {  MessageSquareTextIcon } from "lucide-react";
 import { Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import TextareaAutosize from 'react-textarea-autosize';
-
 import image from '../../../public/images/trybae.png'
 
-
-const chatData: Chat[] = [
-  {
-    avatar: "/images/user/user-01.png",
-    name: "Devid Heilo",
-    text: "How are you?",
-    time: 12,
-    textCount: 3,
-    dot: 3,
-  },
-  {
-    avatar: "/images/user/user-02.png",
-    name: "Henry Fisher",
-    text: "Waiting for you!",
-    time: 12,
-    textCount: 0,
-    dot: 1,
-  },
-  {
-    avatar: "/images/user/user-04.png",
-    name: "Jhon Doe",
-    text: "What's up?",
-    time: 32,
-    textCount: 0,
-    dot: 3,
-  },
-  {
-    avatar: "/images/user/user-05.png",
-    name: "Jane Doe",
-    text: "Great",
-    time: 32,
-    textCount: 2,
-    dot: 6,
-  },
-  {
-    avatar: "/images/user/user-01.png",
-    name: "Jhon Doe",
-    text: "How are you?",
-    time: 32,
-    textCount: 0,
-    dot: 3,
-  },
-  {
-    avatar: "/images/user/user-03.png",
-    name: "Jhon Doe",
-    text: "How are you?",
-    time: 32,
-    textCount: 3,
-    dot: 6,
-  },
-];
 
 const ChatCard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -173,8 +120,8 @@ const ChatCard = () => {
           {messages.length > 0 ?
             <>
               <div className={`flex h-full overflow-y-auto pb-[100px] items-end w-full  pt-20  p-2  flex-col gap-2`}>
-                {messages.map((e) =>
-                <div className={`w-full flex ${e.sender === 'user' ? ' justify-end' : 'justify-start'}`}>
+                {messages.map((e, key) =>
+                <div key={key} className={`w-full flex ${e.sender === 'user' ? ' justify-end' : 'justify-start'}`}>
                   <div className={`flex break-all flex-wrap max-w-[90%] text-gray-800 dark:text-gray-200 px-5 py-2 ${e.sender === 'user' ? 'bg-primary/10 dark:bg-primary/25 rounded-tl-lg rounded-bl-lg rounded-tr-lg' : 'bg-gray-200 dark:bg-boxdark rounded-tl-lg rounded-br-lg rounded-tr-lg'} gap-2`}>
                         {e.message}
                   </div>

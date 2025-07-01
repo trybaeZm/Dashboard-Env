@@ -23,7 +23,7 @@ const Dashboard: React.FC = () => {
   const businesData: BusinessType | null = getOrgData()
   const [data, setData] = useState<DashboardSummary | null>()
 
-  const GetDashData = () => {
+  const GetDashData = React.useCallback(() => {
     setLoading(true)
     dashboard(businesData?.id)
       .then((res) => {
@@ -40,10 +40,11 @@ const Dashboard: React.FC = () => {
       .finally(() => {
         setLoading(false)
       })
-  }
+  }, [businesData?.id])
+
   useEffect(() => {
     GetDashData()
-  }, [])
+  }, [GetDashData])
   return (
     <>
       <div className="flex pt-20 flex-col gap-5 dark:bg-gray-800">

@@ -129,12 +129,19 @@ const Signup = () => {
                                                 setFirstName(e.target.value);
                                             }}
                                             sx={{
-                                                input: { color: 'white' },
-                                                label: { color: 'white' },
+                                                input: { color: 'inherit' },
+                                                label: { color: 'inherit' },
                                                 '.MuiOutlinedInput-root': {
-                                                    '& fieldset': { borderColor: 'white' },
-                                                    '&:hover fieldset': { borderColor: 'white' },
-                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                    backgroundColor: 'transparent',
+                                                    '& fieldset': {
+                                                        borderColor: 'rgba(156, 163, 175, 0.6)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'rgba(59, 130, 246, 1)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: 'rgba(37, 99, 235, 1)',
+                                                    },
                                                 },
                                             }}
                                         />
@@ -153,12 +160,19 @@ const Signup = () => {
                                                 setEmail(e.target.value);
                                             }}
                                             sx={{
-                                                input: { color: 'white' },
-                                                label: { color: 'white' },
+                                                input: { color: 'inherit' },
+                                                label: { color: 'inherit' },
                                                 '.MuiOutlinedInput-root': {
-                                                    '& fieldset': { borderColor: 'white' },
-                                                    '&:hover fieldset': { borderColor: 'white' },
-                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                    backgroundColor: 'transparent',
+                                                    '& fieldset': {
+                                                        borderColor: 'rgba(156, 163, 175, 0.6)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'rgba(59, 130, 246, 1)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: 'rgba(37, 99, 235, 1)',
+                                                    },
                                                 },
                                             }}
                                         />
@@ -177,12 +191,19 @@ const Signup = () => {
                                                 setPassword(e.target.value);
                                             }}
                                             sx={{
-                                                input: { color: 'white' },
-                                                label: { color: 'white' },
+                                                input: { color: 'inherit' },
+                                                label: { color: 'inherit' },
                                                 '.MuiOutlinedInput-root': {
-                                                    '& fieldset': { borderColor: 'white' },
-                                                    '&:hover fieldset': { borderColor: 'white' },
-                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                    backgroundColor: 'transparent',
+                                                    '& fieldset': {
+                                                        borderColor: 'rgba(156, 163, 175, 0.6)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'rgba(59, 130, 246, 1)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: 'rgba(37, 99, 235, 1)',
+                                                    },
                                                 },
                                             }}
                                         />
@@ -278,12 +299,19 @@ const Signup = () => {
                                                 setEmail(e.target.value);
                                             }}
                                             sx={{
-                                                input: { color: 'white' },
-                                                label: { color: 'white' },
+                                                input: { color: 'inherit' },
+                                                label: { color: 'inherit' },
                                                 '.MuiOutlinedInput-root': {
-                                                    '& fieldset': { borderColor: 'white' },
-                                                    '&:hover fieldset': { borderColor: 'white' },
-                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                    backgroundColor: 'transparent',
+                                                    '& fieldset': {
+                                                        borderColor: 'rgba(156, 163, 175, 0.6)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'rgba(59, 130, 246, 1)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: 'rgba(37, 99, 235, 1)',
+                                                    },
                                                 },
                                             }}
                                         />
@@ -303,12 +331,19 @@ const Signup = () => {
                                                 setPassword(e.target.value);
                                             }}
                                             sx={{
-                                                input: { color: 'white' },
-                                                label: { color: 'white' },
+                                                input: { color: 'inherit' },
+                                                label: { color: 'inherit' },
                                                 '.MuiOutlinedInput-root': {
-                                                    '& fieldset': { borderColor: 'white' },
-                                                    '&:hover fieldset': { borderColor: 'white' },
-                                                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                                                    backgroundColor: 'transparent',
+                                                    '& fieldset': {
+                                                        borderColor: 'rgba(156, 163, 175, 0.6)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'rgba(59, 130, 246, 1)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: 'rgba(37, 99, 235, 1)',
+                                                    },
                                                 },
                                             }}
                                         />

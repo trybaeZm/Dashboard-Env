@@ -1,10 +1,10 @@
 'use client';
-
 import Swal from 'sweetalert2';
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../services/SupabaseConfig';
 import { uploadBusinessLogo } from '../../services/api/apiBusiness';
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import Image from 'next/image';
 
 const businessId = '123e4567-e89b-12d3-a456-426614174005';
 
@@ -152,7 +152,7 @@ const Settings = () => {
             </button>
             {logoUrl && (
               <div className="mt-4 flex justify-center">
-                <img
+                <Image
                   src={logoUrl}
                   alt="Business Logo"
                   className="h-28 w-28 rounded-full border border-gray-300 object-cover"

@@ -1,13 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { Input } from '../ui/input'
-import { FilterIcon, FuelIcon, Link } from 'lucide-react'
+import { FilterIcon,  Link } from 'lucide-react'
 import { FunnelIcon } from '@heroicons/react/24/outline'
 import { Table } from './components/Table'
 import { usePathname } from 'next/navigation'
 import Container from '../Layouts/Container'
 import { OrderData } from '@/types/Orders'
-import { getWalletBalance } from '@/services/api/apiWallet'
 import { getOrdersByBusinessId } from '@/services/api/apiOrder'
 import { getOrgData } from '@/lib/createCookie'
 
@@ -20,14 +19,7 @@ export const Orders = () => {
     const businessData = getOrgData() // Assuming this function returns the business data
 
 
-    const NvLink = ({ href, children }: { href: string, children: any }) => {
-        const isActive = router === href
-        return (
-            <Link href={href} className={`${isActive ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>{children}</Link>
-        )
-    }
-
-    const getBusinessData = () => {
+    const getBusinessData = React.useCallback(() => {
         setLoading(true)
         getOrdersByBusinessId(businessData?.id)
             .then((res) => {
@@ -40,11 +32,11 @@ export const Orders = () => {
             .finally(() => {
                 setLoading(false)
             });
-    }
+    }, [businessData])
 
     useEffect(() => {
         getBusinessData()
-    }, [])
+    }, [getBusinessData])
 
 
 

@@ -17,7 +17,7 @@ export const Page1 = ({setPageNumber,pageNumber}:{setPageNumber:any,pageNumber:n
             <div className='grow flex flex-col gap-3 max-w-[500px]'>
                 <div className='font-bold text-4xl md:text-left text-center text-black dark:text-white'>Sign-Up to InXource</div>
                 <div className='text-lg md:text-left text-center text-gray-700 dark:text-gray-300'>
-                Grow your business with inXource-your AI-powered team of virtual agents. From sales and accounting to lead generation and customer support, our smart agents handle it all, so you don't have to hire extra employees. Focus on scaling while inXource does the work for you! 
+                Grow your business with inXource-your AI-powered team of virtual agents. From sales and accounting to lead generation and customer support, our smart agents handle it all, so you don&apos;t have to hire extra employees. Focus on scaling while inXource does the work for you! 
                 </div>
                 <div className='flex flex-col gap-3'>
                     <div>

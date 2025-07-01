@@ -3,15 +3,16 @@ import React, { useState, useEffect } from "react";
 import { createWithdrawal, getWalletBalance } from "../../services/api/apiWallet"
 import { useRouter } from "next/navigation";
 import "./WithdrawForm.css";
-
-const businessId = "123e4567-e89b-12d3-a456-426614174005";
+import { getOrgData } from "@/lib/createCookie";
 
 const WithdrawForm = () => {
+  const businessId = getOrgData()
+
   const [form, setForm] = useState<any>({
     amount: "",
     method: "",
     account_details: "",
-    business_id: businessId
+    business_id: businessId?.business_id
   });
   const router = useRouter();
   const [errors, setErrors] = useState<any>({});
@@ -21,7 +22,7 @@ const WithdrawForm = () => {
 
   useEffect(() => {
     if (businessId) {
-      getWalletBalance(businessId)
+      getWalletBalance(businessId?.business_id)
         .then(setBalance);
     }
   }, [businessId]);

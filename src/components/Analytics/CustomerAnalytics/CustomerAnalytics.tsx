@@ -26,7 +26,7 @@ export const CustomerAnalytics = () => {
   const userData: ApiDatatype = getData()
   const business: BusinessType | null = getOrgData()
 
-  const getCustomers = () => {
+  const getCustomers = React.useCallback(() => {
     setLoading(true)
     getCuststomerSales(business?.id)
       .then((res) => {
@@ -45,12 +45,11 @@ export const CustomerAnalytics = () => {
       .finally(() => {
         setLoading(false)
       })
-  }
+  }, [business?.id])
 
   useEffect(() => {
     getCustomers()
-
-  }, [])
+  }, [getCustomers])
 
   return (
     <div className="flex flex-col text-sm dark:text-white  gap-5 py-20 justify-center">

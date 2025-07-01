@@ -20,8 +20,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { getDataforsalseAnalytics, SalesAnalyticsData } from '@/services/api/products'
 import { getOrgData } from '@/lib/createCookie'
 import { BusinessType } from '@/types/businesses'
 import { getSalesAnalysis } from '@/services/api/apiSale'
@@ -56,7 +54,7 @@ const TotalSalesOverTime = () => {
 
 
 
-    const getProductsPageData = () => {
+    const getProductsPageData = React.useCallback(() => {
         setLoading(true)
         getSalesAnalysis(businessData?.id ?? null)
             .then((res: any) => {
@@ -69,10 +67,11 @@ const TotalSalesOverTime = () => {
             .finally(() => {
                 setLoading(false)
             })
-    }
+    }, [businessData?.id])
+
     useEffect(() => {
         getProductsPageData()
-    }, [])
+    }, [getProductsPageData])
 
 
     const growthRate = () => {

@@ -1,6 +1,5 @@
 "use client";
-import { CrownIcon, ShuffleIcon } from "lucide-react";
-import ReactApexChart from "react-apexcharts";
+import { ShuffleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TopProducts } from "./customcomponents/TopProducts";
@@ -10,6 +9,7 @@ import { getOrgData } from "@/lib/createCookie";
 import { SalesRevenueByRegion } from "./customcomponents/SalesRevenueByRegion";
 import { PeakSalePeriod } from "./customcomponents/PeakSalePeriod";
 import AreaChart from "./components/AreaChart";
+import { useCallback } from "react";
 
 // Loading skeleton reused for multiple sections
 const LoadingSkeleton = () => (
@@ -23,7 +23,8 @@ const SalesAnalytics: React.FC = () => {
   const [Loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getProductsPageData = async () => {
+
+  const getProductsPageData = useCallback(async () => {
     if (!businessData?.id) {
       setError("Missing business ID. Cannot fetch data.");
       return;
@@ -40,11 +41,11 @@ const SalesAnalytics: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [businessData]);
 
   useEffect(() => {
     getProductsPageData();
-  }, []);
+  }, [getProductsPageData]);
 
   return (
     <div className="flex flex-col gap-5 py-20 justify-center">

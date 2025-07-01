@@ -5,8 +5,9 @@ import image2 from '../../../public/images/icon/Vector (1).png'
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
-const page = () => {
-    const [page, setPage] = useState(1)
+
+const Page = () => {
+    const [page, setPage] = useState<number>(1)
 
     const NextBtn = () => {
         return (
@@ -333,4 +334,4 @@ const page = () => {
 }
 
 
-export default page
+export default Page
