@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, ReactNode, Suspense, useEffect } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { useSearchParams } from "next/navigation";
-import { createCookie, getCookie, getData, getOrgData, storeData } from "@/lib/createCookie";
-import { getUserDataWithToken, ApiDatatype, verifyToken } from "@/services/token";
-import Signup from "../signupPage/Signup";
+import { createCookie, getData, getOrgData, storeData } from "@/lib/createCookie";
+import { ApiDatatype } from "@/services/token";
 
 export default function DefaultLayout({
   children
@@ -91,14 +90,9 @@ export default function DefaultLayout({
           {/* <!-- ===== Main Content Start ===== --> */}
           <main className="dark:bg-gray-800">
             <div className="mx-auto p-3 min-h-screen dark:text-gray-300 text-gray-800 dark:bg-gray-800">
-              {
-                userData ?
-                  <Suspense fallback={<div>Loading...</div>}>
-                    {children}
-                  </Suspense>
-                  :
-                  <Signup />
-              }
+              <Suspense fallback={<div>Loading...</div>}>
+                {children}
+              </Suspense>
             </div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}

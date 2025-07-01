@@ -27,18 +27,11 @@ export function middleware(req: NextRequest) {
     }
   }
 
-
-
-
-
-
-
   // Redirect to root if no business ID cookie
   if (!business_id) {
     console.log('user has not selected an organisation')
     return NextResponse.redirect(new URL('/', req.url))
   }
-
   // if (!firstTime) {
   //   const res = NextResponse.redirect(new URL('/welcome', req.url));
   //   res.cookies.set('didVisit', 'true', {

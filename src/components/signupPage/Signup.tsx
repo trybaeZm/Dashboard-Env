@@ -1,13 +1,14 @@
+'use client'
 import { createCookie, storeData } from '@/lib/createCookie';
 import { LoginAuth, SignUpAuth } from '@/services/auth/Auth';
 import { TextField, Checkbox } from '@mui/material';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 const Signup = () => {
+    const navigation = useRouter()
 
     const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -32,7 +33,8 @@ const Signup = () => {
                     createCookie(res.Token);
                     storeData(res.userdata)
                     setSuccess(true)
-                    window.location.reload();
+
+                    navigation.push('/');
                 }
             })
             .catch((err) => {
@@ -58,7 +60,8 @@ const Signup = () => {
                     createCookie(res.Token);
                     storeData(res.userdata)
                     setSuccess(true)
-                    window.location.reload();
+                    navigation.push('/');
+
                 }
             })
             .catch((error) => {
@@ -76,7 +79,6 @@ const Signup = () => {
             <div className={`fixed top-0 bottom-0 flex z-[999] transition-all duration-300 left-0 right-0 flex justify-end  ${modal ? "translate-x-0" : " translate-x-full"}`}>
                 <div className='absolute z-0 top-0 bottom-0 left-0 right-0 flex justify-end ' onClick={() => setModal(false)}></div>
                 <div className='bg-white dark:bg-boxdark z-4 flex items-center shadow-lg shadow-black top-0 bottom-0  absolute overflow-y-auto px-10 py-5 '>
-
                 </div>
             </div>
             {/* sig up */}
