@@ -4,9 +4,6 @@ import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
 import { themeScript } from "./theme-script";
-import {
-  ClerkProvider
-} from "@clerk/nextjs";
 
 export default function RootLayout({
   children,
@@ -15,7 +12,6 @@ export default function RootLayout({
 }>) {
   const [loading, setLoading] = useState<boolean>(true);
   const [inDarkMode, setInDarkMode] = useState<boolean>(false);
-
   // const pathname = usePathname();
 
   useEffect(() => {
@@ -23,7 +19,6 @@ export default function RootLayout({
   }, []);
 
   return (
-    <ClerkProvider>
       <html style={{backgroundColor: inDarkMode ? '#111827' : '#f9fafb'}} lang="en">
         <head>
           <script
@@ -40,6 +35,5 @@ export default function RootLayout({
           </ReactQueryProvider>
         </body>
       </html>
-    </ClerkProvider>
   );
 }

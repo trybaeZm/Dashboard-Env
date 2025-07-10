@@ -32,20 +32,24 @@ export const Busenesses = () => {
     }
 
     const getBusinessByUserID = React.useCallback(async () => {
+        if (!userData || !userData.id) {
+            console.warn("User data is missing or invalid");
+            return;
+        }
+
         setLoading(true);
+
         getBusinessByOwnerID(userData.id)
             .then((res) => {
-                // console.log(res)
-                setOrganisationData(res)
+                setOrganisationData(res);
             })
             .catch((err) => {
-                console.log(err)
+                console.error(err);
             })
             .finally(() => {
-                setLoading(false)
-            })
-    }, [userData.id]);
-
+                setLoading(false);
+            });
+    }, [userData?.id]);
     const addBusiness = async (e: React.FormEvent<HTMLFormElement>) => {
         setLoadings(true)
         e.preventDefault();
@@ -93,8 +97,13 @@ export const Busenesses = () => {
     };
 
     useEffect(() => {
+        // if((!userData || !userData.id) && !business) {
+        //     // If userData is not available
+        //     console.warn("User data is missing or invalid");
+        //     navigation.push('/signin');
+        // }
         getBusinessByUserID()
-    }, [getBusinessByUserID])
+    }, [getBusinessByUserID]);
 
 
     return (

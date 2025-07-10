@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
-import { SignUp, useUser } from "@clerk/nextjs";
 import { supabase } from "@/services/SupabaseConfig";
 
 export default function Page() {
-    const { user, isSignedIn } = useUser();
+    // const { user, isSignedIn } = useUser();
 
-    useEffect(() => {
-        if (isSignedIn && user) {
-            saveUserToSupabase(user);
-        }
-    }, [isSignedIn, user]);
+    // useEffect(() => {
+    //     if (isSignedIn && user) {
+    //         saveUserToSupabase(user);
+    //     }
+    // }, [isSignedIn, user]);
 
     const saveUserToSupabase = async (user: any) => {
         const { id, emailAddresses, firstName, lastName } = user;
@@ -31,10 +30,9 @@ export default function Page() {
             console.log("User saved to Supabase successfully!");
         }
     };
-
     return (
         <div className="flex h-screen items-center justify-center">
-            <SignUp />
+            {/* <SignUp /> */}
         </div>
     );
 }

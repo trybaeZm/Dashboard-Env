@@ -1,6 +1,4 @@
-import { createCookie, storeData } from "@/lib/createCookie";
-
-export const LoginAuth = (data): Promise<null | any> => {
+export const LoginAuth = (data:any): Promise<null | any> => {
     return new Promise(async (resolve, reject) => {
         try {
             console.log(data);
@@ -28,13 +26,17 @@ export const LoginAuth = (data): Promise<null | any> => {
             }
 
         } catch (err) {
-            console.error('Error:', err.message);
+            if (err instanceof Error) {
+                console.error('Error:', err.message);
+            } else {
+                console.error('Error:', err);
+            }
             reject(null)
         }
     })
 }
 
-export const SignUpAuth = (data): Promise<null | any> => {
+export const SignUpAuth = (data:any): Promise<null | any> => {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await fetch('/api/signup', {

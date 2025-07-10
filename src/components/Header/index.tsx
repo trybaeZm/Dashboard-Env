@@ -10,6 +10,7 @@ import { PowerIcon, User2Icon } from "lucide-react";
 import { useRef, useState } from "react";
 import { getOrgData, removeData, removeOrgData } from "@/lib/createCookie";
 import { BusinessType, businessType } from "@/types/businesses";
+import { useRouter } from "next/navigation";
 
 const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSidebarOpen, userData }: {
   setUserData: any,
@@ -21,6 +22,7 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
 }) => {
 
 
+  const navigation = useRouter();
   const [openOptions, setOpenOptions] = useState(false)
   const businessData: BusinessType | null = getOrgData()
   const [text, setText] = useState('');
@@ -71,7 +73,7 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
         removeOrgData()
         // This will reload the current page
         // window.location.reload();
-
+        navigation.push('/signin');
       })
       .catch((err) => {
         console.log(err)

@@ -2,7 +2,6 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -44,7 +43,6 @@ const DropdownUser = () => {
             <span className="absolute -z-1 inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
           </span>
         </span>
-
         {/* <svg
           className="hidden fill-current sm:block"
           width="12"
