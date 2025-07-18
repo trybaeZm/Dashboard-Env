@@ -6,6 +6,8 @@ export type OrderData = {
   order_status: string; // extend with more statuses if needed
   total_amount: number;
   created_at: string; // ISO date string
+  product_id: string
+  delivery_location: string
   customers: {
     name: string;
   };

@@ -20,32 +20,36 @@ const SalesAnalytics: React.FC = () => {
   const navigation = useRouter();
   const businessData: BusinessType | null = getOrgData();
   const [data, setData] = useState<null | SalesAnalyticsData>(null);
-  const [Loading, setLoading] = useState(false);
+  const [Loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
 
-  const getProductsPageData = useCallback(async () => {
+  const getProductsPageData = async () => {
     if (!businessData?.id) {
       setError("Missing business ID. Cannot fetch data.");
       return;
     }
-
     setLoading(true);
     setError(null);
     try {
       const res: any = await getDataforsalseAnalytics(businessData.id);
       setData(res);
+      setLoading(false)
+      console.log('successfully requested data')
     } catch (errr) {
       console.log(errr);
       setError("Failed to fetch data. Please try again.");
+      setLoading(false)
     } finally {
       setLoading(false);
     }
-  }, [businessData]);
+  };
 
   useEffect(() => {
     getProductsPageData();
-  }, [getProductsPageData]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex flex-col gap-5 py-20 justify-center">

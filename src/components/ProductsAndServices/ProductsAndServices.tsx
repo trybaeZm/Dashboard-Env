@@ -36,6 +36,7 @@ export const ProductsAndServices = () => {
         try {
             const products = await getProductsAndServices(businessData.id);
             setProductData(products);
+            console.log(products)
         } catch (error) {
             setProductData([]);
             console.error(error);
@@ -93,13 +94,13 @@ export const ProductsAndServices = () => {
         const category = formData.get('category') as string;
         const name = formData.get('name') as string;
         const price = parseFloat(formData.get('price') as string);
-        const description = formData.get('description') as string;
+        const descriptions = formData.get('description') as string;
 
         const staticData = {
             price,
             name,
             category,
-            description,
+            description : descriptions || "",
             business_id: businessData?.id || "",
             int_business_id: businessData?.business_id || 0,
         };
@@ -122,10 +123,6 @@ export const ProductsAndServices = () => {
             setLoading2(false);
         }
     };
-
-
-
-
 
 
     useEffect(() => {
@@ -156,7 +153,7 @@ export const ProductsAndServices = () => {
 
                             <div
                                 className="p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-                            >
+                            >   
                                 <PhotoIcon className="w-[30px] dark:text-gray-200" />
                             </div>
                             <div className='flex flex-col gap-3'>

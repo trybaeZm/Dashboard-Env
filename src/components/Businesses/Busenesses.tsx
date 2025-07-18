@@ -49,7 +49,8 @@ export const Busenesses = () => {
             .finally(() => {
                 setLoading(false);
             });
-    }, [userData?.id]);
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const addBusiness = async (e: React.FormEvent<HTMLFormElement>) => {
         setLoadings(true)
         e.preventDefault();
@@ -299,14 +300,12 @@ export const Busenesses = () => {
                                                 )}
                                             </div>
                                         </>
-
                                         :
                                         <>
                                             <div className='text-sm text-gray-600 dark:text-gray-300'>
                                                 No businesses have been added yet. To get started, create your first business profile so you can begin managing sales, inventory, and performance insights.
                                             </div>
                                         </>
-
                                 }
                             </div>
                         </>

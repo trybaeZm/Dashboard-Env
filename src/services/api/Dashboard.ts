@@ -65,7 +65,6 @@ export const dashboard = (business_id: string | null | undefined): Promise<Dashb
     let users = []
     let products = []
     let allOrder = []
-    let allSales = []
 
     let Salesbymale = 0
     let Salesbyfemale = 0
@@ -133,35 +132,15 @@ export const dashboard = (business_id: string | null | undefined): Promise<Dashb
         }
 
 
-
-        try {
-            const { data, error } = await supabase
-                .from('sales')
-                .select('*')
-                .eq('business_id', business_id)
-
-            if (data) {
-                allSales.push(...data)
-            }
-
-            if (error) {
-
-            }
-        }
-        catch (err) {
-            reject(null)
-        }
-
-
         for (let i = 0; i < users.length; i++) {
             if (users[i].gender == 'male') {
-                let countSales = allSales.filter((e) => e.customer_id == users[i].id).length
+                let countSales = allOrder.filter((e) => e.customer_id == users[i].id).length
 
                 Salesbymale += countSales
             }
 
             if (users[i].gender == 'female') {
-                let countSales = allSales.filter((e) => e.customer_id == users[i].id).length
+                let countSales = allOrder.filter((e) => e.customer_id == users[i].id).length
 
                 Salesbyfemale += countSales
             }
@@ -170,7 +149,7 @@ export const dashboard = (business_id: string | null | undefined): Promise<Dashb
         for (let i = 0; i < products.length; i++) {
 
             let currentProduct = products[i]
-            let amountSold = allSales.filter((e) => e.product_id == currentProduct.id).reduce((prev, curr) => prev + curr.amount, 0)
+            let amountSold = allOrder.filter((e) => e.product_id == currentProduct.id).reduce((prev, curr) => prev + curr.total_amount, 0)
 
             TopSelling.push({
                 product: currentProduct,
@@ -191,13 +170,13 @@ export const dashboard = (business_id: string | null | undefined): Promise<Dashb
         const currentYear = new Date().getFullYear();
         const prevYear = currentYear - 1;
 
-        const amountforPrevYear = allSales
+        const amountforPrevYear = allOrder
             .filter((e) => getYear(e.created_at) === prevYear)
-            .reduce((prev, curr) => prev + curr.amount, 0);
+            .reduce((prev, curr) => prev + curr.total_amount, 0);
 
-        const amountforCurrentYear = allSales
+        const amountforCurrentYear = allOrder
             .filter((e) => getYear(e.created_at) === currentYear)
-            .reduce((prev, curr) => prev + curr.amount, 0);
+            .reduce((prev, curr) => prev + curr.total_amount, 0);
 
         let GrowthRate = 0;
 
@@ -254,7 +233,7 @@ export const dashboard = (business_id: string | null | undefined): Promise<Dashb
             Customers: GrowthCustomerRate.toFixed(2),
             allCustomers: users,
             TopSelling: TopSelling,
-            allSales: allSales,
+            allSales: allOrder,
             OrderData: { allOrders: allOrder }
         })
     })

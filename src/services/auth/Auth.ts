@@ -14,8 +14,13 @@ export const LoginAuth = (data:any): Promise<null | any> => {
                 if (!response) {
                     throw new Error('Login failed');
                 }
-
+                
                 const result = await response.json();
+
+                if(response.status == 401){
+                    reject(result)
+                }
+
                 console.log('Login successful:', result);
                 resolve(result)
 

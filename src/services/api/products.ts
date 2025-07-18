@@ -2,6 +2,7 @@ import { Product, ProductInsert } from "@/types/product"
 import { supabase } from "../SupabaseConfig"
 import { Sale } from "@/types/Sales";
 import { Customers } from "@/types/Customers";
+import { OrderData } from "@/types/Orders";
 
 
 
@@ -16,7 +17,7 @@ export type SalesAnalyticsData = {
     products: Product[];
     revenueData: RevenueData[]
     amountDist: AmountDistEntry[];
-    sales: Sale[]
+    sales: OrderData[]
 };
 
 export type RevenueData = {
@@ -30,14 +31,14 @@ export interface ImagePreview {
     url: string;
     file: File;
 }
-export type ProductWithSales = Product & { sales: Sale[] };
+export type ProductWithSales = Product & {sales: OrderData[]} ;
 
 
 
 export const getDataforsalseAnalytics = async (business_id: any): Promise<null | SalesAnalyticsData> => {
     return new Promise(async (resolve, reject) => {
         const products: Product[] = []
-        const salesByBusiness: Sale[] = []
+        const salesByBusiness: OrderData[] = []
         const allcustomers: Customers[] = []
 
 
@@ -78,16 +79,17 @@ export const getDataforsalseAnalytics = async (business_id: any): Promise<null |
         }
 
 
-        // getting sales per products
+        // getting orders per products
         try {
             const { data, error } = await supabase
-                .from('sales')
+                .from('orders')
                 .select('*')
                 .eq('business_id', business_id)
 
             if (data) {
                 salesByBusiness.push(...data)
             }
+
             if (error) {
 
             }
@@ -97,17 +99,18 @@ export const getDataforsalseAnalytics = async (business_id: any): Promise<null |
 
 
 
-        // since i now have both sales by business and all customers ill filter them
+        // since i now have both orders by business and all customers we  will filter them
         let foundcustomer = []
         for (let i = 0; i < salesByBusiness.length; i++) {
 
             for (let j = 0; j < allcustomers.length; j++) {
-                if (String(salesByBusiness[i].customer_id) === String(allcustomers[j].id)) {
+                if (String(salesByBusiness[i].customer_id) == String(allcustomers[j].id)) {
                     foundcustomer.push(...Array(allcustomers[j]))
                 }
             }
         }
 
+        // console.log("found customers:", foundcustomer)
         // Extract locations to a new array
         const locations: string[] = foundcustomer.map(customer => customer.location);
 
@@ -136,26 +139,33 @@ export const getDataforsalseAnalytics = async (business_id: any): Promise<null |
                 }
             }
 
-            let totalAmount = scrappedSales.reduce((prev, curr) => Number(prev) + Number(curr.amount), 0)
+            let totalAmount = scrappedSales.reduce((prev, curr) => Number(prev) + Number(curr.total_amount), 0)
+
             LocationAmount.push({ scrappedSales: totalAmount, locations: locations[i] })
+            // console.log("location data: ", LocationAmount)
 
         }
 
         let productstoTotalSales = []
 
+        // console.log("products: ", products)
+        // console.log("sales: ", salesByBusiness)
+
         for (let i = 0; i < products.length; i++) {
+            
+            let filteredSales = salesByBusiness.filter((e) => e.product_id === products[i].id).map((e) => e.total_amount)
+            console.log("filteredData ",filteredSales);
 
-            let filteredSales = salesByBusiness.filter((e) => e.product_id == products[i].id).map((e) => e.amount)
-
-            productstoTotalSales.push({ product: products[i], amountMade: filteredSales.reduce((prev, curr) => prev + curr) })
+            productstoTotalSales.push({ product: products[i], amountMade: filteredSales.length > 0 ? filteredSales.reduce((prev, curr) => prev + curr) : 0 })
             // get all sales for the specific product
-
         }
 
+        if(productstoTotalSales.length <= 0){
+            reject(null)
+        }
         resolve({ products: products, amountDist: productstoTotalSales, revenueData: LocationAmount, sales: salesByBusiness })
     })
 }
-
 
 export const getProductsAndServices = (business_id: string | null | undefined): Promise<any | null> => {
     return new Promise(async (resolve, reject) => {
@@ -185,7 +195,7 @@ export const getProductsAndServices = (business_id: string | null | undefined): 
 
         try {
             const { data, error } = await supabase
-                .from('sales')
+                .from('orders')
                 .select('*')
                 .eq('business_id', business_id)
 
@@ -215,6 +225,7 @@ export const getProductsAndServices = (business_id: string | null | undefined): 
 export const createProductAndService = async (product: ProductInsert, imageData: ImagePreview[]): Promise<Product | null> => {
 
     return new Promise(async (resolve, reject) => {
+        console.log('adding product')
         try {
             const { data : productData, error } = await supabase
                 .from('products')
@@ -250,7 +261,6 @@ export const createProductAndService = async (product: ProductInsert, imageData:
 
                     resolve(productData);
 
-
                 } catch (error) {
                     console.error("Error inserting product images:", error);
                     reject(error);
@@ -265,6 +275,7 @@ export const createProductAndService = async (product: ProductInsert, imageData:
 }
 
 export const getProductImages = async (productId: string): Promise<string[] | null> => {
+    console.log(productId)
     return new Promise(async (resolve, reject) => {
         try {
             const { data, error } = await supabase

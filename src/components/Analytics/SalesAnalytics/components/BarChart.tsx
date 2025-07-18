@@ -12,7 +12,7 @@ const BarChart = ({ data }: { data: null | SalesAnalyticsData }) => {
     // Calculate sales by day (ensure all days are included)
     const salesByDayMap = salesData.reduce<Record<string, number>>((acc, sale) => {
         const day = format(parseISO(sale.created_at), 'EEEE');
-        acc[day] = (acc[day] ?? 0) + sale.amount;
+        acc[day] = (acc[day] ?? 0) + sale.total_amount;
         return acc;
     }, {});
 

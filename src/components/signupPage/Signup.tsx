@@ -30,6 +30,7 @@ const Signup = () => {
         LoginAuth(data)
             .then((res) => {
                 if (res) {
+                    console.log(res)
                     createCookie(res.Token);
                     storeData(res.userdata)
                     setSuccess(true)

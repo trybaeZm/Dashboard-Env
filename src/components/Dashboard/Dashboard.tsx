@@ -48,97 +48,90 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <div className="flex pt-20 flex-col gap-5 dark:bg-gray-800">
-        <div className="flex flex-wrap gap-5 ">
-          <div className="grow flex-wrap gap-5 flex">
-            <div className="grow flex flex-col gap-4">
-              <div className="grow-0" >
-                {loading ?
-                  <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                  :
-                  <SalesByCategory data={data} />
-                }
-              </div>
-              <div className="grow">
-                {loading ?
-                  <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                  :
-                  <GrowthRate data={data} />
-                }
-              </div>
-              <div className="grow">
-                {loading ?
-                  <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                  :
-                  <Customers data={data} />
-                }
-              </div>
-              <div className="grow hidden md:block">
-                {loading ?
-                  <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                  :
-                  <TodayOrder data={data} />
+        <div className="grid grid-cols-2 md:grid-cols-4  gap-3">
+          <div className="grow">
+            {loading ?
+              <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+              :
+              <GrowthRate data={data} />
+            }
+          </div>
+          <div className="grow">
+            {loading ?
+              <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+              :
+              <Customers data={data} />
+            }
+          </div>
+          <div className="grow hidden md:block">
+            {loading ?
+              <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+              :
+              <TodayOrder data={data} />
 
-                }
-              </div>
-            </div>
-            <div className="grow flex">
+            }
+          </div>
+          <div className="grow flex flex-col gap-4">
+            <div className="grow-0" >
               {loading ?
                 <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
                 :
-
-                <TopSelling data={data} />
+                <SalesByCategory data={data} />
               }
             </div>
           </div>
+        </div>
 
-          <div className="flex  grow flex-col gap-5">
-            <div className="flex gap-5 flex-wrap">
-              <div className="grow">
-                {loading ?
-                  <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                  :
-                  <OrdersCard data={data} />
+        {/* graphs */}
 
-                }
-              </div>
-              <div className="grow">
-                {loading ?
-                  <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                  :
-                  <TotalRevenue data={data} />
+        <div className="grid grid-cols-1 md:grid-cols-2  gap-3">
+          <div className="grow">
+            {loading ?
+              <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+              :
+              <OrdersCard data={data} />
 
-                }
-              </div>
-
-
-              <div className="flex flex-wrap gap-1">
-                <div className="grow hidden ">
-                  {loading ?
-                    <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                    :
-
-                    <LastTransactions />
-                  }
-                </div>
-                <div className="grow">
-                  {loading ?
-                    <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                    :
-                    <CustomerReturn data={data} />
-
-                  }
-                </div>
-                <div className="grow hidden md:block">
-                  {loading ?
-                    <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                    :
-                    <RecentOrder data={data} />
-
-                  }
-                </div>
-              </div>
-            </div>
+            }
           </div>
+
+          <div className="grow">
+            {loading ?
+              <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+              :
+              <TotalRevenue data={data} />
+
+            }
+          </div>
+          <div className="grow">
+            {loading ?
+              <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+              :
+              <CustomerReturn data={data} />
+
+            }
+          </div>
+          <div className="grow hidden md:block">
+            {loading ?
+              <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+              :
+              <RecentOrder data={data} />
+
+            }
+          </div>
+        </div>
+
+
+        <div className="">
+          <div className="grow">
+            {loading ?
+              <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
+              :
+
+              <LastTransactions />
+            }
+          </div>
+
+          
         </div>
       </div>
     </>

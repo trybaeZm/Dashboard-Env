@@ -19,11 +19,11 @@ export const Orders = () => {
     const businessData = getOrgData() // Assuming this function returns the business data
 
 
-    const getBusinessData = React.useCallback(() => {
+    const getBusinessDat = () => {
         setLoading(true)
         getOrdersByBusinessId(businessData?.id)
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 setOrderData(res)
             })
             .catch((error) => {
@@ -32,11 +32,13 @@ export const Orders = () => {
             .finally(() => {
                 setLoading(false)
             });
-    }, [businessData])
+    }
 
     useEffect(() => {
-        getBusinessData()
-    }, [getBusinessData])
+        getBusinessDat()
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
 
 
@@ -62,7 +64,7 @@ export const Orders = () => {
                 </div>
                 <div className='mt-5'>
                     <Container>
-                        <Table setData={getBusinessData} data={orderData} filter={filterValue} open={setOpen} />
+                        <Table setData={getBusinessDat} data={orderData} filter={filterValue} open={setOpen} />
                     </Container>
                 </div>
             </div>

@@ -1,4 +1,7 @@
+import { OrderData } from '@/types/Orders';
 import { supabase } from './../SupabaseConfig';
+import { Customers } from '@/types/Customers';
+import { TransactionTableType } from '@/types/TransactionsTablePopup';
 
 interface Sale {
     id?: string;
@@ -113,23 +116,55 @@ export async function deleteSale(id: string): Promise<boolean> {
 }
 
 
-export const getSalesAnalysis = (business_id: string | null): Promise<any> => {
+export const getSalesAnalysis = (business_id: string | null): Promise<TransactionTableType> => {
+    let orderdata: OrderData[] = [];
+    let CustomerData: Customers[] = [];
+
+
     return new Promise(async (resolve, reject) => {
+
+        // orderData
         try {
             const { data, error } = await supabase
-                .from('sales')
+                .from('orders')
                 .select('*')
                 .eq('business_id', business_id)
 
             if (data) {
-                resolve(data)
+                orderdata = data;
             }
 
             if (error) {
                 reject(error)
             }
         } catch (error) {
-
+            reject(error)
         }
+
+
+        // customerData
+        try {
+            const { data, error } = await supabase
+                .from('customers')
+                .select('*')
+                .eq('business_id', business_id)
+
+            if (data) {
+                CustomerData = data;
+            }
+
+            if (error) {
+                reject(error)
+            }
+
+        } catch (error) {
+            reject(error)
+        }
+
+
+        resolve({orderData: orderdata, CustomerData: CustomerData })
+       
+
+
     })
 }

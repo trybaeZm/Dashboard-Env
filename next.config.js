@@ -5,7 +5,9 @@ const nextConfig = {
   },
   output: "standalone",
   distDir: "build",
-  
+  images: {
+    domains: ['gaicgetnnwptxbqooywd.supabase.co'],
+  },
 };
 
 module.exports = nextConfig;

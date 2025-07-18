@@ -107,24 +107,33 @@ export const CustomerReturn = ({ data }: { data: DashboardSummary | null | undef
     ],
   };
   return (
-    <div className="rounded flex flex-wrap bg-white dark:bg-gray-700 shadow-md p-4 rounded-md">
-      <div className="flex-col grow gap-4 flex">
-        <div className="text-xl text-gray-900 dark:text-white">Customer Return</div>
-        <div className="font-thin text-sm text-gray-500 dark:text-gray-400">last 7 days</div>
-        <div className="text-3xl font-bold text-gray-900 dark:text-white">
+    <div className="rounded-xl bg-gradient-to-br from-white to-gray-100 dark:from-gray-700 dark:to-gray-900 shadow-lg p-6 flex flex-col gap-6 md:flex-row md:items-center justify-between border dark:border-gray-600 border-gray-200">
+      {/* Left Text Section */}
+      <div className="flex flex-col gap-2 md:w-1/2">
+        <div className="text-lg font-semibold text-gray-900 dark:text-white">Customer Return</div>
+        <div className="text-sm text-gray-500 dark:text-gray-400">Last 7 days</div>
+        <div className="text-4xl font-extrabold text-gray-900 dark:text-white">
           {formatNumber(data?.allCustomers.length)}
         </div>
-        <div className="text-gray-500 dark:text-gray-400">
-          {/* <FaArrowUp /> */}7% vs last 7 days
+        <div className="text-sm text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+          {/* Optional Up Icon */}
+          <svg className="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M5 10a1 1 0 011.707-.707l2.293 2.293V3a1 1 0 112 0v8.586l2.293-2.293A1 1 0 0115 10l-4 4-4-4z" clipRule="evenodd" />
+          </svg>
+          7% vs last 7 days
         </div>
       </div>
-      <div className="grow">
+
+      {/* Right Chart Section */}
+      <div className="md:w-1/2 w-full">
         <ReactApexChart
           options={options}
           series={series}
           type="area"
+          height={150}
         />
       </div>
     </div>
+
   )
 }

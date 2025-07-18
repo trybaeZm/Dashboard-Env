@@ -2,15 +2,17 @@ import React from 'react';
 import '@/css/Table.css';
 import { Customers } from '@/types/Customers';
 import { Sale } from '@/types/Sales';
+import { OrderData } from '@/types/Orders';
 
 type TableProps = {
     setDialogOpen: (val: boolean) => void;
     open: any;
-    data: Sale[] | null | undefined;
+    data: OrderData[] | null | undefined;
     onTransactionClick?: any
+    customers: Customers[] | null | undefined;
 };
 
-export const Table: React.FC<TableProps> = ({ setDialogOpen, data, onTransactionClick }) => {
+export const Table: React.FC<TableProps> = ({ setDialogOpen, data,customers, onTransactionClick }) => {
     return (
         <div className="dark:bg-gray-800 text-sm">
             <table className="w-full dark:text-gray-200">
@@ -27,21 +29,23 @@ export const Table: React.FC<TableProps> = ({ setDialogOpen, data, onTransaction
                 <tbody className="dark:text-gray-300">
                     {data?.map((sale) => (
                         <tr
-                            key={sale.sale_id}
+                            key={sale.id}
                             onClick={() => {
                                 setDialogOpen(true);
-                                onTransactionClick?.(sale);
+                                onTransactionClick(sale.customer_id , sale)
+
+                                // console.log({"sales": sale.customer_id , "sales: ": sale})
                             }}
                             className="cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
                         >
-                            <td className="p-2">{sale.sale_id}</td>
+                            <td className="p-2">{sale.id}</td>
                             <td className="p-2 hidden md:table-cell">{sale.product_id}</td>
                             <td className="p-2 hidden md:table-cell">{sale.customer_id ?? 'N/A'}</td>
-                            <td className="p-2 hidden md:table-cell">{sale.user_id ?? 'N/A'}</td>
-                            <td className="p-2">K{sale.amount.toFixed(2)}</td>
+                            <td className="p-2 hidden md:table-cell">{sale.id ?? 'N/A'}</td>
+                            <td className="p-2">K{sale.total_amount.toFixed(2)}</td>
                             <td className="p-2">
-                                {sale.sale_date
-                                    ? new Date(sale.sale_date).toLocaleDateString()
+                                {sale.created_at
+                                    ? new Date(sale.created_at).toLocaleDateString()
                                     : new Date(sale.created_at).toLocaleDateString()}
                             </td>
                         </tr>

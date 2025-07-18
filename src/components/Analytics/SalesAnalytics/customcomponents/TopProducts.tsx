@@ -1,11 +1,15 @@
 import { AmountDistEntry, SalesAnalyticsData } from '@/services/api/products'
 import { CrownIcon } from 'lucide-react'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 export type AmountDist = {
 
 }
 export const TopProducts = ({ data }: { data: SalesAnalyticsData | null }) => {
+    useEffect(()=>{
+        console.log('sales data', data)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
     // 1️⃣ Highest amountMade
     const highestAmount = data?.amountDist.reduce(
         (max: number, curr: AmountDistEntry) => Math.max(max, curr.amountMade),
@@ -27,7 +31,7 @@ export const TopProducts = ({ data }: { data: SalesAnalyticsData | null }) => {
                     {sortedData
                         ?.slice(0, 4) // Take only top 4
                         .map((e: AmountDistEntry, r: number) => (
-                            <div key={r} className={"flex gap-3 items-center text-black px-4 bg-gray-400 p-2 rounded md"}>
+                            <div key={r} className={"flex gap-3 items-center text-[#1A0670] dark:text-white px-4 bg-gray-400 p-2 rounded md"}>
                                 {
                                     highestAmount == e.amountMade ?
                                         <CrownIcon className="size-4" />
@@ -35,7 +39,7 @@ export const TopProducts = ({ data }: { data: SalesAnalyticsData | null }) => {
                                         <></>
                                 }
                                 <div>{e.product.name}</div>
-                                <div>{((e.amountMade / (totalAmount ?? 1)) * 100).toFixed(1)}%</div> {/* Replace 45% with the actual amount */}
+                                <div>{((e.amountMade / (totalAmount ?? 1) || 0) * 100).toFixed(1)}%</div> {/* Replace 45% with the actual amount */}
                             </div>
                         ))}
                 </div>

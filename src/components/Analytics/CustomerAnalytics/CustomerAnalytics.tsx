@@ -33,6 +33,7 @@ export const CustomerAnalytics = () => {
         console.log(res)
         setCustomerData(res.customer)
         setLocation(res.location)
+        console.log(res.location)
         setNumberOfNewRepeat(res.customerNumber)
         setGender(res.gender)
 
@@ -69,7 +70,7 @@ export const CustomerAnalytics = () => {
             loading ?
               <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
               :
-              <div className="border grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
+              <div className="border flex flex-col justify-between grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
                 {customerData ?
                   <TopCustomers cutomerDatas={customerData} />
                   :

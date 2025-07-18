@@ -1,5 +1,6 @@
 import { supabase } from './SupabaseConfig';
 import { Customers } from '@/types/Customers';
+import { OrderData } from '@/types/Orders';
 import { Sale } from '@/types/Sales';
 
 export async function getCustomers() {
@@ -144,7 +145,7 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
 
         try {
             const { data, error } = await supabase
-                .from('sales')
+                .from('orders')
                 .select('*')
             // error handling
             if (error) {
@@ -164,7 +165,7 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
 
                 // this filters the sales based on user id
                 const filtererdata = data?.filter(e => e.customer_id == userid)
-                const totalAmount = filtererdata?.reduce((acc, curr) => acc + curr.amount, 0)
+                const totalAmount = filtererdata?.reduce((acc, curr) => acc + curr.total_amount, 0)
 
                 // Get the current date
                 const now = new Date();
@@ -196,9 +197,7 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
 
             for (let i = 0; i < commonAreas.length; i++) {
 
-                let number = customers.map((e: Customers) => e.location === commonAreas[i]).length | 0
-
-
+                let number = customers.map((e: Customers) => e.location == commonAreas[i]).length | 0
 
                 AreatoCustomers.push({ location: commonAreas[i], number: number })
             }
@@ -225,11 +224,11 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
 export const genderRatioData = async (business_id: string | null): Promise<null | any> => { 
     return new Promise(async (resolve, reject) => {
         const customers = await getCustomersForBusiness(business_id)
-        let Sales: Sale[] | null = []
+        let Sales: OrderData[] | null = []
 
          try {
             const { data, error } = await supabase
-                .from('sales')
+                .from('orders')
                 .select()
 
             if (data) {
@@ -265,13 +264,9 @@ export const genderRatioData = async (business_id: string | null): Promise<null 
         const FeMaleSales = getTotalRevenue(femaleCustomers)
     
         // Revenue
-        let TotalRevenueFemal: number =  FeMaleSales.reduce((prev, curr)=> prev + curr.amount, 0)
-        let TotalRevenueMale: number = MaleSales.reduce((prev, curr)=> prev + curr.amount, 0)
+        let TotalRevenueFemal: number =  FeMaleSales.reduce((prev, curr)=> prev + curr.total_amount, 0)
+        let TotalRevenueMale: number = MaleSales.reduce((prev, curr)=> prev + curr.total_amount, 0)
         let TotalRevenue: number = TotalRevenueFemal + TotalRevenueMale
-
-
-       
-
 
         resolve({
             Revenue: {
