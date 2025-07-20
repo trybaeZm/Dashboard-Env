@@ -11,12 +11,6 @@
   --transition-speed: 0.2s;
 }
 
-.withdraw-container {
-  max-width: 1000px;
-  margin: 5em auto;
-  padding: 30px;
-}
-
 
 h1 {
   color: var(--primary-color);
@@ -75,10 +69,11 @@ select.error {
 }
 
 .error-message {
-  color: var(--error-color);
+  color: red;
   font-size: 14px;
   margin-top: 6px;
   display: none;
+
 }
 
 .error-message.visible {
