@@ -1,6 +1,6 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-import { Copy, Download, KeyRound } from "lucide-react";
+import { Building2, Copy, Download, KeyRound } from "lucide-react";
 import DropdownNotification from "./DropdownNotification";
 import NextImage from 'next/image'; // ✅ avoid name conflict
 import Search from "../Search/Search";
@@ -51,8 +51,8 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
 
   const generateEncryptedCode = (id: string, companyAlias: string) => {
     const obj = { id, companyAlias };
-const str = `?id=${id}&companyAlias=${companyAlias}`;
-    setText('https://payment.inxource.com/payment/' + str ); // Set the token to the input field
+    const str = `?id=${id}&companyAlias=${companyAlias}`;
+    setText('https://payment.inxource.com/payment/' + str); // Set the token to the input field
   };
 
 
@@ -175,12 +175,14 @@ const str = `?id=${id}&companyAlias=${companyAlias}`;
                 {/* Modal Box */}
                 <div className="relative z-10 w-[90%] max-w-md bg-white dark:bg-boxdark rounded-lg shadow-lg overflow-y-auto p-6 space-y-4 text-gray-800 dark:text-white">
                   {/* Business Name */}
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+                  <h2 className="flex flex-col items-center gap-2 text-xl font-semibold text-gray-800 dark:text-white">
+                    <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     {businessData?.business_name || "Business Name"}
                   </h2>
 
-                  {/* Description / Trigger */}
-                  <p
+
+                  {/* Generate Code Button */}
+                  <button
                     onClick={() => {
                       if (businessData?.id && businessData?.company_alias) {
                         generateEncryptedCode(businessData.id, businessData.company_alias);
@@ -188,13 +190,13 @@ const str = `?id=${id}&companyAlias=${companyAlias}`;
                         alert("Business data is incomplete.");
                       }
                     }}
-                    className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer transition"
+                    className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-full"
                   >
                     Generate code for your business
-                  </p>
+                  </button>
 
                   {/* Code Display */}
-                  <div className="bg-gray-100 dark:bg-gray-800 rounded-md p-4 text-sm text-left break-words whitespace-pre-wrap text-gray-700 dark:text-gray-200">
+                  <div className="bg-gray-100 hidden dark:bg-gray-800 rounded-md p-4 text-sm text-left break-words whitespace-pre-wrap text-gray-700 dark:text-gray-200">
                     {text}
                   </div>
 
