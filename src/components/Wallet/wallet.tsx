@@ -55,7 +55,7 @@ const WalletPage = () => {
       }
       <div className=" items-center flex justify-center p-3 py-20 ">
         <div className=""></div>
-        <div className="md:w-1/2 lg:w-3/4 rounded-md p-[30px] shadow-md dark:bg-gray-700 bg-gray-200">
+        <div className="md:w-1/2 w-full lg:w-3/4 rounded-md p-[30px] shadow-md dark:bg-gray-700 bg-gray-200">
           {/* Header */}
           <div className="flex flex-wrap gap-5 justify-between items-center">
             <div className="wallet-info">

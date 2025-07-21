@@ -1,14 +1,15 @@
 'use client'
 import React, { useState, useEffect, useRef } from "react";
-import { createWithdrawal, getWalletBalance } from "../../services/api/apiWallet"
+import { createWithdrawal, getWalletBalance, sendMail } from "../../services/api/apiWallet"
 import { useRouter } from "next/navigation";
 import "./WithdrawForm.css";
-import { getOrgData } from "@/lib/createCookie";
+import { getData, getOrgData } from "@/lib/createCookie";
 
 const WithdrawForm = ({ setWithdrawalsState, balance, fetchData }: { setWithdrawalsState: (value: boolean) => void, balance: number, fetchData: () => void }) => {
 
   const formRef = useRef<HTMLFormElement>(null);
   const businessId = getOrgData()
+  const userData = getData()
 
   const [form, setForm] = useState<any>({
     amount: "",
@@ -21,12 +22,12 @@ const WithdrawForm = ({ setWithdrawalsState, balance, fetchData }: { setWithdraw
     type: string
     text: string
   }
+
+
   const router = useRouter();
   const [errors, setErrors] = useState<errorTypw[] | null>(null);
   const [success, setSuccess] = useState<any | boolean>(false);
   const [loading, setLoading] = useState<any | boolean>(false);
-
-
 
   const validate = ({
     amount,
@@ -92,31 +93,41 @@ const WithdrawForm = ({ setWithdrawalsState, balance, fetchData }: { setWithdraw
     }));
   };
 
+  const SendMail = async (userMail: string, amount: number, ID: string) => {
+    try {
+      const res = await sendMail(userMail, amount, ID);
+      if (res) {
+        alert("Withdrawal Successful");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send withdrawal confirmation email");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formRef.current) {
-      const formData = formRef.current ? new FormData(formRef.current) : undefined;
-      const data = formData ? Object.fromEntries(formData.entries()) : {};
-      console.log(data)
+      const formData = new FormData(formRef.current);
+      const data = Object.fromEntries(formData.entries());
+      console.log(data);
     }
+
     if (!validate({ amount: Number(form.amount), method: form.method, account_details: form.account_details })) return;
+
     try {
       setLoading(true);
       const res = await createWithdrawal(form);
       if (res) {
-        if (res) {
-          fetchData(); // fetch latest data only on success
-          console.log("Company Withdrawals:", res);
-
-        }
+        fetchData(); // fetch latest data only on success
+        console.log("Company Withdrawals:", res);
+        await SendMail(userData.email, form.amount, businessId?.id ?? '');
       }
     } finally {
       setLoading(false); // always reset loading, even if something fails
+      setWithdrawalsState(false);
     }
-    setTimeout(() => {
-      setSuccess(false);  
-    }, 5000);
   };
 
   return (

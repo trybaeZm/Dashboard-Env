@@ -157,7 +157,7 @@ export async function getWithdrawalsByBusinessId(business_id: string | null | un
 
         let orders: OrderData[] = data
 
-        balance = orders.reduce((prev, curr) => prev + (curr.total_amount || 0), 0) - withdrawData.filter((e)=> e.status == "processed").reduce((prev, cur)=> prev + (cur.amount || 0),0);
+        balance = orders.reduce((prev, curr) => prev + (curr.total_amount || 0), 0) - withdrawData.filter((e) => e.status == "processed").reduce((prev, cur) => prev + (cur.amount || 0), 0);
 
     } catch (err) {
         console.error("Unexpected error fetching business withdrawals:", err);
@@ -184,6 +184,30 @@ export async function getWalletBalance(businessId: string | undefined | null | n
     } catch (err) {
         console.error("Unexpected error fetching wallet balance:", err);
         return null;
+    }
+}
+
+export async function sendMail(userMail: string, amount: number, businessId: string): Promise<boolean> {
+    try {
+        const res = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                to: userMail,
+                amount,
+                businessId,
+            }),
+        });
+
+        if (!res.ok) {
+            console.error('Failed to send email:', await res.text());
+            return false;
+        }
+
+        return true;
+    } catch (err) {
+        console.error('Error sending email:', err);
+        return false;
     }
 }
 
