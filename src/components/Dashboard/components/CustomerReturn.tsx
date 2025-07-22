@@ -107,9 +107,9 @@ export const CustomerReturn = ({ data }: { data: DashboardSummary | null | undef
     ],
   };
   return (
-    <div className="rounded-xl bg-gradient-to-br from-white to-gray-100 dark:from-gray-700 dark:to-gray-900 shadow-lg p-6 flex flex-col gap-6 md:flex-row md:items-center justify-between border dark:border-gray-600 border-gray-200">
+    <div className="rounded-xl bg-gradient-to-br from-white to-gray-100 dark:from-gray-700 dark:to-gray-900 shadow-lg p-6 flex flex-col gap-6  justify-between border dark:border-gray-600 border-gray-200">
       {/* Left Text Section */}
-      <div className="flex flex-col gap-2 md:w-1/2">
+      <div className="flex flex-col gap-2 ">
         <div className="text-lg font-semibold text-gray-900 dark:text-white">Customer Return</div>
         <div className="text-sm text-gray-500 dark:text-gray-400">Last 7 days</div>
         <div className="text-4xl font-extrabold text-gray-900 dark:text-white">
@@ -125,12 +125,12 @@ export const CustomerReturn = ({ data }: { data: DashboardSummary | null | undef
       </div>
 
       {/* Right Chart Section */}
-      <div className="md:w-1/2 w-full">
+      <div className="w-full">
         <ReactApexChart
           options={options}
           series={series}
           type="area"
-          height={150}
+          height={250}
         />
       </div>
     </div>

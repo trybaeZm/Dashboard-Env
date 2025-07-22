@@ -110,9 +110,9 @@ export const OrdersCard = ({ data }: { data: DashboardSummary | null | undefined
 
     return (
         <>
-            <div className="flex flex-col md:flex-row bg-gradient-to-br from-white to-gray-100 dark:from-gray-700 dark:to-gray-900 shadow-lg p-6 rounded-xl gap-6 border dark:border-gray-600 border-gray-200">
+            <div className="flex flex-col bg-gradient-to-br from-white to-gray-100 dark:from-gray-700 dark:to-gray-900 shadow-lg p-6 rounded-xl gap-1 border dark:border-gray-600 border-gray-200">
                 {/* Left Section */}
-                <div className="flex flex-col gap-2 md:w-1/2">
+                <div className="flex flex-col gap-2">
                     <div className="text-lg font-semibold text-gray-900 dark:text-white">Total Orders</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">Last 7 days</div>
                     <div className="text-4xl font-extrabold text-gray-900 dark:text-white">
@@ -133,12 +133,12 @@ export const OrdersCard = ({ data }: { data: DashboardSummary | null | undefined
                 </div>
 
                 {/* Chart Section */}
-                <div className="md:w-1/2 w-full">
+                <div className="w-full">
                     <ReactApexChart
                         options={options}
                         series={series}
                         type="area"
-                        height={150}
+                        height={250}
                     />
                 </div>
             </div>

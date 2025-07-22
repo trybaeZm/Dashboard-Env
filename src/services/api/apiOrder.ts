@@ -132,9 +132,17 @@ export async function getOrdersByBusinessId(business_id: string | null | undefin
         customer_id,
         total_amount,
         order_status,
+        delivery_location,
+        sammarized_notes,
         created_at,
+        products (
+        name,
+        price
+        ),
         customers (
-          name
+          name,
+          email,
+          phone
         )
       `)
       .eq('business_id', business_id)

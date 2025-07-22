@@ -118,7 +118,7 @@ export const Table = ({ open, filter, data, setData }: { open: any, filter: stri
                                                         Summarized Notes from Customer
                                                     </div>
                                                     <div className='pl-5'>
-                                                        -
+                                                        {option?.sammarized_notes ? option?.sammarized_notes : 'No notes available' }
                                                     </div>
                                                     <hr className='border my-3 border-gray-600' />
                                                     <div className='flex flex-col gap-3'>
@@ -144,7 +144,7 @@ export const Table = ({ open, filter, data, setData }: { open: any, filter: stri
                                                         </div>
                                                         <div className="">
                                                             <div className="text-sm font-bold">Product/Services</div>
-                                                            <div className=""></div>
+                                                            <div className="">{option?.products.name}</div>
                                                         </div>
                                                     </div>
                                                     <div className='grow flex flex-col gap-3'>
@@ -154,11 +154,11 @@ export const Table = ({ open, filter, data, setData }: { open: any, filter: stri
                                                         </div>
                                                         <div className="">
                                                             <div className="text-sm font-bold">Quantity</div>
-                                                            <div className=""></div>
+                                                            <div className="">{option?.total_amount / option?.products.price}</div>
                                                         </div>
                                                         <div className="">
                                                             <div className="text-sm font-bold">Phone Number</div>
-                                                            <div className=""></div>
+                                                            <div className="">{option?.customers.phone}</div>
                                                         </div>
                                                     </div>
 
@@ -169,11 +169,11 @@ export const Table = ({ open, filter, data, setData }: { open: any, filter: stri
                                                         </div>
                                                         <div className="">
                                                             <div className="text-sm font-bold">Email:</div>
-                                                            <div className=""></div>
+                                                            <div className="">{option?.customers.email}</div>
                                                         </div>
                                                         <div className="">
                                                             <div className="text-sm font-bold">Address</div>
-                                                            <div className="">123 Main St, Anytown, USA</div>
+                                                            <div className="">{option?.delivery_location}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -230,7 +230,10 @@ export const Table = ({ open, filter, data, setData }: { open: any, filter: stri
                 }
                 <tr
                     key={e.id}
-                    onClick={() => setOption(e)}
+                    onClick={() => {
+                        setOption(e)
+                        console.log("order: ",e)
+                    }}
                     className=''
                 >
                     <td className='flex justify-center'>
@@ -242,7 +245,7 @@ export const Table = ({ open, filter, data, setData }: { open: any, filter: stri
                     </td>
                     <td>{new Date(e.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                     <td>{e.customers?.name}</td>
-                    <td className=''>–</td> {/* Product/Services not in structure – you can customize this if needed */}
+                    <td className=''>{e.products.name}</td> {/* Product/Services not in structure – you can customize this if needed */}
                     <td className=''>{e.order_id}</td>
                     <td className=''>ZMW {e.total_amount?.toFixed(2)}</td>
                 </tr>
