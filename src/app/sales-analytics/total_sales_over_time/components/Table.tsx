@@ -18,10 +18,8 @@ export const Table: React.FC<TableProps> = ({ setDialogOpen, data,customers, onT
             <table className="w-full dark:text-gray-200">
                 <thead className="bg-[#F8F9FA] shadow-md dark:bg-gray-700 text-sm dark:text-gray-200">
                     <tr>
-                        <th className="text-left p-2">SALE ID</th>
-                        <th className="text-left p-2 hidden md:table-cell">PRODUCT ID</th>
-                        <th className="text-left p-2 hidden md:table-cell">CUSTOMER ID</th>
-                        <th className="text-left p-2 hidden md:table-cell">USER ID</th>
+                        <th className="text-left p-2 hidden md:table-cell">PRODUCT NAME</th>
+                        <th className="text-left p-2 hidden md:table-cell">CUSTOMER</th>
                         <th className="text-left p-2">AMOUNT</th>
                         <th className="text-left p-2">SALE DATE</th>
                     </tr>
@@ -38,10 +36,8 @@ export const Table: React.FC<TableProps> = ({ setDialogOpen, data,customers, onT
                             }}
                             className="cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
                         >
-                            <td className="p-2">{sale.id}</td>
-                            <td className="p-2 hidden md:table-cell">{sale.product_id}</td>
-                            <td className="p-2 hidden md:table-cell">{sale.customer_id ?? 'N/A'}</td>
-                            <td className="p-2 hidden md:table-cell">{sale.id ?? 'N/A'}</td>
+                            <td className="p-2 hidden md:table-cell">{sale?.products?.name ?? 'N/A'}</td>
+                            <td className="p-2 hidden md:table-cell">{sale?.customers?.name ?? 'N/A'}</td>
                             <td className="p-2">K{sale.total_amount.toFixed(2)}</td>
                             <td className="p-2">
                                 {sale.created_at

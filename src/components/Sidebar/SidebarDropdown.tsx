@@ -12,7 +12,7 @@ const SidebarDropdown = ({ item }: any) => {
           <li key={index}>
             <Link
               href={item.route}
-              className={`hov group relative flex items-center gap-2.5 rounded-md px-4 font-medium dark:text-white text-[#787a7a] duration-300 ease-in-out ${
+              className={`hov group relative flex items-center gap-2.5 rounded-md px-4 font-medium dark:text-white  duration-300 ease-in-out ${
                 pathname === item.route ? " font-semibold text-[#1c1e1e]" : ""
               }`}
             >

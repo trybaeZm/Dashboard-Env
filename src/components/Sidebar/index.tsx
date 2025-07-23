@@ -138,7 +138,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <h3 className="mb-4 ml-4 text-sm font-semibold dark:text-white text-[#616262]">
                   {group.name}
                 </h3>
-
                 <ul className="mb-6 flex flex-col gap-2">
                   {group.menuItems.map((menuItem, menuIndex) => (
                     <SidebarItem

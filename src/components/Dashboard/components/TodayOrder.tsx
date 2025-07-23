@@ -95,7 +95,7 @@ export const TodayOrder = ({ data }: { data: DashboardSummary | null | undefined
                 </div>
 
                 <div className="text-sm font-medium text-gray-600 dark:text-gray-400 tracking-wide">
-                    Orders over time
+                    Orders made today
                 </div>
             </div>
         </div>

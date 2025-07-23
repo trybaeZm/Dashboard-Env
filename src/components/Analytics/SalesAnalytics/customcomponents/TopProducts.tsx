@@ -2,14 +2,18 @@ import { AmountDistEntry, SalesAnalyticsData } from '@/services/api/products'
 import { CrownIcon } from 'lucide-react'
 import React, { useEffect } from 'react'
 
-export type AmountDist = {
+export function isWithinLast7Days(dateToCheck: any) {
+    const now = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(now.getDate() - 7);
 
+    return dateToCheck >= sevenDaysAgo && dateToCheck <= now;
 }
 export const TopProducts = ({ data }: { data: SalesAnalyticsData | null }) => {
-    useEffect(()=>{
+    useEffect(() => {
         console.log('sales data', data)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    }, [])
     // 1️⃣ Highest amountMade
     const highestAmount = data?.amountDist.reduce(
         (max: number, curr: AmountDistEntry) => Math.max(max, curr.amountMade),
@@ -21,6 +25,8 @@ export const TopProducts = ({ data }: { data: SalesAnalyticsData | null }) => {
         (sum: number, curr: AmountDistEntry) => sum + curr.amountMade,
         0
     );
+
+
 
     const sortedData = data?.amountDist.sort((a, b) => b.amountMade - a.amountMade)
 
@@ -48,7 +54,13 @@ export const TopProducts = ({ data }: { data: SalesAnalyticsData | null }) => {
                 <div className="text-[#1A0670] dark:text-white">Top Customers</div>
                 <div className="flex text-[#1A0670] dark:text-white justify-between items-end">
                     <div className="flex items-end gap-2">
-                        <div className="font-bold text-2xl">25.7K</div>
+                        <div className="font-bold text-2xl">
+                            {
+                                data?.sales.filter(
+                                    (e) => isWithinLast7Days(e.created_at))
+                                    .reduce((prev, curr) => prev + curr.total_amount, 0).toFixed(2)
+                            }
+                        </div>
                         <div className="text-sm font-light">last 7 days</div>
                     </div>
                 </div>
