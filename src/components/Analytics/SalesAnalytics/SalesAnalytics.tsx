@@ -61,13 +61,15 @@ const SalesAnalytics: React.FC = () => {
         <div className="bg-red-100 text-red-700 p-3 rounded-md">{error}</div>
       )}
 
-      <div className="border dark:border-gray-700 flex flex-col gap-3 grow p-4 items-center rounded-md dark:bg-gray-800">
+      <div className="flex flex-col gap-3 grow p-4 items-center rounded-md dark:bg-gray-800">
         <div className="w-full font-bold dark:text-gray-200">
           Sales analysis by Product/Services
         </div>
-        <div className="flex w-full gap-4 flex-wrap">
+        <div className="w-full flex gap-4 flex-wrap">
           {Loading ? <LoadingSkeleton /> : data ? <TopProducts data={data} /> : null}
-          {Loading ? <LoadingSkeleton /> : data ? <SalesRevenueByRegion data={data} /> : null}
+          {Loading ? <LoadingSkeleton /> : data ? <PeakSalePeriod data={data} /> : null}
+          
+        
         </div>
       </div>
 
@@ -76,12 +78,13 @@ const SalesAnalytics: React.FC = () => {
           Sales performance
         </div>
         <div className="flex w-full gap-4 flex-wrap">
-          {Loading ? (
+         {Loading ? <LoadingSkeleton /> : data ? <SalesRevenueByRegion data={data} /> : null}
+             {Loading ? (
             <LoadingSkeleton />
           ) : (
-            <div className="border dark:border-gray-700 grow border-[#C9C9C9] p-3 rounded-md dark:bg-gray-800">
+            <div className="border grow dark:border-gray-700 grow border-[#C9C9C9] p-3 rounded-md dark:bg-gray-800">
               <div className="grow">
-                <div className="max-w-[300px]">
+                <div className="">
                   <AreaChart />
                 </div>
               </div>
@@ -96,7 +99,6 @@ const SalesAnalytics: React.FC = () => {
               </div>
             </div>
           )}
-          {Loading ? <LoadingSkeleton /> : data ? <PeakSalePeriod data={data} /> : null}
         </div>
       </div>
 

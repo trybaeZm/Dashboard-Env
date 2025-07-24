@@ -43,6 +43,7 @@ const AreaChart = () => {
             }
         },
         yaxis: {
+            tickAmount:3,
             labels: {
                 style: {
                     colors: '#616262'
@@ -73,7 +74,8 @@ const AreaChart = () => {
                 options={options}
                 series={series}
                 type="area"
-                width="100%" />
+                height={200} />
+
         </>
     )
 }

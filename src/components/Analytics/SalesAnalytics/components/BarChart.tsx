@@ -4,10 +4,11 @@ import React from 'react'
 import ReactApexChart from 'react-apexcharts';
 import { format } from 'date-fns';
 import { parseISO } from 'date-fns/parseISO';
+import { OrderData } from '@/types/Orders';
 
-const BarChart = ({ data }: { data: null | SalesAnalyticsData }) => {
+const BarChart = ({ data }: { data: undefined | OrderData[] }) => {
 
-    const salesData = data?.sales ?? [];
+    const salesData = data ?? [];
 
     // Calculate sales by day (ensure all days are included)
     const salesByDayMap = salesData.reduce<Record<string, number>>((acc, sale) => {

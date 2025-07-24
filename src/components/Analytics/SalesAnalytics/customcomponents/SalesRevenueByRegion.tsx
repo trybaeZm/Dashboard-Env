@@ -6,9 +6,7 @@ import { isWithinLast7Days } from './TopProducts'
 
 export const SalesRevenueByRegion = ({ data }: { data: SalesAnalyticsData | null }) => {
     return (
-
-        <div className="border dark:border-gray-700 grow border-[#C9C9C9] p-4 rounded-md dark:bg-gray-800">
-
+        <div className="border grow dark:border-gray-700 grow border-[#C9C9C9] p-4 rounded-md dark:bg-gray-800">
             <div>
                 <PieChart data={data} />
             </div>

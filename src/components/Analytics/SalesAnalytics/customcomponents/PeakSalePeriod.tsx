@@ -7,7 +7,7 @@ export const PeakSalePeriod = ({data}:{data: SalesAnalyticsData | null}) => {
     return (
         <div className="border dark:border-gray-700 grow border-[#C9C9C9] p-3 rounded-md dark:bg-gray-800">
             <div className="">
-                <BarChart data={data} />
+                <BarChart data={data?.sales} />
             </div>
             <div>
                 <div className="text-[#1A0670] dark:text-blue-400">Peak Sales Periods</div>
