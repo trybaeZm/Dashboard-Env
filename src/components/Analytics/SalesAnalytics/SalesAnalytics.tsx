@@ -10,6 +10,7 @@ import { SalesRevenueByRegion } from "./customcomponents/SalesRevenueByRegion";
 import { PeakSalePeriod } from "./customcomponents/PeakSalePeriod";
 import AreaChart from "./components/AreaChart";
 import { useCallback } from "react";
+import { BestSeller } from "./customcomponents/BestSeller";
 
 // Loading skeleton reused for multiple sections
 const LoadingSkeleton = () => (
@@ -52,57 +53,38 @@ const SalesAnalytics: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-5 py-20 justify-center">
+    <div className="flex flex-col gap-5 p-4 py-20 justify-center">
       <div className="flex justify-end">
-        <button onClick={() => navigation.push('sales-analytics/total_sales_over_time')} className="py-1 px-2 rounded-[100px] bg-[#1A0670] dark:bg-blue-600 text-white">view data</button>
+        <button
+          onClick={() => navigation.push('sales-analytics/total_sales_over_time')}
+          className="px-4 py-2 rounded-full bg-[#1A0670] dark:bg-blue-600 text-white text-sm font-medium hover:opacity-90 transition"
+        >
+          View Data
+        </button>
       </div>
+
 
       {error && (
         <div className="bg-red-100 text-red-700 p-3 rounded-md">{error}</div>
       )}
 
-      <div className="flex flex-col gap-3 grow p-4 items-center rounded-md dark:bg-gray-800">
+      <div className="flex flex-col gap-3 grow  items-center rounded-md dark:bg-gray-800">
         <div className="w-full font-bold dark:text-gray-200">
           Sales analysis by Product/Services
         </div>
-        <div className="w-full flex gap-4 flex-wrap">
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 flex-wrap">
           {Loading ? <LoadingSkeleton /> : data ? <TopProducts data={data} /> : null}
-          {Loading ? <LoadingSkeleton /> : data ? <PeakSalePeriod data={data} /> : null}
-          
-        
-        </div>
-      </div>
-
-      <div className="border dark:border-gray-700 flex flex-col gap-3 grow p-5 items-center rounded-md dark:bg-gray-800">
-        <div className="w-full font-bold dark:text-gray-200">
-          Sales performance
+          {Loading ? <LoadingSkeleton /> : data ? <SalesRevenueByRegion data={data} /> : null}
+          {Loading ? <LoadingSkeleton /> : data ? <BestSeller/> : null}
         </div>
         <div className="flex w-full gap-4 flex-wrap">
-         {Loading ? <LoadingSkeleton /> : data ? <SalesRevenueByRegion data={data} /> : null}
-             {Loading ? (
-            <LoadingSkeleton />
-          ) : (
-            <div className="border grow dark:border-gray-700 grow border-[#C9C9C9] p-3 rounded-md dark:bg-gray-800">
-              <div className="grow">
-                <div className="">
-                  <AreaChart />
-                </div>
-              </div>
-              <div>
-                <div className="text-[#1A0670] dark:text-blue-400">Best Sellers</div>
-                <div className="flex text-[#1A0670] dark:text-blue-400 justify-between items-end gap-2">
-                  <div className="flex items-end gap-2">
-                    <div className="font-bold text-2xl">Top 5</div>
-                    <div className="text-sm font-light">last 7 days</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {Loading ? <LoadingSkeleton /> : data ? <PeakSalePeriod data={data} /> : null}
         </div>
       </div>
 
-      <div className="border text-[#616262] dark:text-gray-400 grow border-[#C9C9C9] dark:border-gray-700 p-3 rounded-md dark:bg-gray-800">
+
+
+      <div className="border text-[#616262] dark:text-gray-400 grow border-[#C9C9C9] dark:border-gray-700  p-3 rounded-md dark:bg-gray-800">
         <div className="font-bold text-black dark:text-white flex items-center justify-between">
           AI Insights
           <button>

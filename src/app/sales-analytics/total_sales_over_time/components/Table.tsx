@@ -9,10 +9,9 @@ type TableProps = {
     open: any;
     data: OrderData[] | null | undefined;
     onTransactionClick?: any
-    customers: Customers[] | null | undefined;
 };
 
-export const Table: React.FC<TableProps> = ({ setDialogOpen, data,customers, onTransactionClick }) => {
+export const Table: React.FC<TableProps> = ({ setDialogOpen, data, onTransactionClick }) => {
     return (
         <div className="dark:bg-gray-800 text-sm">
             <table className="w-full dark:text-gray-200">

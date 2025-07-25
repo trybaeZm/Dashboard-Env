@@ -127,7 +127,7 @@ export const getSalesAnalysis = (business_id: string | null): Promise<Transactio
         try {
             const { data, error } = await supabase
                 .from('orders')
-                .select('*')
+                .select()
                 .eq('business_id', business_id)
 
             if (data) {

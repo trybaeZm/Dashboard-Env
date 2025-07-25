@@ -22,11 +22,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { getOrgData } from '@/lib/createCookie'
 import { BusinessType } from '@/types/businesses'
-import { getSalesAnalysis } from '@/services/api/apiSale'
-import { Sale } from '@/types/Sales'
 import { OrderData } from '@/types/Orders'
 import { Customers } from '@/types/Customers'
 import { TransactionTableType } from '@/types/TransactionsTablePopup'
+import { getOrdersByBusinessId } from '@/services/api/apiOrder'
 
 // Define available months
 const months = [
@@ -42,7 +41,7 @@ const getMonth = (dateString: string) => {
 }
 
 interface TransactionDetails {
-    customers?: Customers;
+    customers?: Partial<Customers>;
     created_at: string;
     product_id: string;
     phone_number: string;
@@ -57,25 +56,25 @@ const TotalSalesOverTime = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState("Total Sales Value");
     const [selectedM, setSelectedMonth] = useState<number>(new Date().getMonth())
-    const [transactionDetails, setTransactionDetails] = useState<TransactionDetails | null>(null);
+    const [transactionDetails, setTransactionDetails] = useState<any>(null);
     const businessData: BusinessType | null = getOrgData()
-    const [data, setData] = useState<null | TransactionTableType | undefined>(null)
+    const [data, setData] = useState<null | OrderData[] | undefined>(null)
     const [Loading, setLoading] = useState(false)
 
     const handleTransactionClick = (customer_id: string, order: OrderData) => {
         // console.log("this is clicked: ",customer_id)
 
-        let userData = data?.CustomerData.filter((e) => e.id == customer_id)[0]
+        let userData = data?.filter((e) => e.id == customer_id)[0]
 
         let PayloadData = {
             customers: userData, // assign the full Customers object
             created_at: order?.created_at ?? "",
             product_id: order?.product_id ?? "",
-            phone_number: userData?.phone ?? "",
+            phone_number: userData?.customers.phone ?? "",
             receiptNo: order.id ?? "",
-            email: userData?.email ?? "",
+            email: userData?.customers.email ?? "",
             amount: order.total_amount ?? "",
-            address: userData?.location ?? "",
+            address: userData?.delivery_location ?? "",
         }
         setTransactionDetails(PayloadData);
         setOpenDialog(true);
@@ -83,7 +82,7 @@ const TotalSalesOverTime = () => {
 
     const getProductsPageData = React.useCallback(() => {
         setLoading(true)
-        getSalesAnalysis(businessData?.id ?? null)
+        getOrdersByBusinessId(businessData?.id ?? null)
             .then((res: any) => {
                 // console.log(res)
                 setData(res)
@@ -102,16 +101,15 @@ const TotalSalesOverTime = () => {
 
 
     const growthRate = () => {
-        const previouse = data?.orderData.filter((e) => getMonth(e.created_at) == selectedM - 1).reduce((prev, cur) => prev + cur.total_amount, 0) ?? 0;
-        const current = data?.orderData.filter((e) => getMonth(e.created_at) == selectedM).reduce((prev, cur) => prev + cur.total_amount, 0) ?? 0;
-
+        const previouse = data?.filter((e) => getMonth(e.created_at) == selectedM - 1).reduce((prev, cur) => prev + cur.total_amount, 0) ?? 0;
+        const current = data?.filter((e) => getMonth(e.created_at) == selectedM).reduce((prev, cur) => prev + cur.total_amount, 0) ?? 0;
         if (previouse === 0) return 0;
         return ((current - previouse) / previouse) * 100;
     }
 
 
     return (
-        <div className='pt-20 flex flex-col gap-10 items-center p-3'>
+        <div className='pt-20 flex flex-col gap-10 p-3'>
             {/* Header */}
             <div className='w-full'>
                 <div className='flex gap-4 items-center'>
@@ -120,24 +118,28 @@ const TotalSalesOverTime = () => {
                     </button>
                     <div className='text-[#8B909AA8] dark:text-gray-400 text-xl flex gap-5 items-center font-bold'>
                         Total Sales Over Time
-                        <span className='text-[#1A0670] dark:text-blue-400 text-2xl'> ZMW {data?.orderData.reduce((prev, curr) => prev + curr.total_amount, 0)} </span>
+                        <span className='text-[#1A0670] dark:text-blue-400 text-2xl'> ZMW {data?.reduce((prev, curr) => prev + curr.total_amount, 0)} </span>
                     </div>
                 </div>
             </div>
-            {/* Month Selector */}
-            <div className='w-full flex flex-wrap gap-6 text-xl dark:text-gray-200'>
-                {months.map((month, key) => (
-                    <button
-                        key={month}
-                        onClick={() => setSelectedMonth(key)}
-                        className={`relative ${selectedM == key ? 'font-bold text-[#1A0670] dark:text-blue-400' : ''
-                            }`}
-                    >
-                        {month}
-                        {selectedM === key && <div className='h-[5px] bg-black dark:bg-white w-full'></div>}
-                    </button>
-                ))}
+            <div className="w-full max-w-xs">
+                <label htmlFor="month-select" className="block mb-1 text-sm text-gray-700 dark:text-gray-300">
+                    Select Month
+                </label>
+                <select
+                    id="month-select"
+                    value={selectedM}
+                    onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                    className="w-full p-2 text-lg rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1A0670]"
+                >
+                    {months.map((month, index) => (
+                        <option key={index} value={index}>
+                            {month}
+                        </option>
+                    ))}
+                </select>
             </div>
+
             {/* Filter Dropdown */}
             <div className='w-full flex justify-end pe-5'>
                 <DropdownMenu>
@@ -166,11 +168,11 @@ const TotalSalesOverTime = () => {
                     <div className='flex flex-wrap justify-between'>
                         {[
                             {
-                                value: 'ZMW ' + (data?.orderData ?? [])
+                                value: 'ZMW ' + (data ?? [])
                                     .filter(e => getMonth(e.created_at) == selectedM)
                                     .reduce((sum, e) => sum + (e.total_amount ?? 0), 0), label: 'Current Month Revenue'
                             },
-                            { value: data?.orderData?.filter((e) => getMonth(e?.created_at) == selectedM).length, label: 'Number of Sales' },
+                            { value: data?.filter((e) => getMonth(e?.created_at) == selectedM).length, label: 'Number of Sales' },
                             { value: growthRate().toFixed(2) + '%', label: 'Growth from Previous Month' }
                         ].map(stat => (
                             <div key={stat.label} className='grow text-center'>
@@ -184,8 +186,7 @@ const TotalSalesOverTime = () => {
                     <Table
                         open={openDialog}
                         setDialogOpen={setOpenDialog}
-                        customers={data?.CustomerData}
-                        data={data?.orderData.filter((e) => getMonth(e.created_at) == selectedM)}
+                        data={data?.filter((e) => getMonth(e.created_at) == selectedM)}
                         onTransactionClick={handleTransactionClick}
                     />
                 </div>

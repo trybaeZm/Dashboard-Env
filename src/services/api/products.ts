@@ -31,7 +31,7 @@ export interface ImagePreview {
     url: string;
     file: File;
 }
-export type ProductWithSales = Product & {sales: OrderData[]} ;
+export type ProductWithSales = Product & { sales: OrderData[] };
 
 
 
@@ -40,8 +40,6 @@ export const getDataforsalseAnalytics = async (business_id: any): Promise<null |
         const products: Product[] = []
         const salesByBusiness: OrderData[] = []
         const allcustomers: Customers[] = []
-
-
         // getall customers from db
         try {
             const { data, error } = await supabase
@@ -126,41 +124,34 @@ export const getDataforsalseAnalytics = async (business_id: any): Promise<null |
                     foundCustomers.push(...Array(foundcustomer[j]))
                 }
             }
-
-
             // using the location we are getting all the sales
-            let scrappedSales = []
+            let getCities = Array.from(new Set(salesByBusiness.map(e => e.delivery_location)));
+            console.log("cisties: ", getCities)
 
-            for (let j = 0; j < foundCustomers.length; j++) {
-                for (let k = 0; k < salesByBusiness.length; k++) {
-                    if (String(salesByBusiness[k].customer_id) == String(foundCustomers[j].id)) {
-                        scrappedSales.push(...Array(salesByBusiness[k]))
-                    }
-                }
-            }
+            let currentCity = getCities[i];
 
-            let totalAmount = scrappedSales.reduce((prev, curr) => Number(prev) + Number(curr.total_amount), 0)
+            let TotalAmount = salesByBusiness.filter((e) => e.delivery_location == currentCity).reduce((prev, curr) => prev + curr.total_amount, 0)
+            console.log(TotalAmount)
 
-            LocationAmount.push({ scrappedSales: totalAmount, locations: locations[i] })
-            // console.log("location data: ", LocationAmount)
+            LocationAmount.push({ scrappedSales: TotalAmount, locations: currentCity })
+
+            console.log("location data: ", LocationAmount)
 
         }
 
         let productstoTotalSales = []
-
         // console.log("products: ", products)
         // console.log("sales: ", salesByBusiness)
-
         for (let i = 0; i < products.length; i++) {
-            
+
             let filteredSales = salesByBusiness.filter((e) => e.product_id === products[i].id).map((e) => e.total_amount)
-            console.log("filteredData ",filteredSales);
+            console.log("filteredData ", filteredSales);
 
             productstoTotalSales.push({ product: products[i], amountMade: filteredSales.length > 0 ? filteredSales.reduce((prev, curr) => prev + curr) : 0 })
             // get all sales for the specific product
         }
 
-        if(productstoTotalSales.length <= 0){
+        if (productstoTotalSales.length <= 0) {
             reject(null)
         }
         resolve({ products: products, amountDist: productstoTotalSales, revenueData: LocationAmount, sales: salesByBusiness })
@@ -227,7 +218,7 @@ export const createProductAndService = async (product: ProductInsert, imageData:
     return new Promise(async (resolve, reject) => {
         console.log('adding product')
         try {
-            const { data : productData, error } = await supabase
+            const { data: productData, error } = await supabase
                 .from('products')
                 .insert(product)
                 .select()
@@ -306,9 +297,9 @@ export const getProductImages = async (productId: string): Promise<string[] | nu
                 console.warn("No images found for product:", productId);
                 resolve([]);
             }
-            } catch (error) {
-                console.error("Error fetching product images:", error);
-                reject(error);
-            }
-        })
+        } catch (error) {
+            console.error("Error fetching product images:", error);
+            reject(error);
+        }
+    })
 }

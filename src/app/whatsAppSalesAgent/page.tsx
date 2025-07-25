@@ -5,6 +5,8 @@ import image2 from '../../../public/images/icon/Vector (1).png'
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
+import { CommingSoon } from '@/components/comingsoon/CommingSoon'
+import DefaultLayout from '@/components/Layouts/DefaultLayout'
 
 const Page = () => {
     const [page, setPage] = useState<number>(1)
@@ -25,7 +27,7 @@ const Page = () => {
     const Page1 = () => {
         return (
             <>
-                <div className='flex gap-10 flex-col'>
+                <div className='flex  gap-10 flex-col'>
                     <div className='text-3xl grow-0 font-bold'>1. Basic Business Information</div>
                     <div className='flex gap-5 grow'>
                         <div className='grow w-full'>
@@ -316,10 +318,13 @@ const Page = () => {
     }
     return (
         <>
-            <div className='min-h-[100vh]  bg-[#F3F4F6] p-10 flex justify-center w-full'>
-                <div className='w-[80%] bg-white rounded-lg overflow-hidden overflow-hidden shadow relative'>
+        <DefaultLayout>
+            <CommingSoon/>
+        </DefaultLayout>
+            <div className='min-h-[100vh ] hidden dark:bg-boxdark  bg-[#F3F4F6] p-10 flex justify-center w-full'>
+                <div className='w-[80%] hidden dark:bg-gray-600 dark:text-white rounded-lg overflow-hidden overflow-hidden shadow relative'>
                     <div className='bg-[#00000030]'>
-                        <div className={`bg-[#3C50E0] duration-300 transition-all h-[10px] ease-in-out `} style={{ width: `${page / 5 * 100}%` }}></div>
+                        <div className={` dark:bg-gray-500 bg-[#3C50E0] duration-300 transition-all h-[10px] ease-in-out `} style={{ width: `${page / 5 * 100}%` }}></div>
                     </div>
                     <div className='p-10'>
 

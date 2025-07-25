@@ -4,7 +4,7 @@ import LatestChart from '../components/DemoLatest'
 export const NewvsRepeat = ({data}: {data:any}) => {
   return (
          <div className="border grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
-            <div className="">
+            <div className="max-w-[300px]">
               <LatestChart  data={data} />
             </div>
             <div>

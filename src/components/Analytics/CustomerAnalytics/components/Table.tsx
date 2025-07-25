@@ -20,7 +20,6 @@ export const Table: React.FC<TableProps> = ({ setDialogOpen, data, onCustomerCli
                         <th className="text-left p-2 hidden md:table-cell">PHONE</th>
                         <th className="text-left p-2 hidden md:table-cell">LOCATION</th>
                         <th className="text-left p-2">JOINED DATE</th>
-                        <th className="text-left p-2 hidden md:table-cell">CUSTOMER TYPE</th>
                         <th className="text-left p-2 hidden md:table-cell">GENDER</th>
                     </tr>
                 </thead>
@@ -39,7 +38,6 @@ export const Table: React.FC<TableProps> = ({ setDialogOpen, data, onCustomerCli
                             <td className="p-2 hidden md:table-cell">{customer.phone}</td>
                             <td className="p-2 hidden md:table-cell">{customer.location}</td>
                             <td className="p-2">{new Date(customer.created_at).toLocaleDateString()}</td>
-                            <td className="p-2 hidden md:table-cell">{customer.customer_type}</td>
                             <td className="p-2 hidden md:table-cell">{customer.gender}</td>
                         </tr>
                     ))}

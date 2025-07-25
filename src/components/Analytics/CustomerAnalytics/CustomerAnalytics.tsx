@@ -55,16 +55,20 @@ export const CustomerAnalytics = () => {
   return (
     <div className="flex flex-col text-sm dark:text-white  gap-5 py-20 justify-center">
 
-      <div className='flex justify-end'>
-
-        <button onClick={() => navigation.push('customer-analytics/customer_gender_ratio')} className="py-1 px-2 rounded-[100px] bg-[#1A0670] dark:bg-blue-600 text-white">view data</button>
+      <div className="flex justify-end">
+        <button
+          onClick={() => navigation.push('customer-analytics/customer_gender_ratio')}
+          className="px-4 py-2 rounded-full bg-[#1A0670] dark:bg-blue-600 text-white text-sm font-medium hover:opacity-90 transition"
+        >
+          View Data
+        </button>
       </div>
 
-      <div className="border flex flex-col gap-3 grow p-4 items-center rounded-md dark:border-strokedark">
+      <div className=" flex flex-col gap-3 grow items-center rounded-md dark:border-strokedark">
         <div className="w-full font-bold">
           Revenue & Spending
         </div>
-        <div className="flex gap-4 w-full flex-wrap">
+        <div className="grid md:grid-cols-3  grid-cols-1 gap-4 w-full flex-wrap">
 
           {
             loading ?
@@ -79,38 +83,19 @@ export const CustomerAnalytics = () => {
               </div>
           }
 
-          {/* chart */}
+
+
+
           {
             loading ?
               <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
               :
-              <div className="border grow border-[#C9C9C9] dark:border-strokedark p-4 rounded-md">
-                {location ?
-                  <TopArea location={location} />
-                  :
-                  <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
-                }
-              </div>
+              <>
 
-          }
-        </div>
-      </div>
-
-      <div className="border flex flex-col gap-3 grow p-5 items-center rounded-md dark:border-strokedark">
-        <div className="w-full font-bold">
-          Customer demographics
-        </div>
-        <div className="flex w-full gap-4 flex-wrap">
-          <div className="border grow-0 border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
-            {
-              loading ?
-                <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
-                :
-                <>
-
-                  {
-                    gender ?
-                      <>
+                {
+                  gender ?
+                    <>
+                      <div className="border grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
                         <div className="grow">
                           <div className="max-w-[300px]">
                             <GenderPieChart gender={gender} />
@@ -126,55 +111,14 @@ export const CustomerAnalytics = () => {
                             </div>
                           </div>
                         </div>
-                      </>
-                      :
-                      <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
-                  }
-                </>
-            }
+                      </div>
 
-          </div>
-          {/* chart */}
-          <div className="border grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
-            {
-              loading ?
-                <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div> :
-                <>
-                  {
-                    location && location.length > 0 ?
-                      <>
-                       <GeographicalLocation location={location} />
-                      </>
-                      :
-                      <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
-                  }
-                </>
-            }
-          </div>
-        </div>
-      </div>
-      <div className="border flex flex-col gap-3 grow p-5 items-center rounded-md dark:border-strokedark">
-        <div className="w-full font-bold">
-          Customer Behavior and Engagement
-        </div>
-        <div className="flex w-full gap-4 flex-wrap">
-
-          <div className="border grow-0 border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
-            <div className="grow">
-              <div className="max-w-[300px]">
-                <AreaChart />
-              </div>
-            </div>
-            <div>
-              <div className="text-[#1A0670] dark:text-white">Customer Retention Rates</div>
-              <div className="flex text-[#1A0670] dark:text-white justify-between items-end gap-2">
-                <div className="flex items-end gap-2">
-                  <div className="font-bold text-2xl">35%</div>
-                  <div className="text-sm font-light">Growth</div>
-                </div>
-              </div>
-            </div>
-          </div>
+                    </>
+                    :
+                    <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
+                }
+              </>
+          }
 
 
 
@@ -197,6 +141,60 @@ export const CustomerAnalytics = () => {
 
               </>
           }
+        </div>
+      </div>
+
+      <div className="border hidden flex flex-col gap-3 grow p-5 items-center rounded-md dark:border-strokedark">
+        <div className="w-full font-bold">
+          Customer demographics
+        </div>
+        <div className="flex w-full gap-4 flex-wrap">
+
+          {/* chart */}
+          <div className="border grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
+            {
+              loading ?
+                <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div> :
+                <>
+                  {
+                    location && location.length > 0 ?
+                      <>
+                        <GeographicalLocation location={location} />
+                      </>
+                      :
+                      <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
+                  }
+                </>
+            }
+          </div>
+        </div>
+      </div>
+
+
+      <div className="border flex flex-col gap-3 grow p-5 items-center rounded-md dark:border-strokedark">
+        <div className="w-full font-bold">
+          Customer Behavior and Engagement
+        </div>
+        <div className="flex w-full gap-4 flex-wrap">
+
+          <div className=" grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
+            <div className="grow">
+              <AreaChart />
+            </div>
+            <div>
+              <div className="text-[#1A0670] dark:text-white">Customer Retention Rates</div>
+              <div className="flex text-[#1A0670] dark:text-white justify-between items-end gap-2">
+                <div className="flex items-end gap-2">
+                  <div className="font-bold text-2xl">35%</div>
+                  <div className="text-sm font-light">Growth</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
         </div>
       </div>
 

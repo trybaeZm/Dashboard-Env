@@ -30,7 +30,7 @@ const CustomerGenderRatio = () => {
 
     const [open, setOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<Customers | null>(null);
-    const [gender, setGender] = useState<string>('female')
+    const [gender, setGender] = useState<string>('all')
     const [data, setData] = useState<any>(null)
     const [loading, setLoading] = useState(false)
     const [customerData, setCustomerData] = useState<Customers[] | null | undefined>(null)
@@ -91,10 +91,22 @@ const CustomerGenderRatio = () => {
                 </div>
             </div>
             <div className='w-full'>
-                <div className='flex overflowY-auto gap-6 text-xl'>
-                    <button onClick={() => setGender('female')}>Female  {gender == 'female' ? <div className='h-[5px] bg-black dark:bg-white'></div> : <></>}</button>
-                    <button onClick={() => setGender('male')}>Male {gender == 'male' ? <div className='h-[5px] bg-black dark:bg-white'></div> : <></>}</button>
+                <div className="w-full max-w-xs">
+                    <label htmlFor="gender-select" className="block mb-1 text-sm text-gray-700 dark:text-gray-300">
+                        Select Gender
+                    </label>
+                    <select
+                        id="gender-select"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-full p-2 text-lg rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1A0670]"
+                    >
+                        <option value="all">All</option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                    </select>
                 </div>
+
 
                 <div className='w-full flex items-center pe-5 justify-end'>
 
@@ -213,12 +225,11 @@ const CustomerGenderRatio = () => {
                                         </div>
                                         <div>
                                             <Table
-                                                onCustomerClick={(customer:any) => setSelectedCustomer(customer)}
+                                                onCustomerClick={(customer: any) => setSelectedCustomer(customer)}
                                                 setDialogOpen={setOpen}
                                                 open={open}
-                                                data={customerData?.filter(e => e.gender === gender) ?? null}
+                                                data={customerData?.filter(e => gender != 'all' ? e.gender === gender : e) ?? null}
                                             />
-
                                         </div>
                                     </div>
                                 </div>

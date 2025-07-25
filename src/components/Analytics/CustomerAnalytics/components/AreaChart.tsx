@@ -12,48 +12,43 @@ const AreaChart = () => {
 
     const options: ApexOptions = {
         chart: {
-            type: "area" as const,
+            type: "bar",
             toolbar: {
                 show: false,
             },
-            background: 'transparent',
+            background: "transparent",
         },
         colors: ["#1A0670"],
         dataLabels: {
             enabled: false,
         },
-        stroke: {
-            curve: "smooth",
-        },
-        fill: {
-            type: "gradient",
-            gradient: {
-                shadeIntensity: 1,
-                opacityFrom: 0.5,
-                opacityTo: 0,
-                stops: [0, 100],
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: "45%",
+                borderRadius: 4,
             },
         },
         xaxis: {
             categories: ["Lusaka", "Copperbelt", "Central", "Other"],
             labels: {
                 style: {
-                    colors: '#616262',
+                    colors: "#616262",
                 },
             },
         },
         yaxis: {
             labels: {
                 style: {
-                    colors: '#616262',
+                    colors: "#616262",
                 },
             },
         },
         grid: {
-            borderColor: '#C9C9C9',
+            borderColor: "#C9C9C9",
         },
         theme: {
-            mode: 'light',
+            mode: "light",
         },
         responsive: [
             {
@@ -70,12 +65,14 @@ const AreaChart = () => {
         ],
     };
 
+
     return (
         <>
             <ReactApexChart
                 options={options}
                 series={series}
-                type="area"
+                type="bar"
+                height={250}
                 width="100%" />
         </>
     )

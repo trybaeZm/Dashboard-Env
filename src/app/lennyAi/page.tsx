@@ -1,10 +1,12 @@
 import ChatCard from "@/components/Chat/ChatCard"
+import { CommingSoon } from "@/components/comingsoon/CommingSoon"
 import DefaultLayout from "@/components/Layouts/DefaultLayout"
 
-const TryCat = () =>{
-    return(
+const TryCat = () => {
+    return (
         <DefaultLayout>
-            <ChatCard/>
+            <CommingSoon />
+            {/* <ChatCard/> */}
         </DefaultLayout>
     )
 }

@@ -10,18 +10,14 @@ const PieChart = ({ data }: { data: null | SalesAnalyticsData }) => {
       type: 'donut' as const,  // The type of chart we want (pie chart in this case)
       background: 'transparent'
     },
-    labels: data?.revenueData.map((e) => e.locations) ?? [],  // Labels for each slice
-    colors: ['#1A0670', '#877DFF', '#AEA7FF', '#D0CDFD'], // Custom colors for each segment
+    labels: data?.revenueData.map((e) => e.locations) ?? [],
+  
+    colors: ['#1A0670', '#877DFF', '#AEA7FF', '#D0CDFD'],  // Labels for each slice
     dataLabels: {
       enabled: false, // Hides the numbers inside the chart
     },
     theme: {
       mode: 'dark'
-    },
-    legend: {
-      labels: {
-        colors: '#616262'
-      }
     },
     responsive: [
       {
