@@ -60,13 +60,13 @@ export const RecentOrder = ({ data }: { data: null | undefined | DashboardSummar
                             </tr>
                         </thead>
                         <tbody className="text-gray-800 dark:text-gray-100">
-                            {data?.OrderData.allOrders.map((e) => (
+                            {data?.OrderData.allOrders.map((e, key) => (
                                 <tr
                                     key={e.id}
                                     className="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                                 >
-                                    <td className="px-4 py-2">{e.id}</td>
-                                    <td className="px-4 py-2">{e.customer_id}</td>
+                                    <td className="px-4 py-2">{key}</td>
+                                    <td className="px-4 py-2">{e.customers.name}</td>
                                     <td className="px-4 py-2">
                                         <span
                                             className={`inline-block px-2 py-1 rounded-full text-xs font-semibold

@@ -14,6 +14,15 @@ export type Order = {
     order_status: string;
     created_at: string;
     delivery_location: string | null;
+    customers: {
+    name: string;
+    email: string;
+    phone: string
+  };
+  products: {
+    name: string;
+    price: number
+  }
 };
 
 export type Product = {
@@ -95,7 +104,18 @@ export const dashboard = (business_id: string | null | undefined): Promise<Dashb
         try {
             const { data, error } = await supabase
                 .from('orders')
-                .select('*')
+                .select(`
+    *,
+    customers (
+      name,
+      email,
+      phone
+    ),
+    products (
+      name,
+      price
+    )
+  `)
                 .eq('business_id', business_id)
 
 
