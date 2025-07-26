@@ -157,7 +157,7 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
                   >
                     <KeyRound size={16} />
                     <span className="hidden md:block">
-                      Generate Code
+                      Create Order Link
                     </span>
                   </button>
                   :
@@ -205,7 +205,7 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
                       }}
                       className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-full"
                     >
-                      Generate code for your business
+                      Generate Customer Order Code
                     </button>
 
                     {/* Code Display */}
