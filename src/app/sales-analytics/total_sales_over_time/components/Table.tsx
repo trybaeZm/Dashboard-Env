@@ -29,7 +29,7 @@ export const Table: React.FC<TableProps> = ({ setDialogOpen, data, onTransaction
                             key={sale.id}
                             onClick={() => {
                                 setDialogOpen(true);
-                                onTransactionClick(sale.customer_id , sale)
+                                onTransactionClick(sale.customer_id, sale)
 
                                 // console.log({"sales": sale.customer_id , "sales: ": sale})
                             }}
@@ -41,7 +41,8 @@ export const Table: React.FC<TableProps> = ({ setDialogOpen, data, onTransaction
                             <td className="p-2">
                                 {sale.created_at
                                     ? new Date(sale.created_at).toLocaleDateString()
-                                    : new Date(sale.created_at).toLocaleDateString()}
+                                    : new Date(sale.created_at).toLocaleDateString()
+                                }
                             </td>
                         </tr>
                     ))}
