@@ -36,6 +36,5 @@ export const TodayOrder = ({ data }: { data: DashboardSummary | null | undefined
                 </div>
             </div>
         </div>
-
     )
 }
