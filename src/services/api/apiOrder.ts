@@ -134,7 +134,10 @@ export async function getOrdersByBusinessId(business_id: string | null | undefin
         order_status,
         delivery_location,
         sammarized_notes,
+        transaction_id,
+        orderToken,
         created_at,
+        order_payment_status,
         products (
         name,
         price
@@ -147,6 +150,7 @@ export async function getOrdersByBusinessId(business_id: string | null | undefin
       `)
       .eq('business_id', business_id)
       .order('created_at', { ascending: false });
+      
 
     if (error) {
       console.error("Error fetching orders:", error.message);
@@ -208,3 +212,37 @@ export const marckSettled = async (orderId: string): Promise<any> => {
   })
 
 }
+
+
+// const paymentUrl = "https://paymentbackend.inxource.com/api/payment";
+const paymentUrl = "http://localhost:8080/api/payment";
+
+// Define a proper response type if you know the structure
+interface PaymentStatusResponse {
+  status: string;
+  message?: string;
+  data?: any;
+}
+
+export const updatePaymentStatus = async (
+  paymentId: string,
+  token: string
+): Promise<PaymentStatusResponse> => {
+  console.log(paymentId, token)
+  try {
+    const response = await fetch(`${paymentUrl}/checkPayment`, {
+      method: 'POST',
+      body: JSON.stringify({ paymentId, token }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: PaymentStatusResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+    throw error;
+  }
+};

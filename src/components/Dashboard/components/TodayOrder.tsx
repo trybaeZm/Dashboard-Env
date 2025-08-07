@@ -30,7 +30,6 @@ export const TodayOrder = ({ data }: { data: DashboardSummary | null | undefined
                             .toFixed(2)
                     }
                 </div>
-
                 <div className="text-sm font-medium text-gray-600 dark:text-gray-400 tracking-wide">
                     Orders made today
                 </div>

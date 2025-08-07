@@ -1,13 +1,14 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { Input } from '../ui/input'
-import { FilterIcon,  Link } from 'lucide-react'
+import { FilterIcon, Link } from 'lucide-react'
 import { FunnelIcon } from '@heroicons/react/24/outline'
 import { Table } from './components/Table'
 import { usePathname } from 'next/navigation'
 import Container from '../Layouts/Container'
 import { OrderData } from '@/types/Orders'
 import { getOrdersByBusinessId } from '@/services/api/apiOrder'
+import { ListIcon, ClockIcon, CheckCircleIcon, AlertTriangleIcon } from "lucide-react"; // adjust based on actual imports
 import { getOrgData } from '@/lib/createCookie'
 
 export const Orders = () => {
@@ -17,6 +18,7 @@ export const Orders = () => {
     const [filterValue, setFilterValue] = useState('')
     const [loading, setLoading] = useState(false)
     const businessData = getOrgData() // Assuming this function returns the business data
+    const [businessLoading, setBusinessLoading] = useState(false)
 
 
     const getBusinessDat = () => {
@@ -34,6 +36,9 @@ export const Orders = () => {
             });
     }
 
+  
+
+
     useEffect(() => {
         getBusinessDat()
 
@@ -45,10 +50,27 @@ export const Orders = () => {
     return (
         <div>
             <div className='pt-20 flex flex-col gap-3'>
-                <div className='flex items-center gap-10'>
-                    <button onClick={() => setFilterValue('')} className={`${filterValue === '' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>All</button>
-                    <button onClick={() => setFilterValue('pending')} className={`${filterValue === 'pending' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>Pending</button>
-                    <button onClick={() => setFilterValue('completed')} className={`${filterValue === 'completed' ? 'text-gray-800 text-2xl font-bold dark:text-gray-200' : 'text-gray-500 text-lg dark:text-gray-400'} transition-all duration-300`}>Settled</button>
+                <div className="w-full border-b border-gray-300 dark:border-gray-700">
+                    <nav className="flex gap-6 px-4 sm:px-6 md:px-8 lg:px-10 overflow-x-auto whitespace-nowrap">
+                        {[
+                            { label: "All", value: "", icon: <ListIcon className="size-4 mr-2" /> },
+                            { label: "Pending", value: "pending", icon: <ClockIcon className="size-4 mr-2" /> },
+                            { label: "Settled", value: "completed", icon: <CheckCircleIcon className="size-4 mr-2" /> },
+                            { label: "Pending Transactions", value: "failed", icon: <AlertTriangleIcon className="size-4 mr-2" /> },
+                        ].map((tab) => (
+                            <button
+                                key={tab.value}
+                                onClick={() => setFilterValue(tab.value)}
+                                className={`relative inline-flex items-center py-4 px-1 transition-all duration-200 ${filterValue === tab.value
+                                    ? "text-blue-600 dark:text-blue-400 font-bold border-b-2 border-blue-600 dark:border-blue-400"
+                                    : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+                                    }`}
+                            >
+                                {tab.icon}
+                                {tab.label}
+                            </button>
+                        ))}
+                    </nav>
                 </div>
 
                 <div className='flex items-center gap-3'>
@@ -64,7 +86,7 @@ export const Orders = () => {
                 </div>
                 <div className='mt-5'>
                     <Container>
-                        <Table setData={getBusinessDat} data={orderData} filter={filterValue} open={setOpen} />
+                        <Table setData={getBusinessDat} data={orderData} businessLoading={businessLoading} filter={filterValue} open={setOpen} />
                     </Container>
                 </div>
             </div>

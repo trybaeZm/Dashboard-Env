@@ -8,7 +8,10 @@ export type OrderData = {
   created_at: string; // ISO date string
   product_id: string;
   sammarized_notes: string;
+  transaction_id: string;
+  orderToken:string;
   delivery_location: string
+  order_payment_status: string;
   customers: {
     name: string;
     email: string;

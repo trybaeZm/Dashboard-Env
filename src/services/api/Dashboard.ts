@@ -117,6 +117,7 @@ export const dashboard = (business_id: string | null | undefined): Promise<Dashb
     )
   `)
                 .eq('business_id', business_id)
+                .eq('order_payment_status', 'completed')
 
 
             if (data) {
