@@ -1,6 +1,6 @@
 import { getOrgData } from "@/lib/createCookie"
 import { getOrderImages, getOrdersByBusinessId, marckSettled } from "@/services/api/apiOrder"
-import { updatePaymentStatus } from "@/services/Payment"
+import { updatePaymentStatus } from "@/services/api/apiOrder"
 import { OrderData } from "@/types/Orders"
 import { AlertTriangleIcon, BadgeCheckIcon, CheckCircleIcon, ClockIcon } from "lucide-react"
 import Image from "next/image"
@@ -58,7 +58,7 @@ const ImageComp = ({ data }: { data: string }) => {
 }
 
 
-export const TableRow = ({ e, setData }: { e: OrderData, setData: () => void }) => {
+export const TableRow = ({ e, setOrderData }: { e: OrderData, setOrderData: (data:any) => void }) => {
     const [option, setOption] = useState<OrderData | null>(null)
     const [show, setShow] = useState(false)
     const [loding, setLoding] = useState(false)
@@ -73,7 +73,7 @@ export const TableRow = ({ e, setData }: { e: OrderData, setData: () => void }) 
                 // console.log("res:", res)
                 getOrdersByBusinessId(businessData?.id)
                     .then((response) => {
-                        setData()
+                        setOrderData(response)
                     })
             })
             .catch((err) => {
@@ -87,24 +87,24 @@ export const TableRow = ({ e, setData }: { e: OrderData, setData: () => void }) 
     const updateOrderPaymentStatus = (paymentId: string, token: string) => {
         // console.log("Updating payment status for:", paymentId, token)
         setLoding(true)
-        // updatePaymentStatus(paymentId, token)
-        //     .then((res) => {
-        //         console.log("Payment status updated successfully:", res);
-        //         getOrdersByBusinessId(businessData?.id) // Refresh the order data after updating payment status
-        //             .then((res) => {
-        //                 // console.log(res)
-        //                 setOrderData(res)
-        //             })
-        //             .catch((error) => {
-        //                 console.log(error)
-        //             })
-        //     })
-        //     .catch((error) => {
-        //         console.error("Error updating payment status:", error);
-        //     })
-        //     .finally(() => {
-        //         setBusinessLoading(false)
-        //     })
+        updatePaymentStatus(paymentId, token)
+            .then((res) => {
+                console.log("Payment status updated successfully:", res);
+                getOrdersByBusinessId(businessData?.id) // Refresh the order data after updating payment status
+                    .then((res) => {
+                        // console.log(res)
+                        setOrderData(res)
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            })
+            .catch((error) => {
+                console.error("Error updating payment status:", error);
+            })
+            .finally(() => {
+                setLoding(false)
+            })
     }
 
     return (

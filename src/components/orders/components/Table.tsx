@@ -9,7 +9,7 @@ import { getOrgData } from '@/lib/createCookie';
 import Image from 'next/image';
 import { TableRow } from './TableRow';
 
-export const Table = ({ open, filter, data, businessLoading, setData }: { businessLoading: boolean, open: any, filter: string, data: OrderData[] | undefined | null, setData: any }) => {
+export const Table = ({ open, filter, data, setData }: {  open: any, filter: string, data: OrderData[] | undefined | null, setData: any }) => {
     // api for getting orders data can be pkaced here
 
 
@@ -39,7 +39,7 @@ export const Table = ({ open, filter, data, businessLoading, setData }: { busine
                                 return false;
                             })
                             .map((e) => (
-                                <TableRow setData={setData} key={e.id} e={e} />
+                                <TableRow setOrderData={setData} key={e.id} e={e} />
                             ))}
                     </tbody>
                 </table>

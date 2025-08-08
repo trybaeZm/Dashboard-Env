@@ -86,11 +86,10 @@ export const Orders = () => {
                 </div>
                 <div className='mt-5'>
                     <Container>
-                        <Table setData={getBusinessDat} data={orderData} businessLoading={businessLoading} filter={filterValue} open={setOpen} />
+                        <Table setData={getBusinessDat} data={orderData}  filter={filterValue} open={setOpen} />
                     </Container>
                 </div>
             </div>
-
         </div>
     )
 }

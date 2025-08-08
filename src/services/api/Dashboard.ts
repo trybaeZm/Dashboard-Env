@@ -15,14 +15,14 @@ export type Order = {
     created_at: string;
     delivery_location: string | null;
     customers: {
-    name: string;
-    email: string;
-    phone: string
-  };
-  products: {
-    name: string;
-    price: number
-  }
+        name: string;
+        email: string;
+        phone: string
+    };
+    products: {
+        name: string;
+        price: number
+    }
 };
 
 export type Product = {
@@ -224,18 +224,28 @@ export const dashboard = (business_id: string | null | undefined): Promise<Dashb
         const currentDate = new Date().getDate();
         const prevDate = currentDate - 1;
 
-        const numberOfCustomerfromPRev = users
-            .filter((e) => getDay(e.created_at) === prevDate)
-            .length
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
+
+        const sameDay = (a: Date, b: Date) =>
+            a.getFullYear() === b.getFullYear() &&
+            a.getMonth() === b.getMonth() &&
+            a.getDate() === b.getDate();
+
+        const numberOfCustomerfromPrev = users.filter((e) =>
+            sameDay(new Date(e.created_at), yesterday)
+        ).length;
 
         const numberOfCustomers = users
-            .filter((e) => getYear(e.created_at) === currentDate)
+            .filter((e) => sameDay(new Date(e.created_at), today))
             .length;
 
         let GrowthCustomerRate = 0;
 
-        if (numberOfCustomerfromPRev > 0) {
-            GrowthCustomerRate = ((numberOfCustomers - numberOfCustomerfromPRev) / numberOfCustomerfromPRev) * 100;
+        if (numberOfCustomerfromPrev > 0) {
+            GrowthCustomerRate = ((numberOfCustomers - numberOfCustomerfromPrev) / numberOfCustomerfromPrev) * 100;
         } else if (numberOfCustomers > 0) {
             // If previous year had no sales but current year has, consider it full growth.
             GrowthCustomerRate = 100;

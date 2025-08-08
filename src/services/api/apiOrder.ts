@@ -150,7 +150,7 @@ export async function getOrdersByBusinessId(business_id: string | null | undefin
       `)
       .eq('business_id', business_id)
       .order('created_at', { ascending: false });
-      
+
 
     if (error) {
       console.error("Error fetching orders:", error.message);
@@ -191,7 +191,7 @@ export const marckSettled = async (orderId: string): Promise<any> => {
     try {
       const { data, error } = await supabase
         .from('orders')
-        .update({ order_status: 'completed'})
+        .update({ order_status: 'completed' })
         .eq('id', orderId);
 
       // Handle the response
@@ -228,10 +228,13 @@ export const updatePaymentStatus = async (
   paymentId: string,
   token: string
 ): Promise<PaymentStatusResponse> => {
-  console.log(paymentId, token)
+  console.log(paymentId, token);
   try {
     const response = await fetch(`${paymentUrl}/checkPayment`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ paymentId, token }),
     });
 
@@ -246,3 +249,4 @@ export const updatePaymentStatus = async (
     throw error;
   }
 };
+
