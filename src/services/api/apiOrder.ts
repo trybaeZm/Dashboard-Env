@@ -214,8 +214,8 @@ export const marckSettled = async (orderId: string): Promise<any> => {
 }
 
 
-// const paymentUrl = "https://paymentbackend.inxource.com/api/payment";
-const paymentUrl = "http://localhost:8080/api/payment";
+const paymentUrl = "https://paymentbackend.inxource.com/api/payment";
+// const paymentUrl = "http://localhost:8080/api/payment";
 
 // Define a proper response type if you know the structure
 interface PaymentStatusResponse {
