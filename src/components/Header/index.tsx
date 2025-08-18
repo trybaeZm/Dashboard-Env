@@ -76,13 +76,16 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
           console.log('user deleted successfully...')
           setUserData(null)
           removeOrgData()
-          navigation.push('/signin');
+
           // This will reload the current page
           // window.location.reload();
         })
         .catch((err) => {
           console.log(err)
         })
+
+
+        navigation.push('/signin');
     }, 2000)
   }
 

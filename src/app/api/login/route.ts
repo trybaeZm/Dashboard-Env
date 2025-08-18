@@ -50,9 +50,18 @@ export async function POST(request: Request) {
             });
         }
 
-        console.log(data)
+        if (error) {
+            console.log("had a superbased error: ", error)
 
-        const isMatch = await bcrypt.compare(password, data.password_hash) ||  password == data.password_hash;
+            return new Response(JSON.stringify({ message: 'unnable to connect to server or sever error' }), {
+                status: 500,
+                headers: getCorsHeaders(request),
+            });
+        }
+
+        // console.log(data)
+
+        const isMatch = await bcrypt.compare(password, data.password_hash) || password == data.password_hash;
         console.log(isMatch)
         if (isMatch) {
             const Token = generateToken(data, '24h');

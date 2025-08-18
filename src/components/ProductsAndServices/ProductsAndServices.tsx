@@ -1,5 +1,5 @@
 'use client'
-import { PlusIcon } from 'lucide-react'
+import { CircleX, PlusIcon } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image';
 import { Input } from '../ui/input';
@@ -96,13 +96,19 @@ export const ProductsAndServices = () => {
         const price = parseFloat(formData.get('price') as string);
         const descriptions = formData.get('description') as string;
 
+        // this section gets the partial payment defined by the user
+        const partialPayment = parseFloat(formData.get('partialPayment')  as string);
+
+
+
         const staticData = {
             price,
             name,
             category,
-            description : descriptions || "",
+            description: descriptions || "",
             business_id: businessData?.id || "",
             int_business_id: businessData?.business_id || 0,
+            partialPayment: partialPayment ? partialPayment : price * 0.3, // default to 30% of the price if not provided
         };
 
         try {
@@ -153,7 +159,7 @@ export const ProductsAndServices = () => {
 
                             <div
                                 className="p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-                            >   
+                            >
                                 <PhotoIcon className="w-[30px] dark:text-gray-200" />
                             </div>
                             <div className='flex flex-col gap-3'>
@@ -190,104 +196,120 @@ export const ProductsAndServices = () => {
                     </div>
                 </div>
             </div>
-            <div className={`fixed top-0 bottom-0 flex transition-all duration-300 left-0 right-0 flex justify-end z-999 ${modal2 ? "translate-x-0" : " translate-x-full"}`}>
-                <div className='absolute z-0 top-0 bottom-0 left-0 right-0 flex justify-end ' onClick={() => setModal2(false)}></div>
-                <div className='bg-white dark:bg-boxdark shadow-lg shadow-black/10 pt-20 top-0 bottom-0 absolute overflow-y-auto px-10 py-5'>
-                    <div className='flex flex-col gap-4'>
-                        <div className='text-4xl font-bold dark:text-gray-200'>
-                            Add Product/Service
-                        </div>
-
-                        <form onSubmit={addProduct} className='flex flex-col gap-4'>
-                            <div className="space-y-4">
-                                {/* Hidden multi-file input */}
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    ref={fileInputRef}
-                                    onChange={handleFilesChange}
-                                    className="hidden"
-                                />
-
-                                {/* Upload trigger div */}
-                                <div
-                                    onClick={handleDivClick}
-                                    className="p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-                                >
-                                    <PhotoIcon className="w-[30px] dark:text-gray-200" />
-                                </div>
-
-                                {/* Image previews */}
-                                {selectedImages.length > 0 && (
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                        {selectedImages.map((img, index) => (
-                                            <>
-                                                <Image
-                                                    src={img.url}
-                                                    alt={img.name}
-                                                    width={100}
-                                                    height={128}
-                                                    className="w-[100px] h-32 object-cover"
-                                                />
-                                                <p className="text-xs text-center p-1 truncate">{img.name}</p>
-
-                                            </>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                            <div className='flex flex-col gap-3'>
-                                <div className='flex flex-col gap-1'>
-                                    <label
-                                        htmlFor="productSelect"
-                                        className="font-bold text-[#4B4F4F] dark:text-gray-300 text-sm"
-                                    >
-                                        Product/Service
-                                    </label>
-                                    <select
-                                        id="productSelect"
-                                        name='category'
-                                        required
-                                        className="w-full p-2 border rounded-md dark:bg-gray-700 dark:text-gray-200"
-                                    >
-                                        <option value="" disabled>
-                                            Select
-                                        </option>
-                                        {options.map((option, index) => (
-                                            <option key={index} value={option} className="dark:text-gray-200">
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className='flex flex-col gap-1'>
-                                    <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Enter Product/Service Name</label>
-                                    <Input required name='name' type='text' className="dark:bg-gray-700 dark:text-gray-200" />
-                                </div>
-                                <div className='flex flex-col gap-1'>
-                                    <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Enter the Selling Price</label>
-                                    <Input required name='price' type='number' className="dark:bg-gray-700 dark:text-gray-200" />
-                                </div>
-                                <div className='flex flex-col gap-1'>
-                                    <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Describe the Product/Service Briefly (Optional)</label>
-                                    <Input name='description' type='textarea' className="dark:bg-gray-700 dark:text-gray-200" />
-                                </div>
-                            </div>
-
-                            <div className='flex gap-3 justify-end'>
-                                <button type='button' onClick={() => setModal(false)} className='border py-2 rounded-[100px] border-[#B9B9B9] text-[#B9B9B9] dark:border-gray-600 dark:text-gray-400 px-4'>Cancel</button>
-                                <button disabled={loading2} type='submit' className='bg-[#1C0F86] py-2 rounded-[100px] text-white px-4'>
-                                    {
-                                        loading2 ? <span className='animate-spin'>Loading...</span> :
-                                            <span>Finish</span>
-                                    }
+            {/* pop up for adding products */}
+            {
+                modal2 ?
+                    <div className='fixed p-5 top-0 bottom-0  left-0 right-0 flex justify-center items-center z-999 '>
+                        <div className='bg-white dark:bg-boxdark shadow-lg shadow-black/10 
+                  max-h-[90vh] w-full max-w-[600px] overflow-y-auto rounded-lg p-5'>
+                            <div className='flex justify-end items-center'>
+                                <button onClick={() => setModal2(false)} className=''>
+                                    <CircleX />
                                 </button>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            </div >
+                            <div className='p-5 space-y-4 max-w-[600px]'>
+                                <div className='text-4xl font-bold dark:text-gray-200'>
+                                    Add Product/Service
+                                </div>
+
+                                <form onSubmit={addProduct} className='flex flex-col gap-4'>
+                                    <div className="space-y-4">
+                                        {/* Hidden multi-file input */}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            multiple
+                                            ref={fileInputRef}
+                                            onChange={handleFilesChange}
+                                            className="hidden"
+                                        />
+
+                                        {/* Upload trigger div */}
+                                        <div
+                                            onClick={handleDivClick}
+                                            className="p-10 border border-[#717D96] dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                                        >
+                                            <PhotoIcon className="w-[30px] dark:text-gray-200" />
+                                        </div>
+
+                                        {/* Image previews */}
+                                        {selectedImages.length > 0 && (
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                                {selectedImages.map((img, index) => (
+                                                    <>
+                                                        <Image
+                                                            src={img.url}
+                                                            alt={img.name}
+                                                            width={100}
+                                                            height={128}
+                                                            className="w-[100px] h-32 object-cover"
+                                                        />
+                                                        <p className="text-xs text-center p-1 truncate">{img.name}</p>
+
+                                                    </>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className='flex flex-col gap-3'>
+                                        <div className='flex flex-col gap-1'>
+                                            <label
+                                                htmlFor="productSelect"
+                                                className="font-bold text-[#4B4F4F] dark:text-gray-300 text-sm"
+                                            >
+                                                Product/Service
+                                            </label>
+                                            <select
+                                                id="productSelect"
+                                                name='category'
+                                                required
+                                                className="w-full p-2 border rounded-md dark:bg-gray-700 dark:text-gray-200"
+                                            >
+                                                <option value="" disabled>
+                                                    Select
+                                                </option>
+                                                {options.map((option, index) => (
+                                                    <option key={index} value={option} className="dark:text-gray-200">
+                                                        {option}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className='flex flex-col gap-1'>
+                                            <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Enter Product/Service Name</label>
+                                            <Input required name='name' type='text' className="dark:bg-gray-700 dark:text-gray-200" />
+                                        </div>
+                                        <div className='flex flex-col gap-1'>
+                                            <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Enter the Selling Price</label>
+                                            <Input required name='price' type='number' className="dark:bg-gray-700 dark:text-gray-200" />
+                                        </div>
+                                         <div className='flex flex-col gap-1'>
+                                            <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Enter the Partial Payment Price</label>
+                                            <label className='font-bold text-[#4B4F4F] dark:text-gray-400 text-[10px]'>this is the amount a client is requested to pay upon when the order is placed.(optioanl but 30% of Selling price by default)</label>
+                                            <Input placeholder='default amount' name='partialPayment' type='number' className="dark:bg-gray-700 dark:text-gray-200" />
+                                        </div>
+                                        <div className='flex flex-col gap-1'>
+                                            <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Describe the Product/Service Briefly (Optional)</label>
+                                            <Input name='description' type='textarea' className="dark:bg-gray-700 dark:text-gray-200" />
+                                        </div>
+                                    </div>
+
+                                    <div className='flex gap-3 justify-end'>
+                                        <button type='button' onClick={() => setModal(false)} className='border py-2 rounded-[100px] border-[#B9B9B9] text-[#B9B9B9] dark:border-gray-600 dark:text-gray-400 px-4'>Cancel</button>
+                                        <button disabled={loading2} type='submit' className='bg-[#1C0F86] py-2 rounded-[100px] text-white px-4'>
+                                            {
+                                                loading2 ? <span className='animate-spin'>Loading...</span> :
+                                                    <span>Finish</span>
+                                            }
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div >
+                    :
+                    <></>
+            }
 
             <div className='flex justify-between z-1'>
                 <div className='text-2xl font-bold dark:text-gray-200'>Products and Services</div>
