@@ -200,42 +200,56 @@ const TotalSalesOverTime = () => {
                         <AlertDialogDescription>
                             {transactionDetails ? (
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full text-sm text-left border dark:border-gray-700">
-                                        <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
-                                            <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-600">Customer Name</th>
-                                                <td className="px-4 py-3 text-gray-800 dark:text-gray-100">{transactionDetails.customers?.name}</td>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-600">Transaction Date</th>
-                                                <td className="px-4 py-3 text-gray-800 dark:text-gray-100">{transactionDetails.created_at}</td>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-600">Product/Services</th>
-                                                <td className="px-4 py-3 text-gray-800 dark:text-gray-100">{transactionDetails.product_id}</td>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-600">Phone Number</th>
-                                                <td className="px-4 py-3 text-gray-800 dark:text-gray-100">{transactionDetails.phone_number}</td>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-600">Receipt No.</th>
-                                                <td className="px-4 py-3 text-gray-800 dark:text-gray-100">{transactionDetails.receiptNo}</td>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-600">Email</th>
-                                                <td className="px-4 py-3 text-gray-800 dark:text-gray-100">{transactionDetails.email}</td>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-600">Transaction Amount</th>
-                                                <td className="px-4 py-3 text-gray-800 dark:text-gray-100">ZMW {transactionDetails.amount}</td>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-600">Address</th>
-                                                <td className="px-4 py-3 text-gray-800 dark:text-gray-100">{transactionDetails.address}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {/* Customer Name */}
+                                        <div className="p-4 border rounded-lg dark:border-gray-700">
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Customer Name</p>
+                                            <p className="text-gray-900 dark:text-gray-100">{transactionDetails.customers?.name}</p>
+                                        </div>
+
+                                        {/* Transaction Date */}
+                                        <div className="p-4 border rounded-lg dark:border-gray-700">
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Transaction Date</p>
+                                            <p className="text-gray-900 dark:text-gray-100">{transactionDetails.created_at}</p>
+                                        </div>
+
+                                        {/* Product/Services */}
+                                        <div className="p-4 border rounded-lg dark:border-gray-700">
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Product/Services</p>
+                                            <p className="text-gray-900 dark:text-gray-100">{transactionDetails.product_id}</p>
+                                        </div>
+
+                                        {/* Phone Number */}
+                                        <div className="p-4 border rounded-lg dark:border-gray-700">
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Phone Number</p>
+                                            <p className="text-gray-900 dark:text-gray-100">{transactionDetails.phone_number}</p>
+                                        </div>
+
+                                        {/* Receipt No. */}
+                                        <div className="p-4 border rounded-lg dark:border-gray-700">
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Receipt No.</p>
+                                            <p className="text-gray-900 dark:text-gray-100">{transactionDetails.receiptNo}</p>
+                                        </div>
+
+                                        {/* Email */}
+                                        <div className="p-4 border rounded-lg dark:border-gray-700">
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Email</p>
+                                            <p className="text-gray-900 dark:text-gray-100">{transactionDetails.email}</p>
+                                        </div>
+
+                                        {/* Transaction Amount */}
+                                        <div className="p-4 border rounded-lg dark:border-gray-700">
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Transaction Amount</p>
+                                            <p className="text-gray-900 dark:text-gray-100">ZMW {transactionDetails.amount}</p>
+                                        </div>
+
+                                        {/* Address */}
+                                        <div className="p-4 border rounded-lg dark:border-gray-700">
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Address</p>
+                                            <p className="text-gray-900 dark:text-gray-100">{transactionDetails.address}</p>
+                                        </div>
+                                    </div>
+
                                 </div>
                             ) : (
                                 <p className="text-gray-600 dark:text-gray-400">No transaction selected.</p>

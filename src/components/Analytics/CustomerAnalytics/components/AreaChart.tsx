@@ -1,16 +1,33 @@
+import { Customers } from '@/types/Customers';
 import { ApexOptions } from 'apexcharts';
 import React from 'react'
 import ReactApexChart from "react-apexcharts";
 
-const AreaChart = () => {
+const AreaChart = ({ customers }: { customers: {location: string, number: number}[] | null }) => {
     const series = [
         {
             name: "Population",
-            data: [44, 55, 13, 30],
+            data: customers?.map((customer: { location: string, number: number }) => customer.number) || []
         },
     ];
 
-    const options: ApexOptions = {
+    interface ResponsiveOption {
+        breakpoint: number;
+        options: {
+            chart: {
+                width: string;
+            };
+            legend: {
+                position: string;
+            };
+        };
+    }
+
+    interface IChartOptions extends ApexOptions {
+        responsive: ResponsiveOption[];
+    }
+
+    const options: IChartOptions = {
         chart: {
             type: "bar",
             toolbar: {
@@ -30,7 +47,7 @@ const AreaChart = () => {
             },
         },
         xaxis: {
-            categories: ["Lusaka", "Copperbelt", "Central", "Other"],
+            categories: customers?.map((customer: { location: string, number: number }) => customer.location) || [],
             labels: {
                 style: {
                     colors: "#616262",

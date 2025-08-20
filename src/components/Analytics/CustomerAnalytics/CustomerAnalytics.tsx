@@ -18,11 +18,14 @@ import { businessesType, BusinessType } from '@/types/businesses';
 
 export const CustomerAnalytics = () => {
   const navigation = useRouter()
-  const [customerData, setCustomerData] = useState<Customers[] | null>(null)
+  const [customerData, setCustomerData] = useState<Customers | null>(null)
+  const [LocationData, setLocationData] = useState<{location: string, number: number}[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [location, setLocation] = useState<LocationType[] | null>(null)
   const [gender, setGender] = useState<genderType | null>(null)
   const [numberOfNewRepeat, setNumberOfNewRepeat] = useState<number | null>(null)
+  const [amountMade, setAmountMade] = useState<number | null>(null)
+  const [customerRetention, setCustomerRetention] = useState<number | null>(null)
   const userData: ApiDatatype = getData()
   const business: BusinessType | null = getOrgData()
 
@@ -36,6 +39,10 @@ export const CustomerAnalytics = () => {
         console.log(res.location)
         setNumberOfNewRepeat(res.customerNumber)
         setGender(res.gender)
+        setAmountMade(res.amountInLastSevenDays)
+        setCustomerRetention(res.totalReturnRatio)
+        setLocationData(res.customerLocationRatio)
+
 
       })
       .catch((er) => {
@@ -76,7 +83,7 @@ export const CustomerAnalytics = () => {
               :
               <div className="border flex flex-col justify-between grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
                 {customerData ?
-                  <TopCustomers cutomerDatas={customerData} />
+                  <TopCustomers cutomerDatas={customerData} amountInLastSevenDays={amountMade} />
                   :
                   <div className='h-24 grow bg-gray-700 animate-pulse min-h-[200px] rounded-lg'></div>
                 }
@@ -106,7 +113,7 @@ export const CustomerAnalytics = () => {
                           <div className="flex text-[#1A0670] dark:text-white justify-between items-end gap-2">
                             <div className="flex items-end gap-2">
                               {/* will have to worrk on this later */}
-                              <div className="font-bold text-2xl">25.7K</div>
+                              <div className="font-bold text-2xl">K{amountMade?.toFixed(2)}</div>
                               <div className="text-sm font-light">last 7 days</div>
                             </div>
                           </div>
@@ -179,22 +186,18 @@ export const CustomerAnalytics = () => {
 
           <div className=" grow border-[#C9C9C9] dark:border-strokedark p-3 rounded-md">
             <div className="grow">
-              <AreaChart />
+              <AreaChart customers={LocationData} />
             </div>
             <div>
               <div className="text-[#1A0670] dark:text-white">Customer Retention Rates</div>
               <div className="flex text-[#1A0670] dark:text-white justify-between items-end gap-2">
                 <div className="flex items-end gap-2">
-                  <div className="font-bold text-2xl">35%</div>
+                  <div className="font-bold text-2xl"> {customerRetention}%</div>
                   <div className="text-sm font-light">Growth</div>
                 </div>
               </div>
             </div>
           </div>
-
-
-
-
         </div>
       </div>
 

@@ -2,7 +2,7 @@ import { CustomerPrice } from '@/types/Customers'
 import { CrownIcon } from 'lucide-react'
 import React, { use, useEffect } from 'react'
 
-const TopCustomers = ({ cutomerDatas }: { cutomerDatas: CustomerPrice[] | null | any }) => {
+const TopCustomers = ({ cutomerDatas, amountInLastSevenDays }: { cutomerDatas: CustomerPrice[] | null | any, amountInLastSevenDays: number | null }) => {
     const totalAmount = cutomerDatas?.reduce((sum: number, item: CustomerPrice) => sum + item.amount, 0) || 1; // fallback 1 to avoid division by zero
 
     const sortedCustomers = cutomerDatas?.sort((a: any, b: any) => b.amount - a.amount) // Sort by highest amount 
@@ -42,7 +42,7 @@ const TopCustomers = ({ cutomerDatas }: { cutomerDatas: CustomerPrice[] | null |
                 {/* Summary - Total Sales */}
                 <div className="flex justify-between items-end text-[#1A0670] dark:text-white mt-2">
                     <div className="flex items-end gap-2">
-                        <div className="font-bold text-2xl">25.7K</div>
+                        <div className="font-bold text-2xl">K{amountInLastSevenDays?.toFixed(2) }</div>
                         <div className="text-sm font-light">last 7 days</div>
                     </div>
                 </div>

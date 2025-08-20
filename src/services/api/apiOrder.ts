@@ -137,8 +137,10 @@ export async function getOrdersByBusinessId(business_id: string | null | undefin
         transaction_id,
         orderToken,
         created_at,
+        quantity,
         order_payment_status,
         products (
+        partialPayment,
         name,
         price
         ),

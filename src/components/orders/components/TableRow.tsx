@@ -58,7 +58,7 @@ const ImageComp = ({ data }: { data: string }) => {
 }
 
 
-export const TableRow = ({ e, setOrderData }: { e: OrderData, setOrderData: (data:any) => void }) => {
+export const TableRow = ({ e, setOrderData }: { e: OrderData, setOrderData: (data: any) => void }) => {
     const [option, setOption] = useState<OrderData | null>(null)
     const [show, setShow] = useState(false)
     const [loding, setLoding] = useState(false)
@@ -83,6 +83,12 @@ export const TableRow = ({ e, setOrderData }: { e: OrderData, setOrderData: (dat
                 setLoading(false)
             })
     }
+    const InfoBlock = ({ label, value }: { label: string; value?: string | number }) => (
+        <div>
+            <div className="text-sm font-bold">{label}</div>
+            <div>{value || "—"}</div>
+        </div>
+    );
 
     const updateOrderPaymentStatus = (paymentId: string, token: string) => {
         // console.log("Updating payment status for:", paymentId, token)
@@ -177,76 +183,101 @@ export const TableRow = ({ e, setOrderData }: { e: OrderData, setOrderData: (dat
                                     </div>
                                 </div>
                                 <div className='mt-5 p-5 space-y-5'>
-                                    {show ?
+                                    {show ? (
                                         <>
-                                            <div className='space-y-3 text-gray-800 dark:text-gray-200'>
-                                                <div className='text-lg font-bold'>
-                                                    Summarized Notes from Customer
+                                            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                                {/* Summarized Notes */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                        Summarized Notes from Customer
+                                                    </p>
+                                                    <p className="text-gray-900 dark:text-gray-100">
+                                                        {option?.sammarized_notes || "No notes available"}
+                                                    </p>
                                                 </div>
-                                                <div className='pl-5'>
-                                                    {option?.sammarized_notes ? option?.sammarized_notes : 'No notes available'}
-                                                </div>
-                                                <hr className='border my-3 border-gray-600' />
-                                                <div className='flex flex-col gap-3'>
-                                                    <div className='text-lg font-bold'>Images from the customer</div>
-                                                    <div className='flex overflow-y-auto  gap-4'>
+
+                                                {/* Images from Customer */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                        Images from the Customer
+                                                    </p>
+                                                    <div className="flex overflow-x-auto gap-4 mt-2">
                                                         <ImageComp data={option?.id} />
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </>
-                                        :
+                                    ) : (
                                         <>
-                                            <div className=" text-gray-800 flex flex-wrap gap-5 dark:text-gray-200">
-                                                <div className='grow flex flex-col gap-3'>
-                                                    <div className="">
-                                                        <div className="text-sm font-bold">Customer Name</div>
-                                                        <div className="">{option?.customers.name}</div>
-                                                    </div>
-                                                    <div className="">
-                                                        <div className="text-sm font-bold">Order ID</div>
-                                                        <div className="">{option?.order_id}</div>
-                                                    </div>
-                                                    <div className="">
-                                                        <div className="text-sm font-bold">Product/Services</div>
-                                                        <div className="">{option?.products.name}</div>
-                                                    </div>
-                                                </div>
-                                                <div className='grow flex flex-col gap-3'>
-                                                    <div className="">
-                                                        <div className="text-sm font-bold">Due Date</div>
-                                                        <div className="">{option?.created_at}</div>
-                                                    </div>
-                                                    <div className="">
-                                                        <div className="text-sm font-bold">Quantity</div>
-                                                        <div className="">{option?.total_amount / option?.products.price}</div>
-                                                    </div>
-                                                    <div className="">
-                                                        <div className="text-sm font-bold">Phone Number</div>
-                                                        <div className="">{option?.customers.phone}</div>
-                                                    </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {/* Customer Name */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Customer Name</p>
+                                                    <p className="text-gray-900 dark:text-gray-100">{option?.customers?.name}</p>
                                                 </div>
 
-                                                <div className='grow flex flex-col gap-3'>
-                                                    <div className="">
-                                                        <div className="text-sm font-bold">Transaction Amount</div>
-                                                        <div className="">{option?.total_amount ? "KMW " + option?.total_amount.toFixed(2) : "ZMW" + 0}</div>
-                                                    </div>
-                                                    <div className="">
-                                                        <div className="text-sm font-bold">Email:</div>
-                                                        <div className="">{option?.customers.email}</div>
-                                                    </div>
-                                                    <div className="">
-                                                        <div className="text-sm font-bold">Address</div>
-                                                        <div className="">{option?.delivery_location}</div>
-                                                    </div>
+                                                {/* Order ID */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Order ID</p>
+                                                    <p className="text-gray-900 dark:text-gray-100">{option?.order_id}</p>
+                                                </div>
+
+                                                {/* Product/Services */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Product/Services</p>
+                                                    <p className="text-gray-900 dark:text-gray-100">{option?.products?.name}</p>
+                                                </div>
+
+                                                {/* Due Date */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Due Date</p>
+                                                    <p className="text-gray-900 dark:text-gray-100">{option?.created_at}</p>
+                                                </div>
+
+                                                {/* Quantity */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Quantity</p>
+                                                    <p className="text-gray-900 dark:text-gray-100">{option?.quantity}</p>
+                                                </div>
+
+                                                {/* Phone Number */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Phone Number</p>
+                                                    <p className="text-gray-900 dark:text-gray-100">{option?.customers?.phone}</p>
+                                                </div>
+
+                                                {/* Transaction Amount */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Transaction Amount</p>
+                                                    <p className="text-gray-900 dark:text-gray-100">
+                                                        ZMW {option?.total_amount ? option.total_amount.toFixed(2) : 0}
+                                                    </p>
+                                                </div>
+
+                                                {/* Email */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Email</p>
+                                                    <p className="text-gray-900 dark:text-gray-100">{option?.customers?.email}</p>
+                                                </div>
+
+                                                {/* Address */}
+                                                <div className="p-4 border rounded-lg dark:border-gray-700">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-400">Address</p>
+                                                    <p className="text-gray-900 dark:text-gray-100">{option?.delivery_location}</p>
                                                 </div>
                                             </div>
 
+                                            <button
+                                                onClick={() => setShow(true)}
+                                                className="text-[#1A0670] bg-gray-600 font-bold border border-[#1A0670] rounded-lg text-center p-3 w-full mt-4"
+                                            >
+                                                View Customer Order Specifications
+                                            </button>
 
-                                            <button onClick={() => setShow(true)} className='text-[#1A0670] bg-gray-600 font-bold border border-[#1A0670] rounded-lg text-center p-3 w-full'>View Customer Order Specifications</button>
                                         </>
-                                    }
+                                    )}
+
                                     <div className='mt-5 flex justify-end gap-2'>
                                         <button onClick={() => { setOption(null); setShow(false) }} className='border-gray-500 text-white border px-4 py-2 rounded-md flex items-center gap-2'>
                                             cancel

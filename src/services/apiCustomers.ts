@@ -3,6 +3,18 @@ import { Customers } from '@/types/Customers';
 import { OrderData } from '@/types/Orders';
 import { Sale } from '@/types/Sales';
 
+
+function isWithinLast7Days(dateValue: Date | string | number): boolean {
+  const inputDate = new Date(dateValue);
+  const now = new Date();
+  
+  // 7 days ago from now
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(now.getDate() - 7);
+
+  return inputDate >= sevenDaysAgo && inputDate <= now;
+}
+
 export async function getCustomers() {
     try {
         const { data, error } = await supabase.from('customers').select('*');
@@ -111,6 +123,17 @@ export const getCustomersForBusiness = async (business_id: any): Promise<Custome
 export const getCuststomerSales = async (id: any): Promise<any | null> => {
     let customers: any = await getCustomersForBusiness(id)
     let customerPriceArray: any = []
+    let amountInLastSevenDays = 0
+    let CustomerRetention = 0
+    let totalReturnRatio = 0
+    
+    let customerLocationRatio: any = []
+    let usiqueLocation = Array.from(new Set(customers.map((e: Customers) => e.location)));
+
+    for(let i = 0; i < usiqueLocation.length; i++) {
+        let number = customers.filter((e: Customers) => e.location == usiqueLocation[i]).length | 0
+        customerLocationRatio.push({ location: usiqueLocation[i], number: number })
+    }
 
 
     function getRepeatingElements(inputArray: any) {
@@ -164,7 +187,7 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
                 const userid = customers[i].id
 
                 // this filters the sales based on user id
-                const filtererdata = data?.filter(e => e.customer_id == userid)
+                const filtererdata = data?.filter(e => e.customer_id == userid && e.order_payment_status == "completed") || []
                 const totalAmount = filtererdata?.reduce((acc, curr) => acc + curr.total_amount, 0)
 
                 // Get the current date
@@ -193,6 +216,34 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
 
 
 
+            let CustomerId  = customers.map((e: Customers) => e.id)
+            // console.log('Customer Ids: ', CustomerId)
+            let usiqueCustomerId = Array.from(new Set(CustomerId));    
+            let userCount = []
+            
+            for (let i = 0; i < usiqueCustomerId.length; i++) {
+                let count
+                const userId = usiqueCustomerId[i]
+                count = data?.filter((e: OrderData) => e.customer_id == userId).length || 0
+
+                if( count > 1) {
+                    userCount.push({ id: userId, count: count })
+                }
+
+            }
+
+           totalReturnRatio =  userCount.length / usiqueCustomerId.length * 100
+
+            for (let i = 0; i < (data?.length ?? 0); i++) {
+                if (isWithinLast7Days(data![i].created_at)) {
+                    amountInLastSevenDays += data![i].total_amount;
+                }
+            }
+
+            console.log('Amount made in the last 7 days: ', amountInLastSevenDays)
+
+
+
 
 
             for (let i = 0; i < commonAreas.length; i++) {
@@ -215,7 +266,17 @@ export const getCuststomerSales = async (id: any): Promise<any | null> => {
         }
 
         // console.log(customerPriceArray)   
-        resolve({ customer: customerPriceArray, location: AreatoCustomers, gender: { male: male, female: female }, customerNumber: { new: newCstomer, repeat: repeatCustomer } })
+        resolve({
+            customers: customers,
+            totalReturnRatio: totalReturnRatio,
+            amountInLastSevenDays: amountInLastSevenDays, 
+            customer: customerPriceArray, 
+            location: AreatoCustomers, 
+            gender: { male: male, female: female }, 
+            customerNumber: { new: newCstomer, repeat: repeatCustomer },
+            customerLocationRatio:customerLocationRatio
+        
+        })
     })
 
 }

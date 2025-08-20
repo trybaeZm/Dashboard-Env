@@ -12,6 +12,7 @@ export type OrderData = {
   orderToken:string;
   delivery_location: string
   order_payment_status: string;
+  quantity: number;
   customers: {
     name: string;
     email: string;
@@ -19,6 +20,7 @@ export type OrderData = {
   };
   products: {
     name: string;
+    partialPayment: number; // assuming this is a percentage of the total amount
     price: number
   }
 };
