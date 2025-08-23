@@ -54,5 +54,6 @@ export const config = {
     '/orders/:path*',
     '/products_and_services/:path*',
     '/overview/:path*',
+    '/inventory/:path*'
   ],
 }

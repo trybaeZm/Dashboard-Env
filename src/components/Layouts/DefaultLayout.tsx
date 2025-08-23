@@ -89,7 +89,7 @@ export default function DefaultLayout({
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main className="dark:bg-gray-800">
-            <div className="mx-auto p-3 min-h-screen dark:text-gray-300 text-gray-800 dark:bg-gray-800">
+            <div className="mx-auto p-3 pt-10 min-h-screen dark:text-gray-300 text-gray-800 dark:bg-gray-800">
               <Suspense fallback={<div>Loading...</div>}>
                 {children}
               </Suspense>

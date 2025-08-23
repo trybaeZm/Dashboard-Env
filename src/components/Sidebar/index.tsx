@@ -16,6 +16,9 @@ import {
   ClipboardDocumentIcon,
   Cog6ToothIcon,
   WalletIcon,
+  ArchiveBoxIcon,
+  AdjustmentsHorizontalIcon,
+  CpuChipIcon,
 } from "@heroicons/react/24/outline";
 
 // icons imports
@@ -23,6 +26,7 @@ import image from './icons/ai_1447616 1.png'
 import image2 from './icons/circle-square.png'
 import image4 from './icons/star.png'
 import image5 from './icons/trybae.png'
+import { ShoppingBagIcon, SparklesIcon } from "lucide-react";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -39,7 +43,7 @@ const menuGroups = [
         route: "/overview",
       },
       {
-        icon: <Image alt="" src={image} className="size-6" />,
+        icon: <SparklesIcon className="size-5" />,
         label: "LennyAi",
         route: "/lennyAi",
       },
@@ -53,8 +57,13 @@ const menuGroups = [
           { label: "Customer Analytics", route: "/customer-analytics" },
         ],
       },
+       {
+        icon: <ArchiveBoxIcon  className="size-5" />,
+        label: "Inventory",
+        route: "/inventory",
+      },
       {
-        icon: <Image alt="" src={image2} className="size-6" />,
+        icon: <ShoppingBagIcon className="size-5"  />,
         label: "Products/Services",
         route: "/products_and_services",
       },
@@ -64,7 +73,7 @@ const menuGroups = [
         route: "/orders",
       },
       {
-        icon: <Image alt="" src={image4} className="size-6" />,
+        icon: <CpuChipIcon className="size-5"  />,
         label: "Ai agents",
         route: "#",
         children: [
@@ -81,6 +90,7 @@ const menuGroups = [
         label: "Settings",
         route: "/settings",
       },
+      
     ],
   },
 ];

@@ -3,17 +3,7 @@ import { supabase } from '../SupabaseConfig'
 import { Customers } from '@/types/Customers';
 
 
-export type Order = {
-    id: string;
-    order_id: number;
-    business_id: string;
-    int_business_id: number;
-    customer_id: string;
-    int_customer_id: number;
-    total_amount: number;
-    order_status: string;
-    created_at: string;
-    delivery_location: string | null;
+export type Order = ActualOrderType & {
     customers: {
         name: string;
         email: string;
@@ -24,6 +14,20 @@ export type Order = {
         price: number
     }
 };
+
+export type ActualOrderType = {
+    id: string;
+    quantity: number;
+    order_id: number;
+    business_id: string;
+    int_business_id: number;
+    customer_id: string;
+    int_customer_id: number;
+    total_amount: number;
+    order_status: string;
+    created_at: string;
+    delivery_location: string | null;
+}
 
 export type Product = {
     id: string;

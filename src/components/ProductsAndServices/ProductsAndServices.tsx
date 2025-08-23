@@ -97,7 +97,7 @@ export const ProductsAndServices = () => {
         const descriptions = formData.get('description') as string;
 
         // this section gets the partial payment defined by the user
-        const partialPayment = parseFloat(formData.get('partialPayment')  as string);
+        const partialPayment = parseFloat(formData.get('partialPayment') as string);
 
 
 
@@ -283,7 +283,7 @@ export const ProductsAndServices = () => {
                                             <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Enter the Selling Price</label>
                                             <Input required name='price' type='number' className="dark:bg-gray-700 dark:text-gray-200" />
                                         </div>
-                                         <div className='flex flex-col gap-1'>
+                                        <div className='flex flex-col gap-1'>
                                             <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Enter the Partial Payment Price</label>
                                             <label className='font-bold text-[#4B4F4F] dark:text-gray-400 text-[10px]'>this is the amount a client is requested to pay upon when the order is placed.(optioanl but 30% of Selling price by default)</label>
                                             <Input placeholder='default amount' name='partialPayment' type='number' className="dark:bg-gray-700 dark:text-gray-200" />
@@ -320,24 +320,29 @@ export const ProductsAndServices = () => {
                     </button>
                 </div>
             </div>
-            <div className='flex justify-center z-1 py-5'>
-                <div className='max-w-[800px] flex flex-col gap-5 w-full'>
-                    {
-                        loading ?
-                            <div className=' grow space-y-3 gap-3'>
-                                <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                                <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                                <div className='h-24 bg-gray-700 grow animate-pulse min-h-[150px] min-w-[300px] rounded-lg'></div>
-                            </div>
-                            :
-                            <>
-                                {
-                                    productData?.map((e, key) =>
-                                        <ProductCard e={e} key={key} setModal={setModal} />
-                                    )
-                                }
-                            </>
-                    }
+            <div className="flex justify-center z-1 py-5">
+                <div className="max-w-[1200px] w-full px-4">
+                    {loading ? (
+                        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                            {[...Array(6)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="border border-gray-700 rounded-lg p-4 animate-pulse space-y-4"
+                                >
+                                    <div className="bg-gray-600 h-40 w-full rounded-md"></div>
+                                    <div className="h-4 bg-gray-600 rounded w-3/4"></div>
+                                    <div className="h-4 bg-gray-600 rounded w-1/2"></div>
+                                    <div className="h-4 bg-gray-600 rounded w-1/3"></div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                            {productData?.map((e, key) => (
+                                <ProductCard e={e} key={key} setModal={setModal} />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div >

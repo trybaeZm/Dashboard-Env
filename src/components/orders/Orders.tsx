@@ -49,7 +49,7 @@ export const Orders = () => {
 
     return (
         <div>
-            <div className='pt-20 flex flex-col gap-3'>
+            <div className=' flex flex-col gap-3'>
                 <div className="w-full border-b border-gray-300 dark:border-gray-700">
                     <nav className="flex gap-6 px-4 sm:px-6 md:px-8 lg:px-10 overflow-x-auto whitespace-nowrap">
                         {[
