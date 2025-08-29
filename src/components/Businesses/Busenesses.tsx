@@ -18,6 +18,49 @@ export const Busenesses = () => {
     const [organisationData, setOrganisationData] = useState<null | BusinessType[]>(null)
     const userData = getData()
     const business = getOrgData()
+    let category = [
+  "Agriculture",
+  "Food & Beverages",
+  "Retail & E-commerce",
+  "Wholesale",
+  "Fashion & Apparel",
+  "Beauty & Personal Care",
+  "Health & Pharmaceuticals",
+  "Medical Services",
+  "Education & Training",
+  "Technology & Software",
+  "Telecommunications",
+  "Financial Services",
+  "Loans & Microfinance",
+  "Insurance",
+  "Banking",
+  "Construction",
+  "Real Estate",
+  "Transportation & Logistics",
+  "Automotive",
+  "Energy & Utilities",
+  "Mining & Metals",
+  "Manufacturing",
+  "Media & Entertainment",
+  "Sports & Recreation",
+  "Tourism & Hospitality",
+  "Food Services & Catering",
+  "Cakes & Bakery",
+  "Electronics & Phones",
+  "Home & Living",
+  "Furniture",
+  "Cleaning Services",
+  "Professional Services",
+  "Legal Services",
+  "Consulting",
+  "Nonprofit & NGOs",
+  "Government & Public Sector",
+  "Events & Weddings",
+  "Printing & Publishing",
+  "Handcrafts & Art",
+  "Pet Services & Supplies"
+];
+
 
     const storeDatatoCookies = (data: BusinessType) => {
         storeOrgData(data)
@@ -190,9 +233,12 @@ export const Busenesses = () => {
                                 <option value="" disabled>
                                     Select industry (optional)
                                 </option>
-                                <option value="loans">Loans</option>
-                                <option value="phones">Phones</option>
-                                <option value="cakes">Cakes</option>
+                                {
+                                    category.map((e, key)=>
+                                        
+                                        <option key={key} value={e}>{e}</option>
+                                    )
+                                }
                                 {/* Add more as needed */}
                             </select>
                         </div>
