@@ -80,7 +80,39 @@ export const ProductsAndServices = () => {
         event.target.value = ''; // clear input
     };
 
-    const options = ["Phones", "Cakes", "Loans"];
+    const options = [
+        "Agriculture",
+        "Manufacturing",
+        "Retail",
+        "Wholesale",
+        "Food & Beverage",
+        "Hospitality",
+        "Tourism & Travel",
+        "Transportation & Logistics",
+        "Technology & Software",
+        "Telecommunications",
+        "Construction",
+        "Real Estate",
+        "Finance & Banking",
+        "Loans & Microfinance",
+        "Insurance",
+        "Healthcare & Pharmaceuticals",
+        "Education & Training",
+        "Media & Entertainment",
+        "Fashion & Apparel",
+        "Beauty & Personal Care",
+        "Sports & Recreation",
+        "Energy & Utilities",
+        "Mining & Metals",
+        "Professional Services",
+        "Legal Services",
+        "Consulting",
+        "Nonprofit & NGOs",
+        "Government & Public Sector",
+        "E-commerce",
+        "Automotive",
+        "Home & Living"
+    ];
 
 
 

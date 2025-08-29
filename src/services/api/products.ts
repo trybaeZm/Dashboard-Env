@@ -266,37 +266,25 @@ export const createProductAndService = async (product: ProductInsert, imageData:
 }
 
 export const getProductImages = async (productId: string): Promise<string[] | null> => {
-    console.log(productId)
+    // console.log(productId)
     return new Promise(async (resolve, reject) => {
         try {
             const { data, error } = await supabase
                 .storage
-                .from('uploaded-files')
-                .list(`products/${productId}`, {
-                    limit: 100,
-                    offset: 0,
-                    sortBy: { column: 'name', order: 'asc' }
-                });
+                .from("uploaded-files")
+                .list(`products/${productId}/`, { limit: 100 });
 
-            if (error) {
-                console.error("Error fetching product images:", error);
-                reject(error);
-            }
+            if (error) throw error;
+            if (!data || data.length === 0) return [];
+            // Map to public URLs (if bucket is PUBLIC)
+            const urls: string[] = data.map((file) => {
+                return supabase.storage
+                    .from("uploaded-files")
+                    .getPublicUrl(`products/${productId}/${file.name}`).data.publicUrl;
+            });
 
-            if (data) {
-                const imageUrls = data.map(file =>
-                    supabase.storage
-                        .from('uploaded-files')
-                        .getPublicUrl(`products/${productId}/${file.name}`)
-                        .data.publicUrl
-                );
-                resolve(imageUrls);
-            }
 
-            else {
-                console.warn("No images found for product:", productId);
-                resolve([]);
-            }
+            resolve(urls);
         } catch (error) {
             console.error("Error fetching product images:", error);
             reject(error);
