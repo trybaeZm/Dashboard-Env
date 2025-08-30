@@ -1,5 +1,6 @@
 export type Product = {
   image:string;
+  imageName: string;
   product_id: number;
   user_id: number;
   price: number;
@@ -13,6 +14,7 @@ export type Product = {
   int_business_id: number;
   int_user_id: number;
   id: string;
+  partialPayment:string;
 };
 
 export type ProductInsert = {

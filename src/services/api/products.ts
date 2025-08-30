@@ -212,8 +212,57 @@ export const getProductsAndServices = (business_id: string | null | undefined): 
         resolve(combinedData)
     })
 }
+export const updateProductAndService = async (
+    product: Partial<ProductInsert>,
+    id: string,
+    imageData?: ImagePreview | null
+): Promise<any> => {
 
-export const createProductAndService = async (product: ProductInsert, imageData: ImagePreview[]): Promise<Product | null> => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Update product data
+            if (product) {
+                const { data: updatedData, error: updateError } = await supabase
+                    .from("products")
+                    .update(product)
+                    .eq("id", id);
+
+                if (updateError) {
+                    console.error("Update failed:", updateError);
+                    reject(updateError);
+                }
+
+                console.log("Updated record:", updatedData);
+            }
+
+            // Upload image if provided
+            if (imageData) {
+
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('uploaded-files')
+                    .upload(
+                        `products/${id}/${imageData.name}`,
+                        imageData.file
+                    )
+
+                if (uploadError) {
+                    console.error("Image upload failed:", uploadError);
+                    reject(uploadError);
+                }
+
+                console.log("Image uploaded:", uploadData);
+            }
+
+            resolve("success");
+        } catch (error) {
+            console.error("Error updating product and image:", error);
+            resolve(error);
+        }
+    })
+};
+
+
+export const createProductAndService = async (product: ProductInsert, imageData: ImagePreview | null): Promise<Product | null> => {
 
     return new Promise(async (resolve, reject) => {
         console.log('adding product')
@@ -231,13 +280,13 @@ export const createProductAndService = async (product: ProductInsert, imageData:
 
             if (productData) {
                 try {
-                    // If imageData is provided, insert images into the 'product_images' table
-                    for (const image of imageData) {
+                    if (imageData) {
+                        // If imageData is provided, insert images into the 'product_images' table
                         const { data, error } = await supabase.storage
                             .from('uploaded-files')
                             .upload(
-                                `products/${productData.id}/${image.name}`,
-                                image.file
+                                `products/${productData.id}/${imageData.name}`,
+                                imageData.file
                             )
 
                         if (data) {
@@ -246,12 +295,9 @@ export const createProductAndService = async (product: ProductInsert, imageData:
                         if (error) {
                             console.log(error)
                             reject(error);
-                            break;
                         }
                     }
-
                     resolve(productData);
-
                 } catch (error) {
                     console.error("Error inserting product images:", error);
                     reject(error);
@@ -265,29 +311,25 @@ export const createProductAndService = async (product: ProductInsert, imageData:
     })
 }
 
-export const getProductImages = async (productId: string): Promise<string[] | null> => {
-    // console.log(productId)
-    return new Promise(async (resolve, reject) => {
-        try {
-            const { data, error } = await supabase
-                .storage
-                .from("uploaded-files")
-                .list(`products/${productId}/`, { limit: 100 });
+export const getProductImages = async (
+    productId: string,
+    fileName: string
+): Promise <string | null> => {
+    try {
+        const filePath = `products/${productId}/${fileName}`;
 
-            if (error) throw error;
-            if (!data || data.length === 0) return [];
-            // Map to public URLs (if bucket is PUBLIC)
-            const urls: string[] = data.map((file) => {
-                return supabase.storage
-                    .from("uploaded-files")
-                    .getPublicUrl(`products/${productId}/${file.name}`).data.publicUrl;
-            });
+        const { data } = supabase.storage
+            .from("uploaded-files")
+            .getPublicUrl(filePath);
 
-
-            resolve(urls);
-        } catch (error) {
-            console.error("Error fetching product images:", error);
-            reject(error);
+        if (!data) {
+            console.error("Error fetching product images:");
+            return null;
         }
-    })
-}
+        return data.publicUrl ?? null;
+
+    } catch (error) {
+        console.error("Unexpected error fetching product images:", error);
+        return null;
+    }
+};

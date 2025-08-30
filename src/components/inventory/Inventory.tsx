@@ -77,7 +77,7 @@ const Inventory = () => {
                     <ArchiveBoxIcon className="h-7 w-7 text-blue-600" />
                     Inventory
                 </h1>
-                <AddProductModal getInventoryData={getInventoryData} />
+                <AddProductModal data={data} getInventoryData={getInventoryData} />
             </div>
 
             {/* Stats Cards */}
