@@ -84,7 +84,7 @@ export default function AddProductModal({ getInventoryData, data }: { getInvento
             </DialogTrigger>
 
             {
-                data.length < 0 ?
+                data.length > 0 ?
                     <DialogContent className="sm:max-w-[500px] bg-white dark:bg-boxdark rounded-lg shadow-lg p-6">
                         <DialogHeader>
                             <DialogTitle className="text-gray-900 dark:text-gray-200">
