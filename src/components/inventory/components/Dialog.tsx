@@ -74,11 +74,12 @@ export default function AddProductModal({ getInventoryData, data }: { getInvento
     useEffect(() => {
         // Reset form when modal is closed)
         getAllProducts()
+        
+    /* eslint-disable react-hooks/exhaustive-deps */
     }, [])
 
     return (
         <Dialog open={open} >
-
             <DialogTrigger asChild>
                 <Button onClick={() => setOpen(true)} className="bg-blue-600 text-white">+ Add Product</Button>
             </DialogTrigger>

@@ -1,71 +1,65 @@
 'use client'
-import { getData, getOrgData, storeOrgData } from '@/lib/createCookie'
+import { getData } from '@/lib/createCookie'
 import { createBusiness, getBusinessByOwnerID } from '@/services/api/apiBusiness'
 import { BusinessType } from '@/types/businesses'
-import { ArrowRight } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { PiFunnel, PiPlusBold } from "react-icons/pi";
 import { FiSearch } from "react-icons/fi"
 import { Input } from '@/components/ui/input'
+import { BusinessCard } from './component/BusinessCard'
 
 export const Busenesses = () => {
-    const navigation = useRouter()
     const [loading, setLoading] = useState(false)
     const [loadings, setLoadings] = useState(false)
     const [openBusinessModel, setOpenBusinessModel] = useState(false);
     const [company_alias, setCompanyAlias] = useState<string>('')
     const [organisationData, setOrganisationData] = useState<null | BusinessType[]>(null)
     const userData = getData()
-    const business = getOrgData()
+
     let category = [
-  "Agriculture",
-  "Food & Beverages",
-  "Retail & E-commerce",
-  "Wholesale",
-  "Fashion & Apparel",
-  "Beauty & Personal Care",
-  "Health & Pharmaceuticals",
-  "Medical Services",
-  "Education & Training",
-  "Technology & Software",
-  "Telecommunications",
-  "Financial Services",
-  "Loans & Microfinance",
-  "Insurance",
-  "Banking",
-  "Construction",
-  "Real Estate",
-  "Transportation & Logistics",
-  "Automotive",
-  "Energy & Utilities",
-  "Mining & Metals",
-  "Manufacturing",
-  "Media & Entertainment",
-  "Sports & Recreation",
-  "Tourism & Hospitality",
-  "Food Services & Catering",
-  "Cakes & Bakery",
-  "Electronics & Phones",
-  "Home & Living",
-  "Furniture",
-  "Cleaning Services",
-  "Professional Services",
-  "Legal Services",
-  "Consulting",
-  "Nonprofit & NGOs",
-  "Government & Public Sector",
-  "Events & Weddings",
-  "Printing & Publishing",
-  "Handcrafts & Art",
-  "Pet Services & Supplies"
-];
+        "Agriculture",
+        "Food & Beverages",
+        "Retail & E-commerce",
+        "Wholesale",
+        "Fashion & Apparel",
+        "Beauty & Personal Care",
+        "Health & Pharmaceuticals",
+        "Medical Services",
+        "Education & Training",
+        "Technology & Software",
+        "Telecommunications",
+        "Financial Services",
+        "Loans & Microfinance",
+        "Insurance",
+        "Banking",
+        "Construction",
+        "Real Estate",
+        "Transportation & Logistics",
+        "Automotive",
+        "Energy & Utilities",
+        "Mining & Metals",
+        "Manufacturing",
+        "Media & Entertainment",
+        "Sports & Recreation",
+        "Tourism & Hospitality",
+        "Food Services & Catering",
+        "Cakes & Bakery",
+        "Electronics & Phones",
+        "Home & Living",
+        "Furniture",
+        "Cleaning Services",
+        "Professional Services",
+        "Legal Services",
+        "Consulting",
+        "Nonprofit & NGOs",
+        "Government & Public Sector",
+        "Events & Weddings",
+        "Printing & Publishing",
+        "Handcrafts & Art",
+        "Pet Services & Supplies"
+    ];
 
 
-    const storeDatatoCookies = (data: BusinessType) => {
-        storeOrgData(data)
-        navigation.push('/overview')
-    }
 
     function getFirstTwoInitials(name: string): string {
         return name
@@ -92,7 +86,7 @@ export const Busenesses = () => {
             .finally(() => {
                 setLoading(false);
             });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const addBusiness = async (e: React.FormEvent<HTMLFormElement>) => {
         setLoadings(true)
@@ -151,7 +145,7 @@ export const Busenesses = () => {
 
 
     return (
-        <div className='pt-20 space-y-10 text-sm px-5'>
+        <div className='space-y-10 text-sm px-5'>
             <div className="flex gap-3 items-center p-2 bg-white dark:bg-boxdark dark:bg-boxdark rounded-md">
                 {/* New Business Button */}
                 <button
@@ -234,8 +228,8 @@ export const Busenesses = () => {
                                     Select industry (optional)
                                 </option>
                                 {
-                                    category.map((e, key)=>
-                                        
+                                    category.map((e, key) =>
+
                                         <option key={key} value={e}>{e}</option>
                                     )
                                 }
@@ -320,29 +314,7 @@ export const Busenesses = () => {
                                         <>
                                             <div className='grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-3'>
                                                 {organisationData.map((data, key) =>
-                                                    <div
-                                                        onClick={() => storeDatatoCookies(data)}
-                                                        key={key}
-                                                        className="min-h-[150px]  cursor-pointer group 
-             bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 
-             transition duration-300 text-gray-700 dark:text-gray-300 
-             border border-gray-300 dark:border-gray-600 
-             flex justify-between items-start p-4 rounded-md shadow-md"
-                                                    >
-                                                        <div className="flex flex-col gap-1">
-                                                            <h3 className="text-lg font-semibold text-black dark:text-white">
-                                                                {data.business_name}
-                                                            </h3>
-                                                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                                {data.company_alias} &bull; {data.industry}
-                                                            </p>
-                                                        </div>
-
-                                                        <div className="self-center group-hover:translate-x-1 group-hover:text-black dark:group-hover:text-white text-gray-500 dark:text-gray-400 transition duration-300">
-                                                            <ArrowRight size={20} />
-                                                        </div>
-                                                    </div>
-
+                                                    <BusinessCard data={data} key={key} />
                                                 )}
                                             </div>
                                         </>
