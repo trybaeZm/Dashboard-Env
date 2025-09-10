@@ -13,8 +13,9 @@ import { ImagePreview, updateProductAndService } from "@/services/api/products"
 import { getOrgData } from "@/lib/createCookie"
 import { Product } from "@/types/product"
 import { BusinessType } from "@/types/businesses"
+import { updateBusiness } from "@/services/api/apiBusiness"
 
-export const EditDiag = ({ isOpen, onClose, productImage, data }: { isOpen: boolean, data: BusinessType | null, onClose: () => void, productImage: string | null }) => {
+export const EditDiag = ({ isOpen, onClose, productImage, data, getBusinessByUserID }: { getBusinessByUserID: ()=> void ,isOpen: boolean, data: BusinessType | null, onClose: () => void, productImage: string | null }) => {
     const [selectedProduct, setSelectedProduct] = useState<BusinessType | null>(null)
     const [uploadDataLoading, setUploadDataLoading] = useState(false)
     const [selectedImages, setSelectedImages] = useState<ImagePreview | null>(null);
@@ -56,21 +57,20 @@ export const EditDiag = ({ isOpen, onClose, productImage, data }: { isOpen: bool
 
         let UpdateValues = {};
 
-        let name = values.name
-        name && (UpdateValues = { ...UpdateValues, name: name });
+        let business_name = values.business_name
+        business_name && (UpdateValues = { ...UpdateValues, business_name: business_name });
 
-        let partialPayment = values.partialPayment
-        partialPayment && (UpdateValues = { ...UpdateValues, partialPayment: partialPayment });
 
-        let price = values.price
-        price && (UpdateValues = { ...UpdateValues, price: price });
+        let company_alias = values.company_alias
+        company_alias && (UpdateValues = { ...UpdateValues, company_alias: company_alias });
 
-        UpdateValues = { ...UpdateValues, imageName: selectedImages?.name }
+        selectedImages && (UpdateValues = { ...UpdateValues, imageName: selectedImages?.name });
 
 
 
         if (data && typeof data.id === "string") {
-            updateProductAndService(UpdateValues, data.id, selectedImages)
+            console.log("Updating business with ID:", data.id, UpdateValues);
+            updateBusiness(UpdateValues, data.id, selectedImages)
                 .then((res) => {
                     console.log(res)
                 })
@@ -79,6 +79,7 @@ export const EditDiag = ({ isOpen, onClose, productImage, data }: { isOpen: bool
                 })
                 .finally(() => {
                     setUploadDataLoading(false)
+                    getBusinessByUserID()
                     onClose()
                 })
         } else {
@@ -120,9 +121,7 @@ export const EditDiag = ({ isOpen, onClose, productImage, data }: { isOpen: bool
                                         style={{ backgroundImage: productImage ? `url(${productImage})` : undefined }} // replace with your bg image
                                     ></div>
                                     :
-
                                     <span className="text-gray-700 dark:text-gray-300">Click to Upload</span>
-
                             }
                             {/* Hidden input */}
                             <input
@@ -145,26 +144,44 @@ export const EditDiag = ({ isOpen, onClose, productImage, data }: { isOpen: bool
                                 className="w-40 h-40 bg-cover "
                                 style={{ backgroundImage: selectedImages ? `url(${selectedImages.url})` : undefined }} // replace with your bg image
                             ></div>
-
-                            {/* Hidden input */}
-
                         </div>
+
+
                     </div>
                     {/* Example Input Field */}
                     <div>
-                        <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Edit product name</label>
+                        <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Edit product business name</label>
                         <Input
                             placeholder={data?.business_name}
-                            name="name"
+                            name="business_name"
                             className="dark:bg-gray-700 dark:text-gray-200"
                         />
                     </div>
 
+                    {/* <div>
+                        <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Edit product Industry</label>
+                        <Input
+                            placeholder={data?.industry}
+                            name="price"
+                            onChange={(e) =>
+                                setSelectedProduct(
+                                    data
+                                        ? {
+                                            ...data,
+                                            industry: e.target.value,
+                                        }
+                                        : null
+                                )
+                            }
+                            className="dark:bg-gray-700 dark:text-gray-200"
+                        />
+                    </div> */}
+
                     <div>
-                        <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Edit product Price</label>
+                        <label className='font-bold text-[#4B4F4F] dark:text-gray-300 text-sm'>Edit company_alias</label>
                         <Input
                             placeholder={data?.company_alias}
-                            name="price"
+                            name="company_alias"
                             onChange={(e) =>
                                 setSelectedProduct(
                                     data
@@ -191,9 +208,6 @@ export const EditDiag = ({ isOpen, onClose, productImage, data }: { isOpen: bool
                             <button
                                 disabled={uploadDataLoading}
                                 type="submit"
-                                onClick={() => {
-                                    onClose();  // close the dialog
-                                }}
                                 className="px-4 py-2 grow bg-green-600 text-white rounded hover:bg-green-700"
                             >
                                 {uploadDataLoading ? "Saving..." : "Save"}
@@ -202,10 +216,6 @@ export const EditDiag = ({ isOpen, onClose, productImage, data }: { isOpen: bool
                     </div>
 
                 </form>
-
-
-
-
             </DialogContent>
         </Dialog>
 

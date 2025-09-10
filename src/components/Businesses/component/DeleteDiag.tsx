@@ -9,8 +9,30 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ArrowRight } from "lucide-react"
+import { BusinessType } from "@/types/businesses"
+import { softDeleteBusiness } from "@/services/api/apiBusiness"
 
-export const DeleteDiag = ({isOpen,onClose}:{isOpen:boolean,onClose:()=>void }) => {
+export const DeleteDiag = ({isOpen,onClose, data, getBusinessByUserID}:{isOpen:boolean,onClose:()=>void , data: BusinessType,getBusinessByUserID: ()=> void}) => {
+  const [loading, setLoading] = useState(false)
+
+  const onDelete = () => {
+    setLoading(true)
+    softDeleteBusiness(data?.id)
+    .then((res)=>{
+      if(res){
+        onClose()
+      }
+    })
+    .catch((err)=>{
+      console.error("Error deleting business:", err);
+    })
+    .finally(()=>{
+      getBusinessByUserID()
+      setLoading(false)
+    })
+    // Implement your delete logic here
+    console.log("Business deleted");
+  }
   return (
     
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -33,13 +55,13 @@ export const DeleteDiag = ({isOpen,onClose}:{isOpen:boolean,onClose:()=>void }) 
         Cancel
       </button>
       <button
+        disabled={loading}
         onClick={() => {
           onDelete(); // call your delete function
-          onClose();  // close the dialog
         }}
         className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
       >
-        Delete
+        {loading ? 'Deleting...' : 'Delete'}
       </button>
     </div>
 

@@ -32,6 +32,7 @@ export type businessOnwersType = {
 
 export type BusinessType =  {
     id?: string;
+    imageName: string;
     business_id: number;
     company_alias: string;
     business_name: string;
@@ -40,6 +41,7 @@ export type BusinessType =  {
     created_at?: string;
     deleted_at?: string | null;
     phone?: string;
+    is_deleted: boolean;
 }
 
 interface Business {
