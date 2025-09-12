@@ -121,9 +121,10 @@ export async function deleteWithdrawal(id: string): Promise<boolean> {
     }
 }
 
-export async function getWithdrawalsByBusinessId(business_id: string | null | undefined): Promise<{ withdrawData: Withdrawal[]; balance: number } | null> {
+export async function getWithdrawalsByBusinessId(business_id: string | null | undefined): Promise<{ withdrawData: Withdrawal[]; balance: number; currentBalance: number } | null> {
     let withdrawData: Withdrawal[] = [];
     let balance = 0;
+    let currentBalance = 0;
 
     try {
         const { data, error } = await supabase
@@ -149,6 +150,7 @@ export async function getWithdrawalsByBusinessId(business_id: string | null | un
             .from('orders')
             .select('*')
             .eq('business_id', business_id)
+            .eq('order_payment_status', 'completed')
 
         if (error) {
             console.error("Error fetching withdrawals for business:", error.message);
@@ -157,14 +159,18 @@ export async function getWithdrawalsByBusinessId(business_id: string | null | un
 
         let orders: OrderData[] = data
 
-        balance = orders.reduce((prev, curr) => prev + (curr.total_amount || 0), 0) - withdrawData.filter((e) => e.status == "processed").reduce((prev, cur) => prev + (cur.amount || 0), 0);
+        let approvedBalance = orders.filter((e) => e.order_status == 'approved').reduce((prev, curr) => prev + (curr.partialAmountTotal || 0), 0)
+        let pendingBalance = orders.filter((e) => e.order_status == 'pending').reduce((prev, curr) => prev + (curr.partialAmountTotal || 0), 0)
+
+        balance = (approvedBalance + pendingBalance) - withdrawData.filter((e) => e.status == "processed").reduce((prev, cur) => prev + (cur.amount || 0), 0);
+        currentBalance = approvedBalance - withdrawData.filter((e) => e.status == "processed").reduce((prev, cur) => prev + (cur.amount || 0), 0);
 
     } catch (err) {
         console.error("Unexpected error fetching business withdrawals:", err);
         return null;
     }
 
-    return { withdrawData: withdrawData, balance: balance };
+    return { withdrawData: withdrawData, balance: balance, currentBalance: currentBalance };
 }
 
 export async function getWalletBalance(businessId: string | undefined | null | number): Promise<number | null> {

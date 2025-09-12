@@ -166,7 +166,6 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
                   :
                   <></>
               }
-
               <div
                 className={`fixed inset-0 z-[999] flex justify-center items-center transition-transform duration-300 ${modal ? "translate-y-0" : "translate-y-full"
                   }`}
@@ -176,8 +175,6 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
                   onClick={() => setModal(false)}
                   className="absolute inset-0  cursor-pointer"
                 />
-
-
                 <div
                   className={`fixed inset-0 z-[999] flex justify-center items-center transition-transform duration-300 ${modal ? "translate-y-0" : "translate-y-full"
                     }`}
@@ -250,10 +247,6 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
                       </button>
                     </div>
                   </div>
-
-
-
-
                 </div>
 
               </div>
@@ -292,7 +285,6 @@ const Header = ({ sidebarOpen, isOrgSelected, setUserData, userDataLoader, setSi
                       >
                         {userData?.name?.[0]?.toUpperCase() || "U"}
                       </button>
-
                       {/* Dropdown */}
                       {openOptions && (
                         <>

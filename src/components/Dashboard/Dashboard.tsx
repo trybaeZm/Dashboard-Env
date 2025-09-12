@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
   }, [GetDashData])
   return (
     <>
-      <div className="flex pt-20 flex-col gap-5 dark:bg-gray-800">
+      <div className="flex flex-col gap-5 dark:bg-gray-800">
         <div className="grid grid-cols-2 md:grid-cols-3  gap-3">
           <div className="grow">
             {loading ?

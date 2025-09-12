@@ -1,104 +1,87 @@
 "use client";
-import React, { useState, Suspense, useEffect } from "react";
+
+import React, { useState, useEffect, Suspense } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { useSearchParams } from "next/navigation";
-import { createCookie, getData, getOrgData, storeData } from "@/lib/createCookie";
+import { createCookie, getData, storeData } from "@/lib/createCookie";
 import { ApiDatatype } from "@/services/token";
 
-export default function DefaultLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+interface DefaultLayoutProps {
+  children: React.ReactNode;
+}
+
+const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userData, setUserData] = useState<ApiDatatype | null | undefined | any>(null)
-  const [userDataLoader, setUserDataLoader] = useState(false)
-  const isOrgSelected = getOrgData()
+  const [userData, setUserData] = useState<ApiDatatype | null>(null);
+  const [loadingUser, setLoadingUser] = useState(false);
 
   const searchParams = useSearchParams();
-  let token: string | null = searchParams.get('token');
-  if (searchParams) {
-    token = searchParams.get('token'); // e.g., "signup"
-  }
+  const token = searchParams?.get("token") || null;
 
+  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
-      setUserDataLoader(true);
-      if (token) {
-        createCookie(token);
-        try {
-          const response = await fetch('/api/refreshtoken', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ token })
-          });
+      if (!token) {
+        setUserData(getData());
+        return;
+      }
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          if (data) {
-            setUserData(data);
-            storeData(data)
-          }
-        } catch (error) {
-          console.error('Error posting data:', error);
-        } finally {
-          setUserDataLoader(false);
+      setLoadingUser(true);
+      createCookie(token);
+
+      try {
+        const res = await fetch("/api/refreshtoken", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
+
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+        const data = await res.json();
+        if (data) {
+          setUserData(data);
+          storeData(data);
         }
-      } else {
-        setUserDataLoader(false); // Handle missing token case
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoadingUser(false);
       }
     };
 
-
-    if (token) {
-      fetchUserData();
-    } else {
-      setUserData(getData())
-    }
+    fetchUserData();
   }, [token]);
 
-
   return (
-    <>
-      {/* <!-- ===== Page Wrapper Start ===== --> */}
-      <div className="dark:bg-gray-800">
-        {/* <!-- ===== Sidebar Start ===== --> */}
-        {
-          isOrgSelected ?
-            <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-            :
-            <></>
-        }
-        {/* <!-- ===== Sidebar End ===== --> */}
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-800">
+      {/* Sidebar: always part of layout */}
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-        {/* <!-- ===== Content Area Start ===== --> */}
-        <div className="dark:bg-gray-800">
-          {/* <!-- ===== Header Start ===== --> */}
-          {
-            userData ?
-              <Header isOrgSelected={isOrgSelected} setUserData={setUserData} userDataLoader={userDataLoader} userData={userData} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-              :
-              <></>
-          }
-          {/* <!-- ===== Header End ===== --> */}
-          {/* <!-- ===== Main Content Start ===== --> */}
-          <main className="dark:bg-gray-800">
-            <div className="mx-auto p-3 pt-20 min-h-screen dark:text-gray-300 text-gray-800 dark:bg-gray-800">
-              <Suspense fallback={<div>Loading...</div>}>
-                {children}
-              </Suspense>
-            </div>
-          </main>
-          {/* <!-- ===== Main Content End ===== --> */}
-        </div>
-        {/* <!-- ===== Content Area End ===== --> */}
+      {/* Main content */}
+      <div className="flex-1 flex flex-col">
+        {userData && (
+          <Header
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            userData={userData}
+            setUserData={setUserData}
+            userDataLoader={loadingUser}
+            isOrgSelected={true} // Always true, sidebar is visible
+          />
+        )}
+
+        <main className="flex-1 overflow-y-auto pt-20">
+          <div className="mx-auto p-3 dark:text-gray-300 text-gray-800 min-h-screen">
+            <Suspense fallback={<div>Loading...</div>}>
+              {children}
+            </Suspense>
+          </div>
+        </main>
       </div>
-      {/* <!-- ===== Page Wrapper End ===== --> */}
-    </>
+    </div>
   );
-}
+};
+
+export default DefaultLayout;

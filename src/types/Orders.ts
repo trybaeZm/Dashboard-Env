@@ -7,6 +7,7 @@ export type OrderData = {
   total_amount: number;
   created_at: string; // ISO date string
   product_id: string;
+  partialAmountTotal: number;
   sammarized_notes: string;
   transaction_id: string;
   orderToken:string;

@@ -6,7 +6,7 @@ import { getWithdrawalsByBusinessId, getWalletBalance, Withdrawal } from "../../
 import { getOrdersByBusinessId } from "../../services/api/apiOrder";
 import { getOrgData } from "@/lib/createCookie";
 import { BusinessType } from "@/types/businesses";
-import WithdrawForm from "./withdraw";
+import { WithdrawDialog } from "./Components/WithdrawDialog";
 
 
 const WalletPage = () => {
@@ -14,6 +14,7 @@ const WalletPage = () => {
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const router = useRouter();
   const [balance, setBalance] = useState<number>(0);
+  const [currentBalance, setCurrentBalance] = useState<number>(0);
   const [withdrawalsState, setWithdrawalsState] = useState<boolean>(false)
   const [loading, setLoading] = useState(false)
   const businessData: BusinessType | null | undefined = getOrgData() // Replace with actual business ID
@@ -26,6 +27,7 @@ const WalletPage = () => {
       console.log(withdrawalData)
       if (withdrawalData?.withdrawData) setWithdrawals(withdrawalData.withdrawData);
       if (withdrawalData?.balance) setBalance(withdrawalData.balance)
+      if (withdrawalData?.currentBalance) setCurrentBalance(withdrawalData.currentBalance)
 
     } catch (err) {
       setLoading(false)
@@ -41,29 +43,22 @@ const WalletPage = () => {
 
 
   const openTab = (tab: any) => setActiveTab(tab);
-  const handleOpenWithdraw = (value: boolean) => {
-    setWithdrawalsState(value)
-  }
 
   return (
     <>
-      {
-        withdrawalsState ?
-          <WithdrawForm balance={balance} fetchData={fetchData} setWithdrawalsState={handleOpenWithdraw} />
-          :
-          <></>
-      }
-      <div className=" items-center flex justify-center p-3 py-20 ">
+      <WithdrawDialog open={withdrawalsState} onClose={() => setWithdrawalsState(false)} balance={balance} fetchData={() => fetchData()} />
+      <div className=" items-center flex justify-center p-3  ">
         <div className=""></div>
-        <div className="md:w-1/2 w-full lg:w-3/4 rounded-md p-[30px] shadow-md dark:bg-gray-700 bg-gray-200">
+        <div className=" w-full  rounded-md p-[30px] shadow-md dark:bg-gray-700 bg-gray-200">
           {/* Header */}
           <div className="flex flex-wrap gap-5 justify-between items-center">
             <div className="wallet-info">
               <div className="wallet-label  dark:text-white">Available Balance</div>
               <div className="wallet-balance">{!loading ? `ZMW ${balance ? balance?.toFixed(2) : 0.00}` : "Loading..."}</div>
+              <div className="wallet-label  dark:text-white">Current Balance: {!loading ? `ZMW ${currentBalance ? currentBalance?.toFixed(2) : 0.00}` : "Loading..."} </div>
             </div>
             <div className="action-buttons">
-              <button className="btn btn-success" onClick={() => handleOpenWithdraw(true)}>Request Withdrawal</button>
+              <button className="btn btn-success" onClick={() => setWithdrawalsState(true)}>Request Withdrawal</button>
               {/* <button className="btn btn-outlined">Get Payment Link</button> */}
               <button className="btn btn-outlined" onClick={() => fetchData()}>Refresh</button>
             </div>
