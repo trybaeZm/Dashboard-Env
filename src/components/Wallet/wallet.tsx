@@ -1,9 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import "./WalletPage.css";
 import { getWithdrawalsByBusinessId, getWalletBalance, Withdrawal } from "../../services/api/apiWallet";
-import { getOrdersByBusinessId } from "../../services/api/apiOrder";
 import { getOrgData } from "@/lib/createCookie";
 import { BusinessType } from "@/types/businesses";
 import { WithdrawDialog } from "./Components/WithdrawDialog";
@@ -12,7 +10,6 @@ import { WithdrawDialog } from "./Components/WithdrawDialog";
 const WalletPage = () => {
   const [activeTab, setActiveTab] = useState<any>("transactionHistory");
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
-  const router = useRouter();
   const [balance, setBalance] = useState<number>(0);
   const [currentBalance, setCurrentBalance] = useState<number>(0);
   const [withdrawalsState, setWithdrawalsState] = useState<boolean>(false)

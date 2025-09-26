@@ -5,8 +5,8 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout"
 const TryCat = () => {
     return (
         <DefaultLayout>
-            <CommingSoon />
-            {/* <ChatCard/> */}
+            {/* <CommingSoon /> */}
+            <ChatCard/>
         </DefaultLayout>
     )
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ClickOutside from "@/components/ClickOutside";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
+import ClickOutside from "../Layouts/ClickOutside";
 
 const Search = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
