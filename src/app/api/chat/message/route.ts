@@ -7,7 +7,7 @@ export async function POST(req: Request) {
 
     // Store the message
     const { data, error } = await supabase
-      .from('messages')
+      .from('chat_messages')
       .insert([
         {
           session_id: sessionId,

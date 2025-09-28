@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       .from('chat_sessions')
       .insert([
         {
-          user_id: userId,       // <-- updated from customer_id
+          customer_id: userId,       // <-- updated from customer_id
           business_id: businessId
         }
       ])
