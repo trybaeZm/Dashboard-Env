@@ -20,6 +20,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loadingUser, setLoadingUser] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showSub, setShowSub] = useState(false)
 
 
   // custom logic can be replaced
@@ -98,9 +99,6 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   }
 
 
-  if (!userHasSubscription) {
-    return <SubscriptionWall />
-  }
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/10 dark:to-purple-900/10 transition-all duration-500 ease-out">
@@ -110,15 +108,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
           <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         </>
       ) : (
-        // Enhanced placeholder sidebar with subtle animation
-        <div className="hidden md:block w-72 bg-gradient-to-b from-white/90 to-gray-50/90 dark:from-gray-900/90 dark:to-gray-800/90 backdrop-blur-xl border-r border-gray-200/70 dark:border-gray-700/70 shadow-xl">
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center space-y-3 p-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-2xl mx-auto mb-4 animate-pulse"></div>
-              <div className="h-4 w-24 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-full mx-auto animate-pulse"></div>
-            </div>
-          </div>
-        </div>
+       <></>
       )}
 
       {/* Main Content Area */}
@@ -193,6 +183,14 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
                 </div>
               }>
                 <div className="">
+                  {
+                    showSub ?
+                      <div className="fixed top-0 bottom-0 left-0 right-0 p-5 z-[99999] bg-[#00000050] overflow-y-auto" >
+                        <SubscriptionWall />
+                      </div>
+                      :
+                      <></>
+                  }
                   {children}
                 </div>
               </Suspense>

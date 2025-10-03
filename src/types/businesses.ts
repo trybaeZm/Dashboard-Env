@@ -42,6 +42,8 @@ export type BusinessType =  {
     deleted_at?: string | null;
     phone?: string;
     is_deleted: boolean;
+    business_type:string;
+    status:string;
 }
 
 interface Business {

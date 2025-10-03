@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
-import ClickOutside from "@/components/ClickOutside";
 import { BellAlertIcon } from "@heroicons/react/24/outline";
+import ClickOutside from "../ClickOutside";
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

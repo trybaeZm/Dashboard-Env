@@ -1,7 +1,7 @@
 import { supabase } from "@/services/SupabaseConfig";
 import { openai } from "../utils";
 
-export async function generateStockEmbeddings(businessId: string) {
+export async function generateStockEmbeddings(businessId: string, user_id:string) {
   // 1. Fetch stock rows
   const { data: stocks, error } = await supabase
     .from("stock_table")
@@ -36,6 +36,7 @@ export async function generateStockEmbeddings(businessId: string) {
       source_table: "stock_table",
       source_id: stock.stock_id,
       chunk_text: chunkText,
+      user_id: user_id,
       embedding,
     });
 
@@ -47,7 +48,61 @@ export async function generateStockEmbeddings(businessId: string) {
   }
 }
 
-export async function generateProductEmbeddings(businessId: string) {
+
+
+export async function generateBusinessEmbeddings(businessId: string, userId: string) {
+  // 1. Fetch business row
+  const { data: business, error } = await supabase
+    .from("businesses")
+    .select("*")
+    .eq("id", businessId)
+    .single();
+
+  if (error) {
+    console.error("❌ Error fetching business data:", error);
+    return;
+  }
+
+  // 2. Build chunk text (summarized profile of the business)
+  const chunkText = `
+    Business Profile:
+    Name: ${business.business_name}
+    Industry: ${business.industry}
+    Registration Number: ${business.registration_number}
+    Alias: ${business.company_alias}
+    Wallet Balance: ${business.wallet_balance}
+    Phone: ${business.phone}
+    Active: ${business.is_active}
+    Product Description: ${business.product_description}
+    Created At: ${business.created_at}
+  `;
+
+  // 3. Generate embedding
+  const embeddingResponse = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: chunkText,
+  });
+
+  const embedding = embeddingResponse.data[0].embedding;
+
+  // 4. Insert into business_knowledge table
+  const { error: insertError } = await supabase.from("business_knowledge").insert({
+    business_id: business.id,
+    source_table: "businesses",
+    source_id: business.id, // assuming the table has "id" or "business_id" as primary key
+    chunk_text: chunkText,
+    user_id: userId,
+    embedding,
+  });
+
+  if (insertError) {
+    console.error("❌ Error inserting business embedding:", insertError);
+  } else {
+    console.log(`✅ Inserted embedding for business ${business.business_name}`);
+  }
+}
+
+export async function generateProductEmbeddings(businessId: string, user_id: string) {
   const { data: products, error } = await supabase
     .from("products")
     .select("*")
@@ -81,6 +136,7 @@ export async function generateProductEmbeddings(businessId: string) {
       source_table: "products",
       source_id: product.id,
       chunk_text: chunkText,
+      user_id: user_id,
       embedding,
     });
 
@@ -92,7 +148,7 @@ export async function generateProductEmbeddings(businessId: string) {
   }
 }
 
-export async function generateOrderEmbeddings(businessId: string) {
+export async function generateOrderEmbeddings(businessId: string, user_id:string) {
   const { data: orders, error } = await supabase
     .from("orders")
     .select("*")
@@ -135,6 +191,7 @@ export async function generateOrderEmbeddings(businessId: string) {
       source_table: "orders",
       source_id: order.id,
       chunk_text: chunkText,
+      user_id: user_id,
       embedding,
     });
 
@@ -146,7 +203,7 @@ export async function generateOrderEmbeddings(businessId: string) {
   }
 }
 
-export async function generateCustomerEmbeddings(businessId: string) {
+export async function generateCustomerEmbeddings(businessId: string, user_id:string) {
   const { data: customers, error } = await supabase
     .from("customers")
     .select("*")
@@ -183,6 +240,7 @@ export async function generateCustomerEmbeddings(businessId: string) {
       source_table: "customers",
       source_id: customer.id,
       chunk_text: chunkText,
+      user_id: user_id,
       embedding,
     });
 

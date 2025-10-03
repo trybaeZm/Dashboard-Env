@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import ClickOutside from "@/components/ClickOutside";
 import { Squares2X2Icon } from "@heroicons/react/24/outline";
+import ClickOutside from "../ClickOutside";
 
 const DropdownMessage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

@@ -1,7 +1,6 @@
 'use client'
 import React from 'react'
 import { Lock, Star, Zap, Shield, CheckCircle, ArrowRight, Crown, Sparkles } from 'lucide-react'
-import Link from 'next/link'
 
 const SubscriptionWall = () => {
     const features = [
@@ -15,27 +14,17 @@ const SubscriptionWall = () => {
 
     const plans = [
         {
-            name: "Starter",
+            name: "Standard",
             price: "$29",
             period: "/month",
             description: "Perfect for small businesses",
             features: ["Basic Analytics", "Email Support", "Up to 100 orders/month"],
             cta: "Get Started",
-            popular: false
-        },
-        {
-            name: "Professional",
-            price: "$79",
-            period: "/month",
-            description: "Ideal for growing businesses",
-            features: ["Advanced Analytics", "Priority Support", "Unlimited orders", "Custom reports"],
-            cta: "Upgrade Now",
             popular: true
         },
         {
             name: "Enterprise",
-            price: "$199",
-            period: "/month",
+            period: "monthly",
             description: "For large organizations",
             features: ["All Professional features", "Dedicated account manager", "API Access", "White-label solutions"],
             cta: "Contact Sales",
@@ -44,7 +33,7 @@ const SubscriptionWall = () => {
     ]
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/10 dark:to-purple-900/10 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gray-200 bg-gray-900 rounded-lg shadow-md flex items-center justify-center p-4">
             <div className="max-w-6xl w-full">
                 {/* Header */}
                 <div className="text-center mb-12">
@@ -130,9 +119,9 @@ const SubscriptionWall = () => {
                         </div>
                     </div>
                     {/* Right Side - Pricing Plans */}
-                    <div className="space-y-6 flex flex-wrap gap-4">
+                    <div className="space-y-6 flex justify-center flex-wrap gap-4">
                         {plans.map((plan, index) => (
-                            <div key={index} className={`grow
+                            <div key={index} className={`
                     relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-6 border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl
                     ${plan.popular
                                     ? 'border-purple-500 shadow-lg'
