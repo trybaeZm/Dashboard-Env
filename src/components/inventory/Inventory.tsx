@@ -69,8 +69,7 @@ const Inventory = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
-        <div className="p-6 space-y-6">
-
+        <div className=" space-y-6">
             {/* Header */}
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
@@ -136,8 +135,8 @@ const Inventory = () => {
             </div>
 
             {/* Inventory Table */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow overflow-hidden">
-                <table className="w-full text-left border-collapse">
+            <div className="bg-white overflow-x-auto bg-black max-w-[90vw] p-3 scroll-smooth  dark:bg-gray-800 rounded-2xl shadow overflow-hidden">
+                <table className="text-left border-collapse">
                     <thead className="bg-gray-100 dark:bg-gray-700">
                         <tr>
                             <th className="p-3 text-sm font-semibold">Product</th>
@@ -167,8 +166,8 @@ const Inventory = () => {
                                         ?.filter((e) => filter == '' ? e : e.category == filter)
                                         .filter((e) => titleFilter == '' ? e : e.name.includes(titleFilter))
                                         .map((item, idx) => (
-                                            <tr key={idx} className="border-t dark:border-gray-700">
-                                                <td className="p-3">{item.name}</td>
+                                            <tr key={idx} className="border-t whitespace-nowrap dark:border-gray-700">
+                                                <td className="p-3 ">{item.name}</td>
                                                 <td className="p-3">{item.category}</td>
                                                 <td className="p-3">{Math.max(
                                                     item.stock_table.reduce((prev, curr) => prev + curr.quantity, 0) -
@@ -176,7 +175,7 @@ const Inventory = () => {
                                                     0
                                                 )}</td>
                                                 <td className="p-3">${item.price}</td>
-                                                <td className="p-3">
+                                                <td className="p-3 whitespace-nowrap">
                                                     <CheckStock stock={item.stock_table.reduce((prev, curr) => prev + curr.quantity, 0)} orders={item.orders.reduce((prev, curr) => prev + curr.quantity, 0)} />
                                                 </td>
                                                 {/* <td className="p-3">

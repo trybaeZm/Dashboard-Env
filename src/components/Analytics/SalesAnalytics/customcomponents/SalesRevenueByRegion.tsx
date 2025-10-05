@@ -5,9 +5,6 @@ import PieChart from '../components/PieChart'
 import { isWithinLast7Days } from './TopProducts'
 
 export const SalesRevenueByRegion = ({ data }: { data: SalesAnalyticsData | null }) => {
-    useEffect(()=>{
-        console.log("seee:",data)
-    },[])
     return (
         <div className="grow p-4 rounded-md border border-[#C9C9C9] dark:border-gray-700 dark:bg-gray-800">
             {/* Pie Chart Section */}

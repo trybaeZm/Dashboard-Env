@@ -41,7 +41,7 @@ export const ProductsAndServices = () => {
         getProducts()
     }, [getProducts])
     return (
-        <div className='pt-20  dark:text-gray-200'>
+        <div className='  dark:text-gray-200'>
           
             {/* pop up for adding products */}
             <div className='flex justify-between z-1'>
