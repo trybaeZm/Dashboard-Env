@@ -1,15 +1,22 @@
-# app.yaml
-runtime: nodejs18 # Match the version in your package.json
+steps:
+  # 1. Install dependencies
+  - name: 'node:18'
+    entrypoint: 'npm'
+    args: ['install']
 
-# Optional: Configure instance class for performance and cost control
-instance_class: F1
+  # 2. Build your Next.js app
+  - name: 'node:18'
+    entrypoint: 'npm'
+    args: ['run', 'build']
 
-handlers:
-  # Serve all static files from the build output's static directory
-  - url: /_next/static
-    static_dir: .next/static
-
-  # All other requests are served by your Next.js app
-  - url: /.*
-    script: auto
-    secure: always
+  # 3. Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud run deploy nextjs-app \
+          --platform managed \
+          --region us-central1 \
+          --allow-unauthenticated \
+          --source .
