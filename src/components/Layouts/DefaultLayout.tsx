@@ -126,8 +126,8 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto pt-16 md:pt-20 transition-all duration-300">
-          <div className="mx-auto p-4 md:p-6 max-w-7xl w-full h-full">
+        <main className="flex-1 overflow-y-auto pt-16 md:pt-20 transition-all bg-light duration-300">
+          <div className="w-full h-full">
             {/* Animated background elements with enhanced effects */}
             <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
               <div className="absolute -top-40 -right-32 w-96 h-96 bg-purple-200/30 dark:bg-purple-600/15 rounded-full blur-3xl animate-float-slow"></div>
@@ -181,7 +181,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
                     </div>
                   </div>
                 </div>
-              }>
+              } >
                 <div className="">
                   {
                     showSub ?

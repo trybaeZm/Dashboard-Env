@@ -65,7 +65,6 @@ const SubscriptionWall = () => {
                         </h2>
 
                         <div className="space-y-4">
-
                             <div className=' grid md:grid-cols-2 grid-cols-1 gap-4'>
                                 {features.map((feature, index) => (
                                     <div key={index} className="flex items-center gap-4 p-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-800/50 rounded-lg">

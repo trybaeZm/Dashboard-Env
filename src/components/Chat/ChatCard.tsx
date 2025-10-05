@@ -54,14 +54,14 @@ const ChatCard = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900/20">
+    <div className="flex w-full h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900/20">
       {/* Sidebar */}
       <div className={`
-        fixed md:relative z-50 h-full transition-all duration-300 ease-in-out
+         py-30  fixed z-30 bottom-[40px] top-[60px] transition-all duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0 w-80 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg
         border-r border-gray-200/50 dark:border-gray-700/50
-      `}>
+      `} > 
         <div className="flex flex-col h-full p-4">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -135,7 +135,7 @@ const ChatCard = () => {
       <div className="flex-1 flex flex-col relative">
         {/* Chat Header */}
         {messages.length > 0 && (
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 p-4">
+          <div className="bg-white/80 fixed left-0 md:left-[320px] right-0 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 p-4">
             <div className="flex items-center justify-between">
               <button 
                 onClick={() => setIsOpen(true)}
@@ -158,7 +158,7 @@ const ChatCard = () => {
         )}
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 md:ps-[330px] py-20 overflow-hidden">
           {messages.length === 0 ? (
             // Welcome Screen
             <div className="h-full flex items-center justify-center ">
@@ -237,7 +237,7 @@ const ChatCard = () => {
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-2">
+        <div className="border-t fixed bottom-[40px] right-0 left-0 md:left-[320px] border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-2">
           <form onSubmit={handleSubmit} className="max-w-4xl  mx-auto">
             <div className=" flex justify-end  gap-4 space-y-2 items-center flex-wrap">
               <TextareaAutosize

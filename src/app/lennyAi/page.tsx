@@ -1,13 +1,17 @@
+'use client'
 import ChatCard from "@/components/Chat/ChatCard"
-import { CommingSoon } from "@/components/comingsoon/CommingSoon"
-import DefaultLayout from "@/components/Layouts/DefaultLayout"
+import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { useRouter } from "next/navigation";
 
 const TryCat = () => {
+    const navigation = useRouter();
+
     return (
-        <DefaultLayout>
-            {/* <CommingSoon /> */}
+        <>
+            <DefaultLayout>
             <ChatCard/>
-        </DefaultLayout>
+            </DefaultLayout>
+        </>
     )
 }
 
