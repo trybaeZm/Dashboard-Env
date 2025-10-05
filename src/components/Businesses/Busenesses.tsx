@@ -38,6 +38,8 @@ export const Businesses = () => {
 
     useEffect(() => {
         getBusinessByUserID()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const filteredBusinesses = organisationData?.filter(business =>

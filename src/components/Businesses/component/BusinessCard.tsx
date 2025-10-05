@@ -41,7 +41,8 @@ export const BusinessCard = ({ data, getBusinessByUserID }: BusinessCardProps) =
 
     useEffect(() => {
         getImages()
-    }, [data.id, data.imageName])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const getIndustryColor = (industry: string|undefined) => {
         const colors = {

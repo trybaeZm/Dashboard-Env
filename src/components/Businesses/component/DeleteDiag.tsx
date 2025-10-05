@@ -47,7 +47,7 @@ export const DeleteDiag = ({ isOpen, onClose, data, getBusinessByUserID }: Delet
                     </DialogTitle>
                     
                     <DialogDescription className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                        You're about to delete <strong>{data.business_name}</strong>. This will permanently remove all business data and cannot be undone.
+                        You&apos;re about to delete <strong>{data.business_name}</strong>. This will permanently remove all business data and cannot be undone.
                     </DialogDescription>
                 </div>
 

@@ -171,7 +171,7 @@ const ChatCard = () => {
                     <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-4 border-white dark:border-gray-900"></div>
                   </div>
                   <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-blue-600 dark:from-gray-100 dark:to-blue-400 bg-clip-text text-transparent mb-2">
-                    Hello! I'm your Sales AI Assistant
+                    Hello! I&apos;m your Sales AI Assistant
                   </h2>
                   <p className="text-gray-600 dark:text-gray-400 text-lg">
                     Ready to help you analyze data and optimize your sales strategy

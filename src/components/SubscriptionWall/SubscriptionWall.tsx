@@ -61,7 +61,7 @@ const SubscriptionWall = () => {
                     <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-xl">
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                             <Sparkles className="w-6 h-6 text-purple-500" />
-                            What You're Missing
+                            What You&apos;re Missing
                         </h2>
 
                         <div className="space-y-4">

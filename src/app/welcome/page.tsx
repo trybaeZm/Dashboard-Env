@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { MainPage } from './MainPage'
-import image5 from '@/components/Sidebar/icons/trybae.png'
+import image5 from '@/components/Layouts/Sidebar/icons/trybae.png'
 import { firstTimeVisitToken } from '@/lib/createCookie'
 import Image from 'next/image'
 
