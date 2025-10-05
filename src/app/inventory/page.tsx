@@ -7,7 +7,7 @@ const page = () => {
 
     return (
         <DefaultLayout>
-            <div className='pt-5'>
+            <div className=''>
                 <Inventory />
             </div>
         </DefaultLayout>

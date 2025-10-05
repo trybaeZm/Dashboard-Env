@@ -1,3 +1,6 @@
+import { LucideIcon } from 'lucide-react';
+
+
 export type CardItemProps = {
   imageSrc?: string;
   name?: string;
@@ -6,3 +9,14 @@ export type CardItemProps = {
   cardTitle?: string;
   cardContent?: string;
 };
+
+export interface CardProps {
+  title: string;
+  value: string | number;
+  description?: string;
+  className?: string;
+  icon?: LucideIcon;
+  trend?: 'up' | 'down' | 'neutral';
+  trendValue?: string;
+  loading?: boolean;
+}

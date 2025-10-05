@@ -1,7 +1,5 @@
 import { supabase } from "@/services/SupabaseConfig";
-import { generateToken } from "@/services/token";
 import { allowedOrigins } from "@/utils/routesfunc";
-import bcrypt from 'bcrypt';
 
 // ✅ Dynamic CORS header generator
 function getCorsHeaders(request: Request): Record<string, string> {
