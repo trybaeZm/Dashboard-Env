@@ -1,14 +1,15 @@
 options:
   logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_32'
   
 steps:
   # 1. Install dependencies
-  - name: 'node:18'
+  - name: 'node:22'
     entrypoint: 'npm'
     args: ['install']
 
   # 2. Build your Next.js app
-  - name: 'node:18'
+  - name: 'node:22'
     entrypoint: 'npm'
     args: ['run', 'build']
 
@@ -20,6 +21,6 @@ steps:
       - |
         gcloud run deploy nextjs-app \
           --platform managed \
-          --region us-central1 \
+          --region europe-west4 \
           --allow-unauthenticated \
           --source .
