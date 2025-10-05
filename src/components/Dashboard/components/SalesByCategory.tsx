@@ -1,19 +1,37 @@
 import React from 'react'
 import PieChart from './charts/PieChart'
+import { FaGenderless } from 'react-icons/fa'
+import { RefreshCw, TrendingUp } from 'lucide-react'
 
 export const SalesByCategory = ({ data }: { data: any }) => {
-    return (
-        <div className="relative rounded-xl bg-gradient-to-br from-white to-gray-100 dark:from-gray-700 dark:to-gray-900 shadow-xl p-6 flex flex-col gap-6 border dark:border-gray-600 border-gray-200">
-            {/* Optional Icon */}
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-pink-600 text-white rounded-full p-2 shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.1 0-2 .9-2 2v1H8v2h2v6h2v-6h2v-2h-2v-1c0-.55.45-1 1-1h1V8h-1z" />
-                </svg>
-            </div>
 
-            {/* Title */}
-            <div className="text-lg font-semibold text-center text-gray-800 dark:text-white mt-2">
-                Sales By Gender
+      const growth = 9;
+  const isPositiveGrowth = growth >= 0;
+    return (
+         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-300 group">
+            {/* Optional Icon */}
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg shadow-lg group-hover:scale-105 transition-transform duration-300">
+                        <FaGenderless className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                           Sales by Gender
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                            Last 7 days • <RefreshCw className="w-3 h-3" /> Updated just now
+                        </p>
+                    </div>
+                </div>
+
+                <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${isPositiveGrowth
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    }`}>
+                    <TrendingUp className={`w-4 h-4 ${!isPositiveGrowth ? 'rotate-180' : ''}`} />
+                    {Math.abs(growth).toFixed(1)}%
+                </div>
             </div>
 
             {/* Chart */}
