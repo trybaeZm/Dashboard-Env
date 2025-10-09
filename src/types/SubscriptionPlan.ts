@@ -5,3 +5,11 @@ export type SubscriptionPlan = {
     price: number;
     duration_in_days: number;
 };
+
+
+export type UserSubscriptionType = {
+    subtype: 'premium' | 'enterprise' | 'trial' | 'free';
+    start_date: string; // ISO date string
+    is_active: boolean;
+    subid?: string; // subscription id from payment gateway
+}

@@ -8,6 +8,7 @@ export type Customers = {
   location: string;
   name: string;
   phone: string;
+  hasSubscription: boolean;
 };
 
 export type CustomerPrice = {

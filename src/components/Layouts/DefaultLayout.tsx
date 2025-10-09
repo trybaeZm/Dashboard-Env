@@ -11,6 +11,7 @@ import { createCookie, getData, getOrgData, storeData } from "@/lib/createCookie
 import { ApiDatatype } from "@/services/token";
 import { BusinessType } from "@/types/businesses";
 import SubscriptionWall from "../SubscriptionWall/SubscriptionWall";
+import Cookies from "js-cookie";
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
@@ -35,9 +36,20 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   // Initialize mounted state with delay for smooth animation
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 100);
+    const subStatus = Cookies.get('showAdd')
+    if (subStatus === 'show') {
+      setShowSub(true)
+    }
+
     return () => clearTimeout(timer);
   }, []);
 
+  const handleSubscriptionClose = () => {
+    setShowSub(false)
+    Cookies.set('showAdd', 'hide', { expires: 1 }) // Expires in 1 day
+  }
+
+  
   // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
@@ -108,7 +120,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
           <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         </>
       ) : (
-       <></>
+        <></>
       )}
 
       {/* Main Content Area */}
@@ -185,11 +197,8 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
                 <div className="">
                   {
                     showSub ?
-                      <div className="fixed top-0 bottom-0 left-0 right-0 p-5 z-[99999] bg-[#00000050] overflow-y-auto" >
-                        <SubscriptionWall />
-                      </div>
-                      :
-                      <></>
+                      <SubscriptionWall setOpen={handleSubscriptionClose} />
+                      : <></>
                   }
                   {children}
                 </div>
