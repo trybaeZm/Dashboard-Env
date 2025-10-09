@@ -5,8 +5,13 @@ import React, { use, useEffect } from 'react'
 const TopCustomers = ({ cutomerDatas, amountInLastSevenDays }: { cutomerDatas: CustomerPrice[] | null | any, amountInLastSevenDays: number | null }) => {
     const totalAmount = cutomerDatas?.reduce((sum: number, item: CustomerPrice) => sum + item.amount, 0) || 1; // fallback 1 to avoid division by zero
 
-    const sortedCustomers = cutomerDatas?.sort((a: any, b: any) => b.amount - a.amount) // Sort by highest amount 
-    const highestAmount = sortedCustomers?.[0].amount
+    // Make sure cutomerDatas is defined and not empty
+    const sortedCustomers: CustomerPrice[] = cutomerDatas
+        ? [...cutomerDatas].sort((a, b) => b.amount - a.amount)
+        : [];
+
+    // Safely get the highest amount
+    const highestAmount: number = sortedCustomers.length > 0 ? sortedCustomers[0].amount : 0;
 
     return (
         <>
@@ -42,7 +47,7 @@ const TopCustomers = ({ cutomerDatas, amountInLastSevenDays }: { cutomerDatas: C
                 {/* Summary - Total Sales */}
                 <div className="flex justify-between items-end text-[#1A0670] dark:text-white mt-2">
                     <div className="flex items-end gap-2">
-                        <div className="font-bold text-2xl">K{amountInLastSevenDays?.toFixed(2) }</div>
+                        <div className="font-bold text-2xl">K{amountInLastSevenDays?.toFixed(2)}</div>
                         <div className="text-sm font-light">last 7 days</div>
                     </div>
                 </div>

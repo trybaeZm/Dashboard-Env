@@ -31,7 +31,6 @@ export const getFirstTimeVisitToken = () => {
 // For getting token from the cookies
 export const getCookie = () => {
   let Token = Cookies.get('userToken');
-
   // console.log("token here: ", Token);
   // If Token exists in the cookies, check with server if it's valid or expired
   if (Token) {
@@ -51,6 +50,7 @@ export const removeToken = () => {
 export const storeData = (data: any) => {
   try {
     localStorage.setItem('userData', JSON.stringify(data));
+    Cookies.set('userData', JSON.stringify(data), { expires: 7, path: '/' }); // Expires in 7 days
     console.log("User data stored successfully");
   } catch (error) {
     console.error("Failed to store data:", error);

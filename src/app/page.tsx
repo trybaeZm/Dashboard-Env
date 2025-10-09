@@ -2,17 +2,20 @@ import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 import { Businesses } from "@/components/Businesses/Busenesses";
+import Container from "@/components/Layouts/Container";
 export const metadata: Metadata = {
   title: "Trybae Solutions",
   description: "Trybae Admin Dashboard",
 };
 
- function Home() {
+function Home() {
   return (
     <>
       <DefaultLayout>
         <>
-          <Businesses/>
+          <Container>
+            <Businesses />
+          </Container>
         </>
       </DefaultLayout>
     </>
