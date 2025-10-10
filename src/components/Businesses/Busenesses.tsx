@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { Plus, Search, Filter, Building2, Users, TrendingUp, AlertCircle } from 'lucide-react'
 import { BusinessCard } from './component/BusinessCard'
 import { CreateBusinessDiag } from './component/CreateBusinessDiag'
+import { checkSub } from '@/services/subscription/subscriptionService'
 
 export const Businesses = () => {
     const [loading, setLoading] = useState(false)
@@ -13,6 +14,7 @@ export const Businesses = () => {
     const [openBusinessModal, setOpenBusinessModal] = useState(false)
     const [organisationData, setOrganisationData] = useState<BusinessType[] | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
+    const [hasSubscription, setHasSubscription] = useState<boolean>(false)
     const userData = getData()
 
     const getBusinessByUserID = React.useCallback(async () => {
@@ -36,10 +38,20 @@ export const Businesses = () => {
         }
     }, [userData])
 
+    const checkSubs = () => {
+        checkSub(userData?.id)
+            .then((res) => {
+                if (res?.hasSubscription === false) {
+                    setHasSubscription(false)
+                }
+            })
+    }
+
     useEffect(() => {
         getBusinessByUserID()
+        checkSubs()
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const filteredBusinesses = organisationData?.filter(business =>
@@ -77,10 +89,10 @@ export const Businesses = () => {
 
     return (
         <div className="space-y-8 p-6">
-            <CreateBusinessDiag 
-                isOpen={openBusinessModal} 
-                getBusinessByUserID={getBusinessByUserID} 
-                onClose={() => setOpenBusinessModal(false)} 
+            <CreateBusinessDiag
+                isOpen={openBusinessModal}
+                getBusinessByUserID={getBusinessByUserID}
+                onClose={() => setOpenBusinessModal(false)}
             />
 
             {/* Header */}
@@ -93,14 +105,15 @@ export const Businesses = () => {
                         Manage and monitor all your business profiles
                     </p>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                     <span className="text-sm text-gray-500 dark:text-gray-400">
                         {organisationData?.length || 0} businesses
                     </span>
                     <button
+                        disabled={!hasSubscription}
                         onClick={() => setOpenBusinessModal(true)}
-                        className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2.5 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        className={`flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2.5 rounded-xl ${!hasSubscription ? 'cursor-not-allowed opacity-50' : ''} font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg `}
                     >
                         <Plus className="w-5 h-5" />
                         New Business
@@ -124,7 +137,7 @@ export const Businesses = () => {
                     </div>
 
                     {/* Filter Button */}
-                    <button className="flex items-center gap-2 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 border border-gray-200/50 dark:border-gray-600/50">
+                    <button disabled={hasSubscription} className="flex items-center gap-2 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 border border-gray-200/50 dark:border-gray-600/50">
                         <Filter className="w-5 h-5" />
                         <span className="hidden sm:block">Filter</span>
                     </button>
@@ -136,7 +149,7 @@ export const Businesses = () => {
                 <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl text-red-700 dark:text-red-400">
                     <AlertCircle className="w-5 h-5 flex-shrink-0" />
                     <span>{error}</span>
-                    <button 
+                    <button
                         onClick={getBusinessByUserID}
                         className="ml-auto text-sm bg-red-100 dark:bg-red-800/30 hover:bg-red-200 dark:hover:bg-red-700/30 px-3 py-1 rounded-lg transition-colors"
                     >
@@ -147,25 +160,26 @@ export const Businesses = () => {
 
             {/* Content */}
             <div>
-                
-                {loading ? 
+
+                {loading ?
                     <LoadingSkeleton />
-                 :
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {
-                        organisationData?.map((business, index) => (
-                            <BusinessCard 
+                    :
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {
+                            organisationData?.map((business, index) => (
+                                <BusinessCard
                                     key={business.id || index}
-                                    getBusinessByUserID={getBusinessByUserID} 
-                                    data={business} 
+                                    getBusinessByUserID={getBusinessByUserID}
+                                    data={business}
+                                    hasSubscription={hasSubscription}
                                 />
-                        ))
-                    }
-                </div>
-}                 
+                            ))
+                        }
+                    </div>
+                }
             </div>
 
-           
+
         </div>
     )
 }

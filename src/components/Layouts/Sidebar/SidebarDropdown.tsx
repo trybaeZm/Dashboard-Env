@@ -27,7 +27,7 @@ const SidebarDropdown: React.FC<SidebarItemProp> = ({ item, withIcons = false })
               transition-all duration-200 ease-out
               ${isActive
                 ? "bg-gradient-to-r from-blue-50 to-blue-25 dark:from-blue-900/20 dark:to-blue-800/10 text-blue-600 dark:text-blue-400 border-l-2 border-blue-500 shadow-sm"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-200 dark:hover:text-gray-200 hover:bg-gray-100/60 dark:hover:bg-gray-700/60 border-l-2 border-transparent"
+                : "text-gray-600 dark:text-gray-400  hover:bg-gray-100/60 dark:hover:bg-gray-700/60 border-l-2 border-transparent"
               }
             `}
           >
@@ -38,7 +38,7 @@ const SidebarDropdown: React.FC<SidebarItemProp> = ({ item, withIcons = false })
                   p-1.5 rounded-md transition-colors duration-200
                   ${isActive 
                     ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" 
-                    : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+                    : "text-gray-400  "
                   }
                 `}>
                   {React.cloneElement(child.icon as React.ReactElement, {

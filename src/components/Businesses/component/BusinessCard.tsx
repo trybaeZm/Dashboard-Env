@@ -9,11 +9,12 @@ import { EditDiag } from './EditDiag'
 import { getProductImages } from '@/services/api/apiBusiness'
 
 interface BusinessCardProps {
-  data: BusinessType
-  getBusinessByUserID: () => void
+    data: BusinessType
+    getBusinessByUserID: () => void
+    hasSubscription: boolean
 }
 
-export const BusinessCard = ({ data, getBusinessByUserID }: BusinessCardProps) => {
+export const BusinessCard = ({ data, getBusinessByUserID, hasSubscription }: BusinessCardProps) => {
     const [isDeleteOpen, setIsDeleteOpen] = useState(false)
     const [isEditOpen, setIsEditOpen] = useState(false)
     const [imageUrl, setImageUrl] = useState<string | null>(null)
@@ -44,7 +45,7 @@ export const BusinessCard = ({ data, getBusinessByUserID }: BusinessCardProps) =
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const getIndustryColor = (industry: string|undefined) => {
+    const getIndustryColor = (industry: string | undefined) => {
         const colors = {
             'technology': 'from-blue-500 to-cyan-500',
             'retail': 'from-purple-500 to-pink-500',
@@ -59,22 +60,22 @@ export const BusinessCard = ({ data, getBusinessByUserID }: BusinessCardProps) =
 
     return (
         <>
-            <DeleteDiag 
-                getBusinessByUserID={getBusinessByUserID} 
-                data={data} 
-                isOpen={isDeleteOpen} 
-                onClose={() => setIsDeleteOpen(false)} 
+            <DeleteDiag
+                getBusinessByUserID={getBusinessByUserID}
+                data={data}
+                isOpen={isDeleteOpen}
+                onClose={() => setIsDeleteOpen(false)}
             />
-            
-            <EditDiag  
-                getBusinessByUserID={getBusinessByUserID} 
-                productImage={imageUrl} 
-                data={data} 
-                isOpen={isEditOpen} 
-                onClose={() => setIsEditOpen(false)} 
+
+            <EditDiag
+                getBusinessByUserID={getBusinessByUserID}
+                productImage={imageUrl}
+                data={data}
+                isOpen={isEditOpen}
+                onClose={() => setIsEditOpen(false)}
             />
-            
-            <div className="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.02] overflow-hidden">
+
+            <div className={`group ${!hasSubscription ? ' cursor-not-allowed opacity-[0.5]' : 'hover:shadow-xl transition-all duration-300 hover:scale-[1.02] '} relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm  overflow-hidden`}>
                 {/* Header with Dropdown */}
                 <div className="p-4 pb-3">
                     <div className="flex items-start justify-between">
@@ -83,7 +84,7 @@ export const BusinessCard = ({ data, getBusinessByUserID }: BusinessCardProps) =
                             {/* Business Avatar */}
                             <div className={`w-12 h-12 bg-gradient-to-br ${getIndustryColor(data.industry)} rounded-xl flex items-center justify-center shadow-lg flex-shrink-0`}>
                                 {imageUrl && !imageLoading ? (
-                                    <div 
+                                    <div
                                         className="w-full h-full bg-cover bg-center rounded-xl"
                                         style={{ backgroundImage: `url(${imageUrl})` }}
                                     />
@@ -91,7 +92,7 @@ export const BusinessCard = ({ data, getBusinessByUserID }: BusinessCardProps) =
                                     <Building2 className="w-6 h-6 text-white" />
                                 )}
                             </div>
-                            
+
                             {/* Business Details */}
                             <div className="min-w-0 flex-1">
                                 <h3 className="font-semibold text-gray-900 dark:text-white truncate text-lg">
@@ -116,21 +117,23 @@ export const BusinessCard = ({ data, getBusinessByUserID }: BusinessCardProps) =
                             <DropdownMenuTrigger className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-200">
                                 <MoreVertical className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent 
-                                align="end" 
+                            <DropdownMenuContent
+                                align="end"
                                 className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl p-2 min-w-[140px] z-50"
                             >
                                 <DropdownMenuItem
+                                    disabled={!hasSubscription}
                                     onClick={() => setIsEditOpen(true)}
                                     className="flex items-center gap-2 p-2 text-sm text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors duration-200"
                                 >
                                     <Edit className="w-4 h-4" />
                                     Edit
                                 </DropdownMenuItem>
-                                
+
                                 <DropdownMenuSeparator className="h-px bg-gray-200 dark:bg-gray-700 my-1" />
-                                
+
                                 <DropdownMenuItem
+                                    disabled={!hasSubscription}
                                     onClick={() => setIsDeleteOpen(true)}
                                     className="flex items-center gap-2 p-2 text-sm text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer transition-colors duration-200"
                                 >
@@ -153,11 +156,10 @@ export const BusinessCard = ({ data, getBusinessByUserID }: BusinessCardProps) =
                         </div>
                         <div className="text-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                             <div className="text-gray-600 dark:text-gray-400">Status</div>
-                            <div className={`font-medium ${
-                                data.status === 'active' 
-                                    ? 'text-green-600 dark:text-green-400' 
+                            <div className={`font-medium ${data.status === 'active'
+                                    ? 'text-green-600 dark:text-green-400'
                                     : 'text-yellow-600 dark:text-yellow-400'
-                            }`}>
+                                }`}>
                                 {data.status || 'Inactive'}
                             </div>
                         </div>
@@ -167,6 +169,7 @@ export const BusinessCard = ({ data, getBusinessByUserID }: BusinessCardProps) =
                 {/* Footer with CTA */}
                 <div className="border-t border-gray-200/50 dark:border-gray-700/50">
                     <button
+                        disabled={!hasSubscription}
                         onClick={() => storeDataToCookies(data)}
                         className="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-all duration-300 group/button"
                     >
