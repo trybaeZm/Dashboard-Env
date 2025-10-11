@@ -1,32 +1,6 @@
 import { supabase } from './SupabaseConfig'; 
 import { Subscription } from '@/types/Subscription'; 
 
-// ✅ Create Subscription
-export async function createSubscription(newSubscription: Omit<Subscription, 'subscription_id'>): Promise<Subscription | null> {
-    try {
-        const { data, error } = await supabase
-            .from('subscriptions')
-            .insert([{
-                user_id: newSubscription.user_id,
-                plan_id: newSubscription.plan_id,
-                start_date: newSubscription.start_date ?? new Date().toISOString(),
-                end_date: newSubscription.end_date ?? null,
-                status: newSubscription.status ?? 'Active',
-            }])
-            .single();
-
-        if (error) {
-            console.error("Error creating subscription:", error.message);
-            return null;
-        }
-
-        console.log("Subscription created successfully:", data);
-        return data;
-    } catch (err) {
-        console.error("Unexpected error creating subscription:", err);
-        return null;
-    }
-}
 
 // ✅ Get All Subscriptions
 export async function getAllSubscriptions(): Promise<Subscription[] | null> {
