@@ -6,17 +6,13 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { CreditCard, Wallet, Banknote, Zap, CheckCircle2, AlertCircle, Loader2, Copy, ExternalLink, Shield, Calendar, DollarSign } from "lucide-react"
+import { Wallet, Banknote, CheckCircle2, AlertCircle, Loader2, Copy, Shield } from "lucide-react"
 import { getSubscription } from "@/services/subscription/subscriptionService"
 import { getData } from "@/lib/createCookie"
-import { Subscription } from "@/types/Subscription"
+import { PayoutPopupProps, Subscription } from "@/types/Subscription"
+import { useRouter } from "next/navigation"
 
-interface PayoutPopupProps {
-    isOpen: boolean
-    onClose: () => void
-    plan: Subscription
-    amountPayable: number | undefined
-}
+
 
 export const PayoutPopup = ({
     isOpen,
@@ -30,6 +26,7 @@ export const PayoutPopup = ({
     const [step, setStep] = useState<'form' | 'confirmation' | 'success'>('form')
     const [error, setError] = useState('')
     const userData = getData()
+    const route = useRouter()
 
     const payoutMethods = [
         {
@@ -46,22 +43,25 @@ export const PayoutPopup = ({
         setError('')
         setLoading(true)
 
-        getSubscription(plan.id,userData?.id, (amountPayable ?? 0))
-        .then(()=>{
-            setStep('success')
-        })
-        .catch((err)=>{
+        getSubscription(plan.id, userData?.id, (amountPayable ?? 0))
+            .then(() => {
+                setStep('success')
+                route.push('/')
+            })
+            .catch((err) => {
 
-        })
-        .finally(()=>{
-            setLoading(false)
-        })
+            })
+            .finally(() => {
+                setLoading(false)
+            })
 
     }
 
     const handleClose = () => {
         onClose()
     }
+
+
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
             <DialogContent className="sm:max-w-[500px] bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl p-0 z-[9999] overflow-hidden">
@@ -122,7 +122,7 @@ export const PayoutPopup = ({
                         </DialogHeader>
 
                         <div className="p-6 space-y-6">
-                           
+
 
                             {/* Amount Input */}
                             <div className="space-y-3">
@@ -132,7 +132,7 @@ export const PayoutPopup = ({
 
                                 {/* Quick Amounts */}
                                 <div className="flex flex-wrap gap-2">
-                                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                                         ${(amountPayable ?? 0).toFixed(2)}
                                     </div>
                                 </div>
@@ -150,15 +150,15 @@ export const PayoutPopup = ({
                                             key={method.id}
                                             onClick={() => setSelectedMethod(method.id)}
                                             className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${selectedMethod === method.id
-                                                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20'
-                                                    : 'border-gray-200/50 dark:border-gray-600/50 hover:border-gray-300 dark:hover:border-gray-500'
+                                                ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20'
+                                                : 'border-gray-200/50 dark:border-gray-600/50 hover:border-gray-300 dark:hover:border-gray-500'
                                                 }`}
                                         >
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <div className={`p-2 rounded-lg ${selectedMethod === method.id
-                                                            ? 'bg-blue-500 text-white'
-                                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                                                        ? 'bg-blue-500 text-white'
+                                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                                                         }`}>
                                                         {method.icon}
                                                     </div>

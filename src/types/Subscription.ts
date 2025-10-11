@@ -10,3 +10,9 @@ export type Subscription = {
     isActive:boolean
     description:string
 };
+export interface PayoutPopupProps {
+    isOpen: boolean
+    onClose: () => void
+    plan: Subscription
+    amountPayable: number | undefined
+}

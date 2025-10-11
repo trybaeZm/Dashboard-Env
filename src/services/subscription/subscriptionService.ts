@@ -21,6 +21,8 @@ export const checkSub = async (userId: string) => {
                 console.log(error);
             }
 
+            console.log("these are the details retrieved: ",data)
+
             userdata = data;
         }
 
@@ -84,7 +86,7 @@ export const getSubscription = async (subId: string, userID: string, amount: num
         try {
             const { data, error } = await supabase
                 .from('sunhistory')
-                .insert({ subid: subId, userId: userID, type: 'normal', amount: amount })
+                .insert({ subid: subId, userId: userID, types: 'normal', amount: amount })
                 .select('*')
 
             if (data) {
