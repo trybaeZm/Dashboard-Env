@@ -21,6 +21,7 @@ export const RecentChatButton = ({ data,getChatHistoryBySession }: { data: strin
 
     useEffect(() => {
         getSessionTitle()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <button

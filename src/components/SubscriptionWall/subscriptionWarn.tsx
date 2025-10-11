@@ -2,6 +2,7 @@
 import { getData } from "@/lib/createCookie"
 import { checkSub } from "@/services/subscription/subscriptionService"
 import Cookies from "js-cookie"
+import Link from "next/link"
 import { useEffect, useState } from "react"
 
 export const ShouldShowSubscriptionWarn = () => {
@@ -21,19 +22,22 @@ export const ShouldShowSubscriptionWarn = () => {
     useEffect(() => {
         checkSubs()
         console.log('showAdd cookie: ', showAdd)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     // Check if userData exists and hasSubscription is false
     return (
         <>
             {compShowAdd === 'show' ?
-                <div className=" w-full h-16 flex justify-between px-10 pointer-events-none text-md  dark:text-gray-300 flex items-center justify-center bg-yellow-100/50 dark:bg-yellow-800/20 rounded-md mb-4 font-medium">
+                <div className=" w-full h-16 flex justify-between px-10  text-md  dark:text-gray-300 flex items-center justify-center bg-yellow-100/50 dark:bg-yellow-800/20 rounded-md mb-4 font-medium">
+                    <div>
                     you currently do not have a subscription. please subscribe to continue using the service.
+                    <a className="px-3 hover:text-gray-500 transition-ease duration-500" href="/subscribe" >Subscribe</a>
+                    </div>
                     <button onClick={()=> setcompShowAdd('hide')}>x</button>
                 </div>
                 :
                 <></>
             }
-
         </>
     )
 

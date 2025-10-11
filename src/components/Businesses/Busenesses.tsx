@@ -41,7 +41,9 @@ export const Businesses = () => {
     const checkSubs = () => {
         checkSub(userData?.id)
             .then((res) => {
-                if (res?.hasSubscription === false) {
+                if (res?.hasSubscription == true) {
+                    setHasSubscription(true)
+                } else {
                     setHasSubscription(false)
                 }
             })
