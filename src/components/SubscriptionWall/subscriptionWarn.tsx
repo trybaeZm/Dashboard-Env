@@ -22,6 +22,7 @@ export const ShouldShowSubscriptionWarn = () => {
     useEffect(() => {
         checkSubs()
         console.log('showAdd cookie: ', showAdd)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     // Check if userData exists and hasSubscription is false
     return (

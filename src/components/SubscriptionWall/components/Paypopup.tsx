@@ -197,7 +197,7 @@ export const PayoutPopup = ({
                                         {/* <span>-${calculateFee().toFixed(2)}</span> */}
                                     </div>
                                     <div className="flex justify-between font-semibold text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-600 pt-2">
-                                        <span>You'll receive:</span>
+                                        <span>You&apos;ll receive:</span>
                                         {/* <span>${calculateTotal().toFixed(2)}</span> */}
                                     </div>
                                 </div>

@@ -33,6 +33,7 @@ export const SideBard = ({ isOpen, setIsOpen,getChatHistoryBySession }: { isOpen
 
     useEffect(() => {
         getSessionIds()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <div className={`
