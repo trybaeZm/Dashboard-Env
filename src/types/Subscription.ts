@@ -1,8 +1,12 @@
 export type Subscription = {
-    subscription_id: number;
-    user_id?: number | null;
-    plan_id?: number | null;
-    start_date?: string;
-    end_date?: string | null;
-    status?: string;
+    id: string;
+    features?: string[];
+    plan_name?: number | null;
+    created_at?: string;
+    yearlydiscount?: string | null;
+    price?: number;
+    duration_in_days: number;
+    popular: boolean;
+    isActive:boolean
+    description:string
 };

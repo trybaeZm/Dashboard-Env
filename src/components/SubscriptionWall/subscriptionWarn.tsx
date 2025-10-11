@@ -27,18 +27,16 @@ export const ShouldShowSubscriptionWarn = () => {
     return (
         <>
             {compShowAdd === 'show' ?
-                <div className=" w-full h-16 flex justify-between px-10 pointer-events-none text-md  dark:text-gray-300 flex items-center justify-center bg-yellow-100/50 dark:bg-yellow-800/20 rounded-md mb-4 font-medium">
+                <div className=" w-full h-16 flex justify-between px-10  text-md  dark:text-gray-300 flex items-center justify-center bg-yellow-100/50 dark:bg-yellow-800/20 rounded-md mb-4 font-medium">
                     <div>
                     you currently do not have a subscription. please subscribe to continue using the service.
-                    <Link href="" >Subscribe</Link>
+                    <a className="px-3 hover:text-gray-500 transition-ease duration-500" href="/subscribe" >Subscribe</a>
                     </div>
-
                     <button onClick={()=> setcompShowAdd('hide')}>x</button>
                 </div>
                 :
                 <></>
             }
-
         </>
     )
 
