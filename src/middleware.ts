@@ -6,7 +6,8 @@ export async function middleware(req: NextRequest) {
   const token = req.nextUrl.searchParams.get('token')
   let localToken = req.cookies.get('userToken')?.value
   const business_id = req.cookies.get('BusinessID')?.value
-  const userDatas = req.cookies.get('userData')?.value
+  const userData = req.cookies.get('userData')?.value
+  const path = req.nextUrl.pathname;
 
   // cookies for visit count
   const firstTime = req.cookies.get('didVisit')?.value
@@ -33,44 +34,59 @@ export async function middleware(req: NextRequest) {
   }
 
   // 🔹 Step 3: Check subscription
-  const userId = userDatas ? JSON.parse(userDatas).id : null
-  const userData = await checkSub(userId)
+  const userId = userData ? JSON.parse(userData).id : null
+  // const userData = await checkSub(userId)
 
-  if (!userData) {
-    console.log('No user data found')
-  } else if (!userData.hasSubscription) {
-    console.log('No subscription found')
+  let parsedUserData: any = userData ? JSON.parse(userData) : null;
+  console.log(userData)
 
-    // Set visit cookie (24h)
-    res.cookies.set('didVisit', 'true', {
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24, // 24 hours
-      path: '/',
-    })
 
-    // Show ad logic
-    if (!firstTime) {
-      console.log('Not first time visit')
-      res.cookies.set('showAdd', 'show', {
+
+  // checkeverywhere else but not on root
+
+  // ✅ Skip check for home route "/"
+  if (path === "/") {
+    // return NextResponse.next();
+    console.log('wont run check on root')
+  } else {
+    if (!parsedUserData) {
+      console.log('No user data found')
+    } else if (!parsedUserData.hasSubscription) {
+      console.log('No subscription found')
+      // Set visit cookie (24h)
+      res.cookies.set('didVisit', 'true', {
         secure: true,
         sameSite: 'strict',
         maxAge: 60 * 60 * 24, // 24 hours
         path: '/',
       })
-    } else {
-      console.log('First time visit')
-      if (!showAdd) {
+
+      // Show ad logic
+      if (!firstTime) {
+        console.log('Not first time visit')
         res.cookies.set('showAdd', 'show', {
           secure: true,
           sameSite: 'strict',
           maxAge: 60 * 60 * 24, // 24 hours
           path: '/',
         })
+      } else {
+        console.log('First time visit')
+        if (!showAdd) {
+          res.cookies.set('showAdd', 'show', {
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24, // 24 hours
+            path: '/',
+          })
+        }
       }
+
+      return NextResponse.redirect(new URL('/', req.url))
+
+    } else {
+      console.log('User has active subscription')
     }
-  } else {
-    console.log('User has active subscription')
   }
 
   // 🔹 Step 4: Check business_id cookie

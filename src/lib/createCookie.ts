@@ -45,18 +45,14 @@ export const removeToken = () => {
   // and user  data
 }
 
-
-
 export const storeData = (data: any) => {
   try {
-    localStorage.setItem('userData', JSON.stringify(data));
     Cookies.set('userData', JSON.stringify(data), { expires: 7, path: '/' }); // Expires in 7 days
     console.log("User data stored successfully");
   } catch (error) {
     console.error("Failed to store data:", error);
   }
 }
-
 
 export const storeOrgData = (data: BusinessType) => {
   try {
@@ -92,6 +88,7 @@ export const removeData = (): Promise<boolean | null> => {
   return new Promise((resolve, reject) => {
     try {
       localStorage.removeItem('userData');
+      Cookies.remove('userData');
       removeToken();
       removeOrgData()
       console.log("User data removed successfully");
@@ -111,7 +108,7 @@ export const removeData = (): Promise<boolean | null> => {
 
 export const getData = (): any => {
   try {
-    const data = localStorage.getItem('userData');
+    const data = Cookies.get('userData')
     return data ? JSON.parse(data) : null;
   } catch (error) {
     console.error("Failed to retrieve data:", error);
