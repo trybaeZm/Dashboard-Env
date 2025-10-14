@@ -1,26 +1,9 @@
+import { getCorsHeaders } from "@/services/api/header";
 import { supabase } from "@/services/SupabaseConfig";
 import { generateToken } from "@/services/token";
-import { allowedOrigins } from "@/utils/routesfunc";
 import bcrypt from 'bcrypt';
 
-// ✅ Function to get dynamic CORS headers
-function getCorsHeaders(request: Request): Record<string, string> {
-    const origin = request.headers.get('origin') || '';
-    const isAllowed = allowedOrigins.includes(origin);
 
-    const headers: Record<string, string> = {
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Credentials': 'true',
-        'Content-Type': 'application/json',
-    };
-
-    if (isAllowed) {
-        headers['Access-Control-Allow-Origin'] = origin;
-    }
-
-    return headers;
-}
 
 export async function OPTIONS(request: Request) {
     return new Response(null, {

@@ -7,8 +7,8 @@ export type Subscription = {
     price?: number;
     duration_in_days: number;
     popular: boolean;
-    isActive:boolean
-    description:string
+    isActive: boolean
+    description: string
 };
 export interface PayoutPopupProps {
     isOpen: boolean
@@ -16,3 +16,41 @@ export interface PayoutPopupProps {
     plan: Subscription
     amountPayable: number | undefined
 }
+
+
+interface MobileMoneyPaymentRequestBody {
+    mobileNumber: string; // 10-digit mobile money number
+    token: string;        // Payment token from previous request
+    merchantApiKey: string;
+    merchantApiID: string;
+}
+
+interface MobileMoneyPaymentApiResponse {
+    responsecode: number;
+    responsemessage: string;
+    data: null;
+}
+
+export type PaymentTokenResponse = {
+    responsecode: number;
+    responsemessage: string;
+    data: {
+        status: number;
+        message: string;
+        token: string;
+        orderNumber: string;
+        transactionReference: string;
+        amount: string;
+        currency: string;
+    };
+};
+
+
+export type makepayresponse = {
+
+    responsecode: number
+    responsemessage: string
+    data: null
+
+}
+
