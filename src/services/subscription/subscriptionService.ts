@@ -35,7 +35,7 @@ export const checkSub = async (userId: string) => {
             const { data, error } = await supabase
                 .from("sunhistory")
                 .select("*, subscriptionTable(*)")
-                .eq("userId", userId)
+                .eq("userid", userId)
                 .eq('isactive', true)
                 .single(); // returns one object instead of array
 
@@ -105,16 +105,40 @@ export const checkSub = async (userId: string) => {
     }
 };
 
-export const getSubscriptionsDetails = async () => {
+export const getSubscriptionsDetails = async (id: string | null) => {
     return new Promise<Subscription[] | null>(async (resolve, reject) => {
         try {
+
             const { data, error } = await supabase
-                .from('subscriptionTable')
-                .select('*')
+                .from('sunhistory')
+                .select('*, subscriptionTable(*)')
+                .eq('userid', id)
+
+
+            // console.log('history: ', data)
+
 
             if (data) {
-                resolve(data)
+                const foundMatch = data?.filter((e) => e.subscriptionTable.plan_name == "Starter" && e.paidfor == true)[0]
+
+                // console.log("found match: ", foundMatch)
+
+                try {
+                    const { data, error } = await supabase
+                        .from('subscriptionTable')
+                        .select('*')
+                        .eq('isActive', true)
+                        .not('id', 'eq', foundMatch ? foundMatch.subid : '')
+
+
+                    // console.log('after filter: ',data)
+
+                    resolve(data)
+                } catch (err) {
+                    reject(err)
+                }
             }
+
             if (error) {
                 reject(error)
             }
@@ -270,7 +294,7 @@ export const updateSubscription = async (id: string | null) => {
         try {
             const { data, error } = await supabase
                 .from("sunhistory")
-                .update({ paidfor: true, isactive:true })
+                .update({ paidfor: true, isactive: true })
                 .eq('id', id)
                 .select('*')
                 .single()

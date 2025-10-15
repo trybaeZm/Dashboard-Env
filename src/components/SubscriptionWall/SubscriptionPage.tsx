@@ -4,9 +4,11 @@ import { Lock, Star, Zap, Shield, CheckCircle, ArrowRight, Crown, Sparkles } fro
 import { getSubscriptionsDetails } from '@/services/subscription/subscriptionService';
 import { Subscription } from '@/types/Subscription';
 import { PlanCard } from './components/PlanCard';
+import { getData } from '@/lib/createCookie';
 
 export const SubscriptionPage = () => {
     const [plans, setPlans] = useState<Subscription[] | null>(null);
+    const [loading, setLoaind] = useState(false)
     const features = [
         { icon: <Zap className="w-5 h-5" />, text: "Advanced AI Analytics", premium: true },
         { icon: <Shield className="w-5 h-5" />, text: "Priority Customer Support", premium: true },
@@ -15,10 +17,11 @@ export const SubscriptionPage = () => {
         { icon: <Sparkles className="w-5 h-5" />, text: "Custom Reporting Dashboard", premium: true },
         { icon: <Crown className="w-5 h-5" />, text: "Multi-user Access", premium: true }
     ]
-
+    const userData = getData()
 
     const getSubs = () => {
-        getSubscriptionsDetails()
+        setLoaind(true)
+        getSubscriptionsDetails(userData?.id)
             .then((res) => {
                 setPlans(res)
             })
@@ -26,7 +29,7 @@ export const SubscriptionPage = () => {
                 console.log(err)
             })
             .finally(() => {
-
+                setLoaind(false)
             })
     }
 
@@ -103,11 +106,20 @@ export const SubscriptionPage = () => {
 
 
                         {/* Right Side - Pricing Plans */}
-                        <div className="space-y-6 grid  grid-cols-2 gap-4 flex justify-center flex-wrap gap-4">
-                            {plans?.map((plan, index) => (
-                                <PlanCard plan={plan} key={index} />
-                            ))}
-                        </div>
+                        {
+                            loading ?
+                                <div className="flex items-center justify-center ">
+                                    <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+
+                                :
+
+                                <div className="space-y-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-center gap-4 flex justify-center  flex-wrap gap-4">
+                                    {plans?.map((plan, index) => (
+                                        <PlanCard plan={plan} key={index} />
+                                    ))}
+                                </div>
+                        }
                     </div>
 
 
