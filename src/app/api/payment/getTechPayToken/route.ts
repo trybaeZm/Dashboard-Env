@@ -19,7 +19,7 @@ export async function POST(req: Request) {
                 amount: amount,
                 merchantApiKey: apiKey,
                 merchantApiID: apiID,
-                returnURL: 'https://payment.inxource.com/payment/status/' + orderNumber
+                returnURL: 'https://dashboard.inxource.com/payment'
             }),
         });
 

@@ -1,6 +1,6 @@
 import { hasSubscribers } from "node:diagnostics_channel";
 import { supabase } from "../SupabaseConfig"
-import { makepayresponse, PaymentTokenResponse, Subscription } from "@/types/Subscription";
+import { makepayresponse, PaymentTokenResponse, RedirectToPayment, Subscription } from "@/types/Subscription";
 import axios from "axios";
 import { apiID, apiKey } from "../api/header";
 
@@ -152,31 +152,47 @@ export const getSubDetails = async (userId: string) => {
     }
 }
 
-export const getSubscription = async (subId: string, userID: string, amount: number) => {
-    new Promise(async (resolve, reject) => {
+export const getSubscription = async (subId: string, userID: string, amount: number, hasWallet: boolean) => {
+
+    return new Promise(async (resolve, reject) => {
         try {
             const { data, error } = await supabase
                 .from('sunhistory')
-                .insert({ subid: subId, userId: userID, types: 'normal', amount: amount })
-                .select('*')
+                .insert([
+                    {
+                        subid: subId,
+                        userid: userID,
+                        types: 'normal',
+                        amount: amount,
+                        haveWallet: hasWallet,
+                        isactive: false,      // default active
+                        paidfor: false,      // default unpaid
+                    },
+                ])
+                .select()
+                .single()
 
             if (data) {
-                const { data, error } = await supabase
-                    .from('users')
-                    .update({ hasSubscription: true })
-                    .eq('id', userID)
-                    .select('*')
-
-                if (data) {
-                    resolve(data)
-                }
-
-                if (error) {
-                    reject(error)
-                }
-
+                axios.post('api/payment/getTechPayToken',
+                    {
+                        description: 'subscription payment',
+                        amount: amount,
+                        orderNumber: data.id
+                    }
+                )
+                    .then((res) => {
+                        if (res) {
+                            resolve(res.data)
+                        }
+                    })
+                    .catch((err) => {
+                        if (err) {
+                            reject(err)
+                        }
+                    })
+            } else {
+                reject('failed with no data retrieved')
             }
-
             if (error) {
                 reject(error)
             }
@@ -188,6 +204,14 @@ export const getSubscription = async (subId: string, userID: string, amount: num
 }
 
 
+
+export const redirectToPayment: RedirectToPayment = (url) => {
+    if (!url) return;
+
+    // 🔗 Redirects the current tab to the payment URL
+    window.location.href = url;
+};
+
 // generates a random six-digit string, padded with leading zeros if necessary
 export function getRandomSixDigitString(): string {
     const num = Math.floor(Math.random() * 1_000_000); // 0–999999
@@ -195,7 +219,7 @@ export function getRandomSixDigitString(): string {
 }
 
 export const checkPaymentStatus = async (req: Request, res: Response) => {
-   
+
 };
 
 // Polling logic (unchanged, but typed)
@@ -239,4 +263,44 @@ export async function pollPaymentStatus(ordertoken: string): Promise<any> {
         };
         checkStatus();
     });
+}
+
+export const updateSubscription = async (id: string | null) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { data, error } = await supabase
+                .from("sunhistory")
+                .update({ paidfor: true, isactive:true })
+                .eq('id', id)
+                .select('*')
+                .single()
+
+            let historyData = data
+
+            if (data) {
+                try {
+                    const { data, error } = await supabase
+                        .from("users")
+                        .update({ hasSubscription: true })
+                        .eq('id', historyData.userid)
+                        .select('*')
+                        .single()
+
+                    if (data) {
+                        resolve(true)
+                    }
+
+                    if (error) {
+                        reject(error)
+                    }
+                } catch (error) {
+                    reject(error)
+                }
+            }
+
+
+        } catch (err) {
+            reject(err)
+        }
+    })
 }

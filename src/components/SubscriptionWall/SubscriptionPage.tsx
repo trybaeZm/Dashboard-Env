@@ -16,15 +16,7 @@ export const SubscriptionPage = () => {
         { icon: <Crown className="w-5 h-5" />, text: "Multi-user Access", premium: true }
     ]
 
-    const closeButtonVariants = {
-        initial: { scale: 1, rotate: 0 },
-        hover: {
-            scale: 1.1,
-            rotate: 90,
-            transition: { duration: 0.2 }
-        },
-        tap: { scale: 0.9 }
-    }
+
     const getSubs = () => {
         getSubscriptionsDetails()
             .then((res) => {

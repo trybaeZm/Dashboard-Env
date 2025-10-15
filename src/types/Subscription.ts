@@ -10,6 +10,7 @@ export type Subscription = {
     isActive: boolean
     description: string
 };
+
 export interface PayoutPopupProps {
     isOpen: boolean
     onClose: () => void
@@ -54,3 +55,13 @@ export type makepayresponse = {
 
 }
 
+export type configtype = {
+    icon: React.JSX.Element;
+    title: string;
+    description: string;
+    color: string;
+}
+
+export interface RedirectToPayment {
+    (url: string | undefined): void;
+}

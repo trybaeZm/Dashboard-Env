@@ -6,8 +6,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { Wallet, Banknote, CheckCircle2, AlertCircle, Loader2, Copy, Shield } from "lucide-react"
-import { getSubscription } from "@/services/subscription/subscriptionService"
+import { Wallet, Banknote, CheckCircle2, AlertCircle, Loader2, Copy, Shield, Wallet2, LucideIcon, X, XCircle } from "lucide-react"
+import { getSubscription, redirectToPayment } from "@/services/subscription/subscriptionService"
 import { getData } from "@/lib/createCookie"
 import { PayoutPopupProps, Subscription } from "@/types/Subscription"
 import { useRouter } from "next/navigation"
@@ -22,11 +22,14 @@ export const PayoutPopup = ({
 }: PayoutPopupProps) => {
     const [loading, setLoading] = useState(false)
     const [payoutAmount, setPayoutAmount] = useState('')
-    const [selectedMethod, setSelectedMethod] = useState('bank')
+    const [selectedMethod, setSelectedMethod] = useState('momo')
+    const [withWallet, setWithWallet] = useState(true)
     const [step, setStep] = useState<'form' | 'confirmation' | 'success'>('form')
     const [error, setError] = useState('')
     const userData = getData()
     const route = useRouter()
+
+
 
     const payoutMethods = [
         {
@@ -43,12 +46,17 @@ export const PayoutPopup = ({
         setError('')
         setLoading(true)
 
-        getSubscription(plan.id, userData?.id, (amountPayable ?? 0))
-            .then(() => {
+        getSubscription(plan.id, userData?.id, (amountPayable ?? 0), withWallet)
+            .then((res) => {
+                const result = res as { data : {paymentLink: string} }
+                redirectToPayment(result.data.paymentLink)
+                console.log(result.data.paymentLink)
+                // console.log('from frontend: ',plan.id, userData?.id, withWallet)
                 setStep('success')
-                route.push('/')
+                // route.push('/')
             })
             .catch((err) => {
+                console.log(err)
 
             })
             .finally(() => {
@@ -59,6 +67,35 @@ export const PayoutPopup = ({
 
     const handleClose = () => {
         onClose()
+    }
+
+
+    const WalletCard = ({ name, Icon, value }: { name: string, Icon: LucideIcon, value: boolean }) => {
+        return (
+            <div
+                onClick={() => setWithWallet(value)}
+                className={`p-4 border-2 grow rounded-xl cursor-pointer transition-all duration-200 ${withWallet == value
+                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20'
+                    : 'border-gray-200/50 dark:border-gray-600/50 hover:border-gray-300 dark:hover:border-gray-500'
+                    }`}
+            >
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${withWallet == value
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                            }`}>
+                            <Icon />
+                        </div>
+                        <div>
+                            <div className="font-medium text-gray-900 dark:text-white">
+                                {name}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
 
@@ -123,7 +160,6 @@ export const PayoutPopup = ({
 
                         <div className="p-6 space-y-6">
 
-
                             {/* Amount Input */}
                             <div className="space-y-3">
                                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -135,6 +171,16 @@ export const PayoutPopup = ({
                                     <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                                         ${(amountPayable ?? 0).toFixed(2)}
                                     </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Do you want to use our wallet?
+                                </label>
+                                <div className="flex gap-4">
+                                    <WalletCard name="Yes" value={true} Icon={Wallet2} />
+                                    <WalletCard name="No" value={false} Icon={XCircle} />
                                 </div>
                             </div>
 
@@ -210,14 +256,6 @@ export const PayoutPopup = ({
                                     <span>{error}</span>
                                 </div>
                             )}
-
-                            {/* Security Notice */}
-                            <div className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200/50 dark:border-green-800/50">
-                                <Shield className="w-4 h-4 text-green-500" />
-                                <span className="text-sm text-green-700 dark:text-green-300">
-                                    Your funds are secured with bank-level encryption
-                                </span>
-                            </div>
 
                             {/* Actions */}
                             <div className="flex gap-3 pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
