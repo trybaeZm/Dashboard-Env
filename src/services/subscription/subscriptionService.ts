@@ -1,6 +1,8 @@
 import { hasSubscribers } from "node:diagnostics_channel";
 import { supabase } from "../SupabaseConfig"
-import { Subscription } from "@/types/Subscription";
+import { makepayresponse, PaymentTokenResponse, RedirectToPayment, Subscription } from "@/types/Subscription";
+import axios from "axios";
+import { apiID, apiKey } from "../api/header";
 
 
 function hasDurationExpired(created_at: Date, durationInDays: number) {
@@ -64,7 +66,7 @@ export const checkSub = async (userId: string) => {
                     }
                 }
 
-                
+
             } else if (error) {
                 console.error("Error fetching user:", error.message);
                 console.log(error);
@@ -150,34 +152,152 @@ export const getSubDetails = async (userId: string) => {
     }
 }
 
-export const getSubscription = async (subId: string, userID: string, amount: number) => {
-    new Promise(async (resolve, reject) => {
+export const getSubscription = async (subId: string, userID: string, amount: number, hasWallet: boolean) => {
+
+    return new Promise(async (resolve, reject) => {
         try {
             const { data, error } = await supabase
                 .from('sunhistory')
-                .insert({ subid: subId, userId: userID, types: 'normal', amount: amount })
-                .select('*')
+                .insert([
+                    {
+                        subid: subId,
+                        userid: userID,
+                        types: 'normal',
+                        amount: amount,
+                        haveWallet: hasWallet,
+                        isactive: false,      // default active
+                        paidfor: false,      // default unpaid
+                    },
+                ])
+                .select()
+                .single()
 
             if (data) {
-                const { data, error } = await supabase
-                    .from('users')
-                    .update({ hasSubscription: true })
-                    .eq('id', userID)
-                    .select('*')
-
-                if (data) {
-                    resolve(data)
-                }
-
-                if (error) {
-                    reject(error)
-                }
-
+                axios.post('api/payment/getTechPayToken',
+                    {
+                        description: 'subscription payment',
+                        amount: amount,
+                        orderNumber: data.id
+                    }
+                )
+                    .then((res) => {
+                        if (res) {
+                            resolve(res.data)
+                        }
+                    })
+                    .catch((err) => {
+                        if (err) {
+                            reject(err)
+                        }
+                    })
+            } else {
+                reject('failed with no data retrieved')
             }
-
             if (error) {
                 reject(error)
             }
+
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
+
+
+export const redirectToPayment: RedirectToPayment = (url) => {
+    if (!url) return;
+
+    // 🔗 Redirects the current tab to the payment URL
+    window.location.href = url;
+};
+
+// generates a random six-digit string, padded with leading zeros if necessary
+export function getRandomSixDigitString(): string {
+    const num = Math.floor(Math.random() * 1_000_000); // 0–999999
+    return num.toString().padStart(6, "0"); // ensures 6 digits
+}
+
+export const checkPaymentStatus = async (req: Request, res: Response) => {
+
+};
+
+// Polling logic (unchanged, but typed)
+export async function pollPaymentStatus(ordertoken: string): Promise<any> {
+    let attempts = 0;
+    const maxAttempts = 12;
+    const interval = 5000;
+
+    return new Promise((resolve, reject) => {
+        const checkStatus = async () => {
+            try {
+                const response: Partial<PaymentTokenResponse> = await axios.post(`https://new.techpay.co.zm/api/v1/hc/statuscheck`,
+                    {
+                        merchantApiKey: apiKey,
+                        merchantApiID: apiID,
+                        token: ordertoken
+                    }
+                );
+
+                console.log(`attempt number ${attempts} for Payment status for ${ordertoken}`);
+
+                if (response.data?.status == 100) {
+                    return resolve(response);
+                }
+
+                if (response.data?.status == 101) {
+                    console.log(`its still pending`);
+                    attempts++;
+
+                    if (attempts >= maxAttempts) {
+                        return reject(new Error("Max attempts reached. Payment still pending."));
+                    }
+                }
+
+                setTimeout(checkStatus, interval);
+
+            } catch (error: any) {
+                console.error("Error checking payment status:", error.response?.data || error.message);
+                reject(error);
+            }
+        };
+        checkStatus();
+    });
+}
+
+export const updateSubscription = async (id: string | null) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { data, error } = await supabase
+                .from("sunhistory")
+                .update({ paidfor: true, isactive:true })
+                .eq('id', id)
+                .select('*')
+                .single()
+
+            let historyData = data
+
+            if (data) {
+                try {
+                    const { data, error } = await supabase
+                        .from("users")
+                        .update({ hasSubscription: true })
+                        .eq('id', historyData.userid)
+                        .select('*')
+                        .single()
+
+                    if (data) {
+                        resolve(true)
+                    }
+
+                    if (error) {
+                        reject(error)
+                    }
+                } catch (error) {
+                    reject(error)
+                }
+            }
+
 
         } catch (err) {
             reject(err)

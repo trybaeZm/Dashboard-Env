@@ -10,17 +10,17 @@ const Container = ({ children }: { children: any }) => {
     const router = useRouter()
     const userData = getData();
     useEffect(() => {
-        checkuserexists(userData.id)
+        checkuserexists(userData?.id)
             .then((res) => {
                 if (res) {
                     console.log()
                 } else {
-                    router.push('/login')
+                    router.push('/signin')
                     removeData()
                 }
             })
             .catch((err) => {
-                router.push('/login')
+                router.push('/signin')
                 removeData()
                 if (err) {
                 }
