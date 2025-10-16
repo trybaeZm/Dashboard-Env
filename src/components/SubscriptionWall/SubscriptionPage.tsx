@@ -122,8 +122,6 @@ export const SubscriptionPage = () => {
                         }
                     </div>
 
-
-
                     {/* FAQ Section */}
                     <div className="mt-12 grid md:grid-cols-2 gap-8">
                         <div>

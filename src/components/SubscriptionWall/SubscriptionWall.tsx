@@ -1,9 +1,14 @@
-'use client'
-import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion'
 import { Lock, Star, Zap, Shield, CheckCircle, ArrowRight, Crown, Sparkles } from 'lucide-react'
+import { getSubscriptionsDetails } from '@/services/subscription/subscriptionService';
+import { Subscription } from '@/types/Subscription';
+import { PlanCard } from './components/PlanCard';
+import { getData } from '@/lib/createCookie';
 
-const SubscriptionWall = ({setOpen}:{setOpen:(value:boolean)=> void}) => {
+const SubscriptionWall = ({ setOpen }: { setOpen: (value: boolean) => void }) => {
+    const [plans, setPlans] = useState<Subscription[] | null>(null);
+    const [loading, setLoaind] = useState(false)
     const features = [
         { icon: <Zap className="w-5 h-5" />, text: "Advanced AI Analytics", premium: true },
         { icon: <Shield className="w-5 h-5" />, text: "Priority Customer Support", premium: true },
@@ -12,36 +17,37 @@ const SubscriptionWall = ({setOpen}:{setOpen:(value:boolean)=> void}) => {
         { icon: <Sparkles className="w-5 h-5" />, text: "Custom Reporting Dashboard", premium: true },
         { icon: <Crown className="w-5 h-5" />, text: "Multi-user Access", premium: true }
     ]
+    const userData = getData()
 
     const closeButtonVariants = {
-    initial: { scale: 1, rotate: 0 },
-    hover: {
-        scale: 1.1,
-        rotate: 90,
-        transition: { duration: 0.2 }
-    },
-    tap: { scale: 0.9 }
-}
-
-    const plans = [
-        {
-            name: "Standard",
-            price: "$29",
-            period: "/month",
-            description: "Perfect for small businesses",
-            features: ["Basic Analytics", "Email Support", "Up to 100 orders/month"],
-            cta: "Get Started",
-            popular: true
+        initial: { scale: 1, rotate: 0 },
+        hover: {
+            scale: 1.1,
+            rotate: 90,
+            transition: { duration: 0.2 }
         },
-        {
-            name: "Enterprise",
-            period: "monthly",
-            description: "For large organizations",
-            features: ["All Professional features", "Dedicated account manager", "API Access", "White-label solutions"],
-            cta: "Contact Sales",
-            popular: false
-        }
-    ]
+        tap: { scale: 0.9 }
+    }
+
+
+    const getSubs = () => {
+        setLoaind(true)
+        getSubscriptionsDetails(userData?.id)
+            .then((res) => {
+                setPlans(res)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                setLoaind(false)
+            })
+    }
+
+    useEffect(() => {
+        getSubs()
+    }, [])
+
 
     return (
 
@@ -123,79 +129,23 @@ const SubscriptionWall = ({setOpen}:{setOpen:(value:boolean)=> void}) => {
                             </div>
                         </div>
 
-                        {/* Additional CTA Section */}
-                        <div className="text-center">
-                            <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-2xl p-8 border border-purple-200/50 dark:border-purple-800/50">
-                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                                    Ready to Transform Your Business?
-                                </h3>
-                                <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
-                                    Join thousands of businesses that have upgraded to premium and seen an average of 40% growth in their operations.
-                                </p>
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                    <button className="px-8 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                                        Start Free Trial
-                                        <ArrowRight className="w-4 h-4 ml-2 inline" />
-                                    </button>
-                                    <button className="px-8 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-300">
-                                        Schedule Demo
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+
                         {/* Right Side - Pricing Plans */}
-                        <div className="space-y-6 hidden flex justify-center flex-wrap gap-4">
-                            {plans.map((plan, index) => (
-                                <div key={index} className={`
-                    relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-6 border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl
-                    ${plan.popular
-                                        ? 'border-purple-500 shadow-lg'
-                                        : 'border-gray-200/50 dark:border-gray-700/50 shadow-md'
-                                    }
-                `}>
-                                    {plan.popular && (
-                                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                                            <span className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium shadow-lg">
-                                                Most Popular
-                                            </span>
-                                        </div>
-                                    )}
-
-                                    <div className="text-center mb-6">
-                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
-                                        <div className="flex items-baseline justify-center gap-1 mb-2">
-                                            <span className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-purple-600 dark:from-gray-100 dark:to-purple-400 bg-clip-text text-transparent">
-                                                {plan.price}
-                                            </span>
-                                            <span className="text-gray-600 dark:text-gray-400">{plan.period}</span>
-                                        </div>
-                                        <p className="text-gray-600 dark:text-gray-400">{plan.description}</p>
-                                    </div>
-
-                                    <ul className="space-y-3 mb-6">
-                                        {plan.features.map((feature, featureIndex) => (
-                                            <li key={featureIndex} className="flex items-center gap-3 text-sm">
-                                                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                                                <span className="text-gray-700 dark:text-gray-300">{feature}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-
-                                    <button className={`
-                    w-full py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105
-                    ${plan.popular
-                                            ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 shadow-lg'
-                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'
-                                        }
-                    `}>
-                                        {plan.cta}
-                                    </button>
+                        {
+                            loading ?
+                                <div className="flex items-center justify-center ">
+                                    <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                                 </div>
-                            ))}
-                        </div>
+
+                                :
+
+                                <div className="space-y-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-center gap-4 flex justify-center  flex-wrap gap-4">
+                                    {plans?.map((plan, index) => (
+                                        <PlanCard plan={plan} key={index} />
+                                    ))}
+                                </div>
+                        }
                     </div>
-
-
 
                     {/* FAQ Section */}
                     <div className="mt-12 grid md:grid-cols-2 gap-8">
