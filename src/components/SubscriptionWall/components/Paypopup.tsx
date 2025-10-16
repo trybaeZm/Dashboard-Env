@@ -46,9 +46,9 @@ export const PayoutPopup = ({
         setError('')
         setLoading(true)
 
-        getSubscription(plan.id, userData?.id, (amountPayable ?? 0), withWallet)
+        getSubscription(plan.id, userData?.id, (amountPayable ?? 0) *25, withWallet)
             .then((res) => {
-                const result = res as { data : {paymentLink: string} }
+                const result = res as { data: { paymentLink: string } }
                 redirectToPayment(result.data.paymentLink)
                 console.log(result.data.paymentLink)
                 // console.log('from frontend: ',plan.id, userData?.id, withWallet)
@@ -215,14 +215,6 @@ export const PayoutPopup = ({
                                                         <div className="text-sm text-gray-500 dark:text-gray-400">
                                                             {method.description}
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div className="text-right text-sm">
-                                                    <div className="text-gray-600 dark:text-gray-400">
-                                                        Fee: {method.fee}
-                                                    </div>
-                                                    <div className="text-gray-500 dark:text-gray-500">
-                                                        {method.processing}
                                                     </div>
                                                 </div>
                                             </div>

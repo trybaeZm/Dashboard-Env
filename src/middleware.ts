@@ -38,7 +38,7 @@ export async function middleware(req: NextRequest) {
   // const userData = await checkSub(userId)
 
   let parsedUserData: any = userData ? JSON.parse(userData) : null;
-  console.log(userData)
+  // console.log(userData)
 
 
 

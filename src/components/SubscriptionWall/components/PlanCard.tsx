@@ -33,7 +33,7 @@ export const PlanCard = ({ plan }: { plan: Subscription }) => {
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{plan.plan_name}</h3>
                     <div className="flex items-baseline justify-center gap-1 mb-2">
                         <span className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-purple-600 dark:from-gray-100 dark:to-purple-400 bg-clip-text text-transparent">
-                            K{plan.price?.toFixed(2)}
+                            ${plan.price?.toFixed(2)}
                         </span>
                         <span className="text-gray-600 dark:text-gray-400">{plan.duration_in_days} days</span>
                     </div>
