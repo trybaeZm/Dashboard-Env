@@ -4,7 +4,6 @@ import { ShouldShowSubscriptionWarn } from "../SubscriptionWall/subscriptionWarn
 import { checkuserexists } from "@/services/apiUsers"
 import { getData, removeData } from "@/lib/createCookie"
 import { useRouter } from "next/navigation"
-import { Customers } from "@/types/Customers"
 
 const Container = ({ children }: { children: any }) => {
     const router = useRouter()
