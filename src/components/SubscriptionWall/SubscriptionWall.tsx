@@ -146,23 +146,6 @@ const SubscriptionWall = ({ setOpen }: { setOpen: (value: boolean) => void }) =>
                                 </div>
                         }
                     </div>
-
-                    {/* FAQ Section */}
-                    <div className="mt-12 grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Why upgrade?</h4>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">
-                                Premium features are designed to help you make data-driven decisions, automate processes,
-                                and scale your business efficiently with AI-powered insights.
-                            </p>
-                        </div>
-                        <div>
-                            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Need help deciding?</h4>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">
-                                Our team is here to help you choose the right plan. Contact us for a personalized recommendation.
-                            </p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
