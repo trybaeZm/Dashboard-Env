@@ -67,7 +67,7 @@ export const storeOrgData = (data: BusinessType) => {
 export const getOrgData = (): BusinessType | null => {
   try {
     const data = Cookies.get('BusinessID');
-    console.log(data)
+    // console.log(data)
     return data ? JSON.parse(data) : null;
   } catch (error) {
     console.error("Failed to retrieve BusinessID array from cookies:", error);

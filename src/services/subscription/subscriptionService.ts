@@ -1,9 +1,54 @@
 import { hasSubscribers } from "node:diagnostics_channel";
 import { supabase } from "../SupabaseConfig"
-import { makepayresponse, PaymentTokenResponse, RedirectToPayment, Subscription } from "@/types/Subscription";
+import { makepayresponse, PaymentTokenResponse, RedirectToPayment, Subscription, SubscriptionHistory } from "@/types/Subscription";
 import axios from "axios";
 import { apiID, apiKey } from "../api/header";
 
+
+export const getAllSubs = async (): Promise<boolean | Subscription[] | undefined> => {
+    try {
+        const { data, error } = await supabase
+            .from('subscriptionTable')
+            .select('*')
+            .eq('isActive', true)
+
+        if (data) {
+            console.log('subs collected')
+            return data
+        }
+
+        if (error) {
+            console.log('error fetching sub: ', error)
+            return false
+        }
+    } catch (error) {
+        console.log('error fetching sub: ', error)
+        return false
+    }
+}
+
+export const getAllSubHistoryById = async (userId: string | null): Promise<boolean | undefined | SubscriptionHistory[]> => {
+    try {
+        const { data, error } = await supabase
+            .from('sunhistory')
+            .select('*')
+            .eq('userid', userId)
+            .eq('paidfor', true)
+
+        if (data) {
+            console.log('sub history collected')
+            return data
+        }
+
+        if (error) {
+            console.log("error fetching sub history: ", error)
+            return false
+        }
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
 
 function hasDurationExpired(created_at: Date, durationInDays: number) {
     // Convert to Date objects if not already
@@ -18,7 +63,6 @@ function hasDurationExpired(created_at: Date, durationInDays: number) {
     // Compare
     return currentDate < endDate;
 }
-
 
 export const checkSub = async (userId: string) => {
     console.log('checking subscription status...')
@@ -106,42 +150,34 @@ export const checkSub = async (userId: string) => {
 };
 
 export const getSubscriptionsDetails = async (id: string | null) => {
-    return new Promise<Subscription[] | null>(async (resolve, reject) => {
+    const subhistory = await getAllSubHistoryById(id);
+    const subscriptions = await getAllSubs();
+
+
+    return new Promise(async (resolve, reject) => {
         try {
+            if (subscriptions && Array.isArray(subscriptions)) {
+                if (subhistory && Array.isArray(subhistory)) {
+                    if (subhistory.length >= 0) {
+                        if (subhistory.filter((res) => res.subid == '9733dac2-2ff6-4182-b2dd-9153e9e4afd0').length > 0) {
+                            resolve(subscriptions.filter((res) => res.id != '9733dac2-2ff6-4182-b2dd-9153e9e4afd0'))
+                        } else {
+                            resolve(subscriptions)
+                        }
+                    } else {
+                        resolve(subscriptions)
+                    }
 
-            const { data, error } = await supabase
-                .from('sunhistory')
-                .select('*, subscriptionTable(*)')
-                .eq('userid', id)
+                    console.log("Length:", subhistory.length);
 
-
-            // console.log('history: ', data)
-
-
-            if (data) {
-                const foundMatch = data?.filter((e) => e.subscriptionTable.plan_name == "Starter" && e.paidfor == true)[0]
-
-                // console.log("found match: ", foundMatch)
-
-                try {
-                    const { data, error } = await supabase
-                        .from('subscriptionTable')
-                        .select('*')
-                        .eq('isActive', true)
-                        .not('id', 'eq', foundMatch ? foundMatch.subid : '')
-
-
-                    // console.log('after filter: ',data)
-
-                    resolve(data)
-                } catch (err) {
-                    reject(err)
+                } else {
+                    console.log("sub table: ", subscriptions)
+                    resolve(subscriptions)
                 }
+            } else {
+                reject(null)
             }
 
-            if (error) {
-                reject(error)
-            }
 
         } catch (err) {
             reject(err)

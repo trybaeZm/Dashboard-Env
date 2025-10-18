@@ -10,7 +10,10 @@ export type Subscription = {
     isActive: boolean
     description: string
 };
+export type SubscriptionHistory = {
+    subid: string
 
+}
 export interface PayoutPopupProps {
     isOpen: boolean
     onClose: () => void
