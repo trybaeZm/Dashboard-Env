@@ -18,7 +18,7 @@ export async function createUserRole(newRole: Omit<UserRole, 'role_id'>): Promis
             return null;
         }
 
-        console.log("User role created successfully:", data);
+        // console.log("User role created successfully:", data);
         return data;
     } catch (err) {
         console.error("Unexpected error creating user role:", err);
@@ -38,7 +38,7 @@ export async function getAllUserRoles(): Promise<UserRole[] | null> {
             return null;
         }
 
-        console.log("User roles fetched successfully:", data);
+        // console.log("User roles fetched successfully:", data);
         return data;
     } catch (err) {
         console.error("Unexpected error fetching user roles:", err);

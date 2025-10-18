@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     const headers = getCorsHeaders(request);
 
     const { name, email, password } = await request.json() as RegisterPayload;;
-    console.log(name, email, password);
+    // console.log(name, email, password);
     if (email) {
         try {
             const lowerCaseEmail = email;

@@ -7,7 +7,7 @@ import { PlanCard } from './components/PlanCard';
 import { getData } from '@/lib/createCookie';
 
 const SubscriptionWall = ({ setOpen }: { setOpen: (value: boolean) => void }) => {
-    const [plans, setPlans] = useState<Subscription[] | null>(null);
+    const [plans, setPlans] = useState<Subscription[] | null | undefined|unknown>(null);
     const [loading, setLoaind] = useState(false)
     const features = [
         { icon: <Zap className="w-5 h-5" />, text: "Advanced AI Analytics", premium: true },
@@ -48,9 +48,7 @@ const SubscriptionWall = ({ setOpen }: { setOpen: (value: boolean) => void }) =>
         getSubs()
     }, [])
 
-
     return (
-
         <div className="fixed top-0 bottom-0 left-0 right-0 p-5 z-[99999] bg-[#00000050] overflow-y-auto" >
             <div className="min-h-screen bg-gray-200 bg-gray-900 rounded-lg shadow-md flex items-center justify-center p-10">
                 {/* Close Button */}
@@ -140,9 +138,9 @@ const SubscriptionWall = ({ setOpen }: { setOpen: (value: boolean) => void }) =>
                                 :
 
                                 <div className="space-y-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-center gap-4 flex justify-center  flex-wrap gap-4">
-                                    {plans?.map((plan, index) => (
+                                    {/* {plans?.map((plan, index) => (
                                         <PlanCard plan={plan} key={index} />
-                                    ))}
+                                    ))} */}
                                 </div>
                         }
                     </div>

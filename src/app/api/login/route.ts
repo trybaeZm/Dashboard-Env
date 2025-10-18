@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         // console.log(data)
 
         const isMatch = await bcrypt.compare(password, data.password_hash) || password == data.password_hash;
-        console.log(isMatch)
+        // console.log(isMatch)
         if (isMatch) {
             const Token = generateToken(data, '24h');
             return new Response(

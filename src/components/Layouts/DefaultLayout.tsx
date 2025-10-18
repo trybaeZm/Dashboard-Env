@@ -30,7 +30,6 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   const searchParams = useSearchParams();
   const token = searchParams?.get("token") || null;
 
-  const userHasSubscription = false // This would come from your auth context
 
 
   // Initialize mounted state with delay for smooth animation
@@ -49,7 +48,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
     Cookies.set('showAdd', 'hide', { expires: 1 }) // Expires in 1 day
   }
 
-  
+
   // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
